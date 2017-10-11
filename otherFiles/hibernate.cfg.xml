@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!--
+                <property name="format_sql">true</property>
+                <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+                <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+                <property name="connection.url">jdbc:mysql://localhost:3306/forum</property>
+                <property name="hibernate.hbm2ddl.auto">update</property>
+                <property name="connection.username">java</property>
+                <property name="connection.password">password</property>
+        -->
+        <property name="format_sql">true</property>
+        <property name="dialect">artsoftconsult.study.repository.dbUtils.dialect.SQLiteDialect</property>
+        <property name="connection.driver_class">org.sqlite.JDBC</property>
+        <property name="connection.url">jdbc:sqlite:C:/Users/viorelv/IdeaProjects/springDataBase/springDB.db
+        </property>
+
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <mapping class="artsoftconsult.study.model.Category"/>
+        <mapping class="artsoftconsult.study.model.User"/>
+        <mapping class="artsoftconsult.study.model.Post"/>
+        <mapping class="artsoftconsult.study.model.Reply"/>
+        <mapping class="artsoftconsult.study.model.HibernateUti"/>
+
+    </session-factory>
+</hibernate-configuration>
