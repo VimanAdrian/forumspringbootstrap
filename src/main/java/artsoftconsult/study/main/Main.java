@@ -1,11 +1,12 @@
 package artsoftconsult.study.main;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Main {
 
-    /*
+
     public static void main(String[] arg) {
         int i = 0;
         while (i < 10) {
@@ -17,7 +18,7 @@ public class Main {
             i++;
         }
     }
-    */
+
 
     /*
     public static void main(String[] arg) {
