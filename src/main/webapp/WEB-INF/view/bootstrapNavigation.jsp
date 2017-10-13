@@ -23,12 +23,6 @@
             width: 350px;
         }
 
-        @media screen and (max-width: 480px) {
-            #login-modal .modal-dialog {
-                width: 95%;
-            }
-        }
-
         #login-modal input[type=text], input[type=password] {
             margin-top: 10px;
         }
@@ -153,44 +147,44 @@
             border-radius: 0px;
         }
 
-        footer {
-            background-color: #f2f2f2;
-            padding: 25px;
+        @media screen and (max-width: 480px) {
+            #login-modal .modal-dialog {
+                width: 95%;
+            }
         }
 
     </style>
-    <title>Memory Leak</title>
+    <title>Navigation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/30231d6a5750f6f1edb5a3971">
+    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/1d21205a5c51ba9077bcd5d11">
+    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/e74c3cc0392becf0f1ffbbbc0">
 </head>
 <body>
 <!-- TopNavigation -->
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse navbar-static-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
-                <sec:authorize access="isAuthenticated()">
-                    <span class="icon-bar"></span>
-                </sec:authorize>
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                    <span class="icon-bar"></span>
-                </sec:authorize>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Memory Leak</a>
+            <a class="navbar-brand" href="#">MemoryLeak</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li><a href="http://localhost:8080/post?search&browse&page=0">Browse questions</a></li>
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="http://localhost:8080/post?search&browse&page=0">Browse</a></li>
                 <sec:authorize access="isAuthenticated()">
                     <li><a href="http://localhost:8080/newPost">Ask a question</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin <span
-                        class="caret"></span></a>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="http://localhost:8080/post?disabled=on&search&browse&page=0">Disabled questions</a>
                         </li>
@@ -198,17 +192,22 @@
                     </ul>
                     </sec:authorize>
             </ul>
-            <form class="navbar-form navbar-right" role="search" action="/post" method="GET">
+            <form class="navbar-form navbar-right" id="searchForm" role="search" action="/post" method="GET">
                 <div class="form-group input-group">
                     <input type="text" class="form-control" name="search" placeholder="Search..">
                     <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
+                    <button class="btn btn-default" id="searchButton" type="button">
                        <span class="glyphicon glyphicon-search"></span>
                     </button>
                   </span>
                 </div>
                 <input type="hidden" name="page" value="0">
             </form>
+            <script>
+                $("#searchButton").click(function () {
+                    $("#searchForm").submit();
+                });
+            </script>
             <ul class="nav navbar-nav navbar-right">
                 <sec:authorize access="isAnonymous()">
                     <li><a href="#" class="" role="button" data-toggle="modal" data-target="#login-modal"><span
@@ -218,7 +217,7 @@
                     <li><a href="javascript:formSubmit()" class="" role="button"><span
                             class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                     <c:url value="/logout" var="logoutUrl"/>
-                    <form action="${logoutUrl}" method="post" id="logoutForm">
+                    <form action="${logoutUrl}" method="post" id="logoutForm" style="display: none;">
                         <input type="hidden" name="${_csrf.parameterName}"
                                value="${_csrf.token}"/>
                     </form>
@@ -420,10 +419,5 @@
 </script>
 <!-- End Modal -->
 
-<!-- Footer -->
-<footer class="container-fluid text-center">
-    <p>Footer Text</p>
-</footer>
-<!-- END Footer -->
 </body>
 </html>

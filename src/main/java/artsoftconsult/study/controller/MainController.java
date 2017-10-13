@@ -195,7 +195,7 @@ public class MainController {
             model.addObject("nrPagini", nrPagini);
             model.addObject("post", post);
             model.addObject("voteType", postService.voteTypesAvailable(Integer.valueOf(postID), userService.find(user.getUsername()).getUserId()));
-            model.setViewName("postPage");
+            model.setViewName("bootstrapPostPage");
             return model;
         }
         if (search != null) {
