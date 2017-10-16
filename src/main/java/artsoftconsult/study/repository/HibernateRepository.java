@@ -1,11 +1,14 @@
 package artsoftconsult.study.repository;
 
+import artsoftconsult.study.model.Post;
+import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.dbUtils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
 import java.util.List;
 
 @Repository
@@ -68,6 +71,7 @@ public abstract class HibernateRepository {
         }
     }
 
+
     public void joinulLuiStefii() {
         Transaction tx = null;
         try {
@@ -83,5 +87,4 @@ public abstract class HibernateRepository {
             System.out.println(e.getMessage());
         }
     }
-
 }

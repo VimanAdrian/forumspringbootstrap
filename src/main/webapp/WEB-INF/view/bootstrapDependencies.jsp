@@ -14,9 +14,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/30231d6a5750f6f1edb5a3971">
-    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/1d21205a5c51ba9077bcd5d11">
-    <link rel="stylesheet" href="https://work.smarchal.com/twbscolor/3.3.7/css/e74c3cc0392becf0f1ffbbbc0">
+    <!--
+    https://work.smarchal.com/twbscolor/3.3.7/css/30231d6a5750f6f1edb5a3971
+    https://work.smarchal.com/twbscolor/3.3.7/css/1d21205a5c51ba9077bcd5d11
+    https://work.smarchal.com/twbscolor/3.3.7/css/e74c3cc0392becf0f1ffbbbc0
+    https://work.smarchal.com/twbscolor/3.3.7/css/607d8b78909ceceff1cfd8dc1
+    -->
 </head>
 <body>
 

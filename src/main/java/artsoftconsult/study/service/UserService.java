@@ -1,6 +1,8 @@
 package artsoftconsult.study.service;
 
+import artsoftconsult.study.model.Post;
 import artsoftconsult.study.model.User;
+import artsoftconsult.study.repository.implementation.PostRepository;
 import artsoftconsult.study.repository.implementation.UserRepository;
 import artsoftconsult.study.utils.Email;
 import artsoftconsult.study.utils.RandomUtils;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Service
 public class UserService implements Serializable {
@@ -20,6 +23,8 @@ public class UserService implements Serializable {
     private UserValidator userValidator;
     @Autowired
     private Email email;
+    @Autowired
+    private PostRepository postRepository;
 
     public UserService() {
     }
@@ -120,6 +125,10 @@ public class UserService implements Serializable {
 
     public void updateProfileImage(String filename, String username) {
         userRepository.updateProfileImage("/profileImage/" + filename, username);
+    }
+
+    public List<Post> newAnswers(User user) {
+        return postRepository.newReplies(find(user.getUsername()));
     }
 /*
     public void joinulLuiStefii() {

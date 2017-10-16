@@ -11,6 +11,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
 
         @import url(http://fonts.googleapis.com/css?family=Roboto);
@@ -147,19 +152,152 @@
             border-radius: 0px;
         }
 
+        #register_gender {
+            margin-top: 10px;
+        }
+
+        .register_option {
+            max-width: 318px;
+            overflow: hidden;
+        }
+
+        @media screen and (min-width: 1024px) {
+            #register_gender{
+                overflow: hidden;
+            }
+
+            .register_option {
+                width: 318px !important;
+                max-width: 318px;
+                overflow: hidden;
+            }
+        }
+
         @media screen and (max-width: 480px) {
             #login-modal .modal-dialog {
                 width: 95%;
             }
         }
 
+        .navbar-default {
+            background-color: #607d8b;
+            border-color: #78909c;
+        }
+
+        .navbar-default .navbar-brand {
+            color: #eceff1;
+        }
+
+        .navbar-default .navbar-brand:hover,
+        .navbar-default .navbar-brand:focus {
+            color: #cfd8dc;
+        }
+
+        .navbar-default .navbar-text {
+            color: #eceff1;
+        }
+
+        .navbar-default .navbar-nav > li > a {
+            color: #eceff1;
+        }
+
+        .navbar-default .navbar-nav > li > a:hover,
+        .navbar-default .navbar-nav > li > a:focus {
+            color: #cfd8dc;
+        }
+
+        .navbar-default .navbar-nav > li > .dropdown-menu {
+            background-color: #607d8b;
+        }
+
+        .navbar-default .navbar-nav > li > .dropdown-menu > li > a {
+            color: #eceff1;
+        }
+
+        .navbar-default .navbar-nav > li > .dropdown-menu > li > a:hover,
+        .navbar-default .navbar-nav > li > .dropdown-menu > li > a:focus {
+            color: #cfd8dc;
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-nav > li > .dropdown-menu > li.divider {
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+        .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+        .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+            color: #cfd8dc;
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-nav > .active > a,
+        .navbar-default .navbar-nav > .active > a:hover,
+        .navbar-default .navbar-nav > .active > a:focus {
+            color: #cfd8dc;
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-nav > .open > a,
+        .navbar-default .navbar-nav > .open > a:hover,
+        .navbar-default .navbar-nav > .open > a:focus {
+            color: #cfd8dc;
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-toggle {
+            border-color: #78909c;
+        }
+
+        .navbar-default .navbar-toggle:hover,
+        .navbar-default .navbar-toggle:focus {
+            background-color: #78909c;
+        }
+
+        .navbar-default .navbar-toggle .icon-bar {
+            background-color: #eceff1;
+        }
+
+        .navbar-default .navbar-collapse,
+        .navbar-default .navbar-form {
+            border-color: #eceff1;
+        }
+
+        .navbar-default .navbar-link {
+            color: #eceff1;
+        }
+
+        .navbar-default .navbar-link:hover {
+            color: #cfd8dc;
+        }
+
+        @media (max-width: 767px) {
+            .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+                color: #eceff1;
+            }
+
+            .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+            .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+                color: #cfd8dc;
+            }
+
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+                color: #cfd8dc;
+                background-color: #78909c;
+            }
+        }
+
+        .modal .modal-content {
+            background-color: #FFFFFF;
+        }
     </style>
     <title>Navigation</title>
-    <jsp:include page="bootstrapDependencies.jsp"/>
 </head>
 <body>
-<!-- TopNavigation -->
-<nav class="navbar navbar-inverse navbar-static-top">
+<!-- TopNavigation navbar navbar-inverse -->
+<nav class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -249,7 +387,7 @@
                             <span id="text-login-msg">Type your username and password.</span>
                         </div>
                         <input id="login_username" class="form-control" type="text"
-                               name="username" placeholder="Username" required>
+                               name="username" placeholder="Username" required autofocus>
                         <input id="login_password" class="form-control" type="password" name="password"
                                placeholder="Password" required>
                         <div class="checkbox">
@@ -309,6 +447,15 @@
                                placeholder="Password" required>
                         <input id="register_password2" class="form-control" type="password" name="password2"
                                placeholder="Password" required>
+                        <input id="register_firstName" class="form-control" type="text" name="firstName"
+                               placeholder="First name">
+                        <input id="register_lastName" class="form-control" type="text" name="lastName"
+                               placeholder="Last name">
+                        <select id="register_gender" class="form-control" name="gender">
+                            <option value="placeholder" disabled selected hidden>Gender</option>
+                            <option value="male" class="form-control register_option">Male</option>
+                            <option value="female" class="form-control register_option">Female</option>
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <div>

@@ -48,13 +48,13 @@ public class UserController implements Serializable {
         }
         if (userService.updateUser(user))
             try {
-                response.sendRedirect("/update?message");
+                response.sendRedirect("/update?updateSuccess");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         else
             try {
-                response.sendRedirect("/update?error");
+                response.sendRedirect("/update?updateFailed");
             } catch (IOException e) {
                 e.printStackTrace();
             }

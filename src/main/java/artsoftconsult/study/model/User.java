@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 /**
@@ -17,19 +18,20 @@ import java.util.Collection;
 @Table(name = "users", schema = "forum")
 public class User {
     private Integer userId;
-    private String username;
-    private String password;
-    private String password2;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String username = "";
+    private String newUsername = "";
+    private String password = "";
+    private String password2 = "";
+    private String firstName = "";
+    private String lastName = "";
+    private String email = "";
     private Date dateOfBirth;
-    private String gender;
+    private String gender = "";
     private String role = "ROLE_USER";
     private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
     private Byte enabled = 0;
-    private String profileImage = "/profileImage/generic.png";
-    private Boolean isAdmin;
+    private String profileImage = "";
+    private Boolean isAdmin = false;
     private Collection<HibernateUti> utisByUserId;
 
     @Id
@@ -296,5 +298,18 @@ public class User {
 
     public void setUtisByUserId(Collection<HibernateUti> utisByUserId) {
         this.utisByUserId = utisByUserId;
+    }
+
+    @Transient
+    public String getMemberSince() {
+        Date date = new Date(this.creationDate.getTime());
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    }
+
+    @Transient
+    public String getNewUsernameForUpdate(){
+        if (newUsername.equals(""))
+            return null;
+        return newUsername;
     }
 }

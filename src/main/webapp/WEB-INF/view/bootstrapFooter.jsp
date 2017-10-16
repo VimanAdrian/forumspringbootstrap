@@ -10,9 +10,11 @@
 <head>
     <title>Footer</title>
     <style>
-        .panel-footer {
-            background-color: #000000;
-            padding: 25px;
+        .panel-footer  {
+            background-color: #FFFFFF;
+        }
+        .footer {
+            background-color: #FFFFFF;
         }
     </style>
 </head>

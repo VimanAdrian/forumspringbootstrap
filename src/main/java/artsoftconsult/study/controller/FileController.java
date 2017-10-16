@@ -1,9 +1,14 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.UserService;
 import artsoftconsult.study.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,18 +34,23 @@ public class FileController {
     private UserService userService;
 
     @RequestMapping(value = "/uploadOneFile", method = RequestMethod.POST)
-    protected void singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("username") String username, HttpServletResponse response) {
+    protected void singleFileUpload(@RequestParam("file") MultipartFile file,  HttpServletResponse response) {
         try {
             byte[] bytes = file.getBytes();
             String filename = RandomUtils.generateFileName(file.getOriginalFilename());
             Path path = Paths.get(env.getProperty("fileLocation") + filename);
             Files.write(path, bytes);
-            userService.updateProfileImage(filename, username);
+            userService.updateProfileImage(filename, getCurrentUser().getUsername());
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                response.sendRedirect("/update?uploadFailure");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
         try {
-            response.sendRedirect("/account");
+            response.sendRedirect("/update?uploadSuccess");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,6 +66,17 @@ public class FileController {
         response.setHeader("Content-Length", String.valueOf(file.length()));
         response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
         Files.copy(file.toPath(), response.getOutputStream());
+    }
+
+
+    private User getCurrentUser(){
+        User user = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            user = userService.find(userDetail.getUsername());
+        }
+        return user;
     }
 
 }

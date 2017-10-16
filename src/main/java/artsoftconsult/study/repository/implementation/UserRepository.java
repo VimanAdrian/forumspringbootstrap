@@ -1,5 +1,6 @@
 package artsoftconsult.study.repository.implementation;
 
+import artsoftconsult.study.model.Post;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.HibernateRepository;
 import artsoftconsult.study.repository.IRepository;
@@ -49,19 +50,22 @@ public class UserRepository extends HibernateRepository implements IRepository {
         System.out.println("updateuser");
         System.out.println(user);
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("UPDATE users set firstName = IFNULL(?, firstName)," +
+        try (PreparedStatement preStmt = con.prepareStatement("UPDATE users set " +
+                "username = IFNULL(?, username)," +
+                "firstName = IFNULL(?, firstName)," +
                 "lastName = IFNULL(?, lastName)," +
                 "email = IFNULL(?, email)," +
                 "dateOfBirth = IFNULL(?, dateOfBirth)," +
                 "gender = IFNULL(?, gender)," +
                 "profileImage = IFNULL(?, profileImage) WHERE username = ?")) {
-            preStmt.setString(1, user.getFirstNameForUpdate());
-            preStmt.setString(2, user.getLastNameForUpdate());
-            preStmt.setString(3, user.getEmailForUpdate());
-            preStmt.setDate(4, user.getDateOfBirthForUpdate());
-            preStmt.setString(5, user.getGender());
-            preStmt.setString(6, user.getProfileImageForUpdate());
-            preStmt.setString(7, user.getUsernameForUpdate());
+            preStmt.setString(1,user.getNewUsernameForUpdate());
+            preStmt.setString(2, user.getFirstNameForUpdate());
+            preStmt.setString(3, user.getLastNameForUpdate());
+            preStmt.setString(4, user.getEmailForUpdate());
+            preStmt.setDate(5, user.getDateOfBirthForUpdate());
+            preStmt.setString(6, user.getGender());
+            preStmt.setString(7, user.getProfileImageForUpdate());
+            preStmt.setString(8, user.getUsernameForUpdate());
             preStmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -346,4 +350,16 @@ public class UserRepository extends HibernateRepository implements IRepository {
             e.printStackTrace();
         }
     }
+
+    public void newReply(Integer userId, Integer postId){
+        Connection con = db.getConnection();
+        try(PreparedStatement preStmt = con.prepareStatement("INSERT INTO users_new_reply(userID, postID) VALUE (?,?)")){
+            preStmt.setInt(1,userId);
+            preStmt.setInt(2,postId);
+            preStmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

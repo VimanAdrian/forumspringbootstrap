@@ -26,6 +26,7 @@ public class ReplyService {
             String postUrl = "http://localhost:8080/post?postID=" + reply.getPost().getPostId() + "&page=0";
             User user = userRepository.findById(postRepository.findPoster(reply.getPost().getPostId()));
             email.sendNewReplyEmain(user.getEmail(), user.getUsername(), postUrl, reply.getContent());
+            userRepository.newReply(user.getUserId(), reply.getPost().getPostId());
             return true;
         } else
             return false;

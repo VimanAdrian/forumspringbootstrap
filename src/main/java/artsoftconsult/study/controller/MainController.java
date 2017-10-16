@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -38,17 +39,21 @@ public class MainController {
     @Autowired
     private ReplyService replyService;
 
-    @RequestMapping(value = "/bootstrapLogin", method = RequestMethod.GET)
-    public ModelAndView goToBootstrapLogin(){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("bootstrapNavigation");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView goToDefaultPage() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("bootstrapNavigation");
+        modelAndView.setViewName("bootstrapUserPage");
+        User user = getCurrentUser();
+        if (user != null) {
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("newAnswers", false);
+            List<Post> newAnswers = userService.newAnswers(user);
+            if (newAnswers.size() > 0) {
+                Post[] list = newAnswers.toArray(new Post[0]);
+                modelAndView.addObject("newAnswers", true);
+                modelAndView.addObject("answerList", list);
+            }
+        }
         return modelAndView;
     }
 
@@ -73,51 +78,55 @@ public class MainController {
         if (resetSuccess != null) {
             model.addObject("resetSuccess", "Password reset successful!");
         }
-        if(resetFailure != null){
+        if (resetFailure != null) {
             model.addObject("resetFailure", "Password reset failed!");
         }
         if (sendSuccess != null) {
             model.addObject("sendSuccess", "Email was sent successfully!");
         }
-        if(sendFailure != null){
+        if (sendFailure != null) {
             model.addObject("sendFailure", "Email failed to send!");
         }
         if (registerSuccess != null) {
             model.addObject("registerSuccess", "You've been registered successfully.");
         }
-        if(registerFailure != null){
+        if (registerFailure != null) {
             model.addObject("registerFailure", "Register failed!");
         }
-
         model.setViewName("bootstrapNavigation");
         return model;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public ModelAndView goToRegister(@RequestParam(value = "error", required = false) String error, @RequestParam(value = "message", required = false) String message) {
-        ModelAndView model = new ModelAndView();
-        if (error != null) {
-            model.addObject("error", "Something went wrong...");
-        }
-        if (message != null) {
-            model.addObject("msg", "Registered successfully. Check your email to activate your account.");
-        }
-        model.setViewName("register");
-        return model;
-    }
-
     @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public ModelAndView goToUpdate(@RequestParam(value = "error", required = false) String error,
-                                   @RequestParam(value = "makeAdmin", required = false) String makeAdmin) {
+    public ModelAndView goToUpdate(@RequestParam(value = "uploadFailure", required = false) String uploadFailure,
+                                   @RequestParam(value = "uploadSuccess", required = false) String uploadSuccess,
+                                   @RequestParam(value = "updateFailure", required = false) String updateFailure,
+                                   @RequestParam(value = "updateSuccess", required = false) String updateSuccess) {
         ModelAndView model = new ModelAndView();
-        if (error != null) {
-            model.addObject("error", "Something went wrong...");
+        User user = getCurrentUser();
+        if (user != null) {
+            model.addObject("user", user);
+            model.addObject("newAnswers", false);
+            List<Post> newAnswers = userService.newAnswers(user);
+            if (newAnswers.size() > 0) {
+                model.addObject("newAnswers", true);
+                model.addObject("answerList", newAnswers);
+            }
         }
-        if (makeAdmin != null) {
-            model.addObject("msg", "Updated successfully.");
+        model.addObject("modalUpdate", true);
+        if (uploadFailure != null) {
+            model.addObject("uploadFailure", "Upload failed!");
         }
-        model.addObject("user", userService.find(getCurrentUser()));
-        model.setViewName("accountUpdate");
+        if (uploadSuccess != null) {
+            model.addObject("uploadSuccess", "Upload succeeded!");
+        }
+        if (updateFailure != null) {
+            model.addObject("updateFailure", "Update failed!");
+        }
+        if (updateSuccess != null) {
+            model.addObject("updateSuccess", "Update succeeded!");
+        }
+        model.setViewName("bootstrapUserPage");
         return model;
     }
 
@@ -195,7 +204,7 @@ public class MainController {
             model.addObject("nrPagini", nrPagini);
             model.addObject("post", post);
             model.addObject("voteType", postService.voteTypesAvailable(Integer.valueOf(postID), userService.find(user.getUsername()).getUserId()));
-            model.setViewName("bootstrapPostPage");
+            model.setViewName("postPage");
             return model;
         }
         if (search != null) {
@@ -348,14 +357,6 @@ public class MainController {
         return modelAndView;
     }
 
-    private String getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            return userDetail.getUsername();
-        }
-        return "";
-    }
 
     /**
      * Check if user is login by remember me cookie, refer
@@ -390,6 +391,16 @@ public class MainController {
                     : session.getAttribute("targetUrl").toString();
         }
         return targetUrl;
+    }
+
+    private User getCurrentUser() {
+        User user = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            user = userService.find(userDetail.getUsername());
+        }
+        return user;
     }
 
 }

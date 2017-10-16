@@ -462,4 +462,33 @@ public class PostRepository extends HibernateRepository implements IRepository {
         }
     }
 
+    public List<Post> newReplies(User user) {
+        Connection con = db.getConnection();
+        List<Post> list = new ArrayList<>();
+        try (PreparedStatement preStmt = con.prepareStatement("SELECT postID FROM users_new_reply WHERE userID=?")) {
+            preStmt.setInt(1, user.getUserId());
+            ResultSet resultSet = preStmt.executeQuery();
+            while (resultSet.next()) {
+                System.out.println("WHILE");
+                Integer postId = resultSet.getInt(1);
+                System.out.println("POSTID " + postId);
+                try (PreparedStatement preStmt2 = con.prepareStatement("SELECT title FROM posts WHERE postID=?")) {
+                    preStmt2.setInt(1, postId);
+                    ResultSet resultSet2 = preStmt2.executeQuery();
+                    if (resultSet2.next()) {
+                        Post post = new Post();
+                        post.setPostId(postId);
+                        post.setTitle(resultSet2.getString(1));
+                        list.add(post);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
 }
