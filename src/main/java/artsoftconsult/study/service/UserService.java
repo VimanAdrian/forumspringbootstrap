@@ -130,6 +130,10 @@ public class UserService implements Serializable {
     public List<Post> newAnswers(User user) {
         return postRepository.newReplies(find(user.getUsername()));
     }
+
+    public List<Post> topQuestions(User user) {
+        return postRepository.topPosts(user);
+    }
 /*
     public void joinulLuiStefii() {
         userRepository.joinulLuiStefii();

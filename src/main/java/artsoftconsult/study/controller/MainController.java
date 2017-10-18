@@ -47,11 +47,18 @@ public class MainController {
         if (user != null) {
             modelAndView.addObject("user", user);
             modelAndView.addObject("newAnswers", false);
+            modelAndView.addObject("topQuestions", false);
             List<Post> newAnswers = userService.newAnswers(user);
+            List<Post> topQuestions = userService.topQuestions(user);
             if (newAnswers.size() > 0) {
                 Post[] list = newAnswers.toArray(new Post[0]);
                 modelAndView.addObject("newAnswers", true);
                 modelAndView.addObject("answerList", list);
+            }
+            if(topQuestions.size()>0){
+                Post[] list2 = topQuestions.toArray(new Post[0]);
+                modelAndView.addObject("topQuestions", true);
+                modelAndView.addObject("questionList", list2);
             }
         }
         return modelAndView;
@@ -107,10 +114,18 @@ public class MainController {
         if (user != null) {
             model.addObject("user", user);
             model.addObject("newAnswers", false);
+            model.addObject("topQuestions", false);
             List<Post> newAnswers = userService.newAnswers(user);
+            List<Post> topQuestions = userService.topQuestions(user);
             if (newAnswers.size() > 0) {
+                Post[] list = newAnswers.toArray(new Post[0]);
                 model.addObject("newAnswers", true);
-                model.addObject("answerList", newAnswers);
+                model.addObject("answerList", list);
+            }
+            if(topQuestions.size()>0){
+                Post[] list2 = topQuestions.toArray(new Post[0]);
+                model.addObject("topQuestions", true);
+                model.addObject("questionList", list2);
             }
         }
         model.addObject("modalUpdate", true);

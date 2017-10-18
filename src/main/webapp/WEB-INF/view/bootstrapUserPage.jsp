@@ -69,11 +69,6 @@
             background-color: #cfd8dc !important;
         }
 
-        .new-answers {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -111,29 +106,24 @@
                     <div class="alert alert-success fade in">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                         <p><strong>You have new answers!</strong></p>
-                        <ul class="new-answers">
-                            <c:forEach var="post" items="${answerList}" varStatus="loop">
-                                <c:if test="${loop.index <=4 }">
-                                    <li><a href="/post?postID=${post.postId}&page=0">${post.title}</a></li>
-                                </c:if>
-                            </c:forEach>
-                        </ul>
+                        <c:forEach var="post" items="${answerList}" varStatus="loop">
+                            <p><a href="/post?postID=${post.postId}&page=0">${post.title}</a></p>
+                        </c:forEach>
                     </div>
                 </c:if>
                 <div class="well">
-                    <c:if test="${newAnswers==true}"><!-- TODO -->
-                    <p>Your top questions.</p>
-                    <c:forEach var="post" items="${answerList}" varStatus="loop">
-                        <c:if test="${loop.index <=4 }">
-                            <p><a href="/post?postID=${post.postId}&page=0">${post.title}</a></p>
-                        </c:if>
-                    </c:forEach>
+                    <c:if test="${topQuestions==true}">
+                        <p>Your top questions.</p>
+                        <c:forEach var="post" items="${questionList}" varStatus="loop">
+                            <p><a href="/post?postID=${post.postId}&page=0">${post.title}
+                                <span class="badge">${post.score}</span></a></p>
+                        </c:forEach>
                     </c:if>
-                    <c:if test="${newAnswers==false}">
+                    <c:if test="${topQuestions==false}">
                         <p>
                             It seems you don't have any questions.
                             <br>
-                            You can ask one here!
+                            You can ask one <a href="#">here</a>!
                         </p>
                     </c:if>
                 </div>

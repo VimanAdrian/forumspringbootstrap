@@ -356,45 +356,6 @@ public class PostRepository extends HibernateRepository implements IRepository {
         }
     }
 
-    /*
-    public boolean vote(Integer postID, Integer userID, int i) {
-        Connection con = db.getConnection();
-        try {
-            con.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (PreparedStatement preStmt = con.prepareStatement("DELETE FROM votes_users_posts WHERE userID=? AND postID=?")) {
-            preStmt.setInt(1, userID);
-            preStmt.setInt(2, postID);
-            preStmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (PreparedStatement preStmt = con.prepareStatement("UPDATE posts SET score=score+? WHERE postID=?")) {
-            preStmt.setInt(1, i);
-            preStmt.setInt(2, postID);
-            preStmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO votes_users_posts(userID, postID, voteType) VALUES (?,?,?)")) {
-            preStmt.setInt(1, userID);
-            preStmt.setInt(2, postID);
-            preStmt.setInt(3, i);
-            preStmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.commit();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-*/
     public boolean togglePostStatus(Integer postID) {
         Connection con = db.getConnection();
         try (PreparedStatement preStmt = con.prepareStatement("UPDATE posts SET active=NOT(active) WHERE postID=?")) {
@@ -465,13 +426,11 @@ public class PostRepository extends HibernateRepository implements IRepository {
     public List<Post> newReplies(User user) {
         Connection con = db.getConnection();
         List<Post> list = new ArrayList<>();
-        try (PreparedStatement preStmt = con.prepareStatement("SELECT postID FROM users_new_reply WHERE userID=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("SELECT postID FROM users_new_reply WHERE userID=? LIMIT 5")) {
             preStmt.setInt(1, user.getUserId());
             ResultSet resultSet = preStmt.executeQuery();
             while (resultSet.next()) {
-                System.out.println("WHILE");
                 Integer postId = resultSet.getInt(1);
-                System.out.println("POSTID " + postId);
                 try (PreparedStatement preStmt2 = con.prepareStatement("SELECT title FROM posts WHERE postID=?")) {
                     preStmt2.setInt(1, postId);
                     ResultSet resultSet2 = preStmt2.executeQuery();
@@ -490,5 +449,34 @@ public class PostRepository extends HibernateRepository implements IRepository {
         return list;
     }
 
+    public List<Post> topPosts(User user){
+        List<Post> arrayList = new ArrayList<>();
+        Connection con = db.getConnection();
+        List<Post> list = new ArrayList<>();
+        try(PreparedStatement prestmt = con.prepareStatement("SELECT * FROM posts WHERE userID=? ORDER BY score DESC LIMIT 5;")){
+            prestmt.setInt(1,user.getUserId());
+            ResultSet resultSet = prestmt.executeQuery();
+            while(resultSet.next()){
+                Post post = new Post();
+                post.setTitle(resultSet.getString("title"));
+                post.setPostId(resultSet.getInt("postID"));
+                post.setScore(resultSet.getInt("score"));
+                arrayList.add(post);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return arrayList;
+    }
 
+    public void markNotNew(String postID, User currentUser) {
+        Connection con = db.getConnection();
+        try(PreparedStatement preStmt = con.prepareStatement("DELETE FROM users_new_reply WHERE postID=? AND userID=?")) {
+            preStmt.setInt(1, Integer.parseInt(postID));
+            preStmt.setInt(2,currentUser.getUserId());
+            preStmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

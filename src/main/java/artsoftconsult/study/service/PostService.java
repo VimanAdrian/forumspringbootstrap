@@ -99,6 +99,7 @@ public class PostService {
     }
 
     public Post find(String postID, User currentUser, String page) {
+        postRepository.markNotNew(postID, userRepository.findByUsername(currentUser.getUsername()));
         postRepository.incrementView(Integer.valueOf(postID));
         return postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
     }
