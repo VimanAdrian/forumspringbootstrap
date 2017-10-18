@@ -75,6 +75,25 @@ public class MainController {
                                   @RequestParam(value = "registerFailure", required = false) String registerFailure,
                                   HttpServletRequest request) {
         ModelAndView model = new ModelAndView();
+        model.setViewName("bootstrapUserPage");
+        User user = getCurrentUser();
+        if (user != null) {
+            model.addObject("user", user);
+            model.addObject("newAnswers", false);
+            model.addObject("topQuestions", false);
+            List<Post> newAnswers = userService.newAnswers(user);
+            List<Post> topQuestions = userService.topQuestions(user);
+            if (newAnswers.size() > 0) {
+                Post[] list = newAnswers.toArray(new Post[0]);
+                model.addObject("newAnswers", true);
+                model.addObject("answerList", list);
+            }
+            if(topQuestions.size()>0){
+                Post[] list2 = topQuestions.toArray(new Post[0]);
+                model.addObject("topQuestions", true);
+                model.addObject("questionList", list2);
+            }
+        }
         model.addObject("modal", true);
         if (loginFailure != null) {
             model.addObject("loginFailure", "Invalid username and password!");
@@ -100,7 +119,6 @@ public class MainController {
         if (registerFailure != null) {
             model.addObject("registerFailure", "Register failed!");
         }
-        model.setViewName("bootstrapNavigation");
         return model;
     }
 

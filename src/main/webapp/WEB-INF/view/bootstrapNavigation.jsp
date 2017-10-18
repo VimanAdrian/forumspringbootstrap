@@ -558,6 +558,7 @@
     });
 </script>
 <!-- End Modal -->
+<jsp:include page="bootstrapFooter.jsp"/>
 
 </body>
 </html>

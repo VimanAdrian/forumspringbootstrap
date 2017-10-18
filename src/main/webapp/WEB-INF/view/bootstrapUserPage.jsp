@@ -66,9 +66,12 @@
         }
 
         .well {
-            background-color: #cfd8dc !important;
+            background-color: #B0BEC5 !important;
         }
 
+        .well-top {
+            background-color: #CFD8DC !important;
+        }
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -80,19 +83,19 @@
     <div class="row">
         <div class="col-sm-3 well">
             <sec:authorize access="isAuthenticated()">
-                <div class="well">
+                <div class="well well-top">
                     <p><a href="http://localhost:8080/account?username=${user.username}">${user.username}</a></p>
                     <img src="${user.profileImage}" class="img-circle" height="65"
                          width="65" alt="Avatar">
                 </div>
-                <div class="well">
+                <div class="well well-top">
                     <c:if test="${user.username == pageContext.request.userPrincipal.name}">
                         <p>
                             <a href="#" class="" role="button" data-toggle="modal" data-target="#update-modal">
                                 <span class="glyphicons glyphicons-edit"></span> Update</a>
                         </p>
                     </c:if>
-                    <c:if test="${user.admin}">ADMIN</c:if>
+                    <c:if test="${user.admin==true}">ADMIN</c:if>
                     <c:if test="${user.firstNameForUpdate!=null}">
                         <p>First name: ${user.firstName}</p>
                     </c:if>
@@ -111,7 +114,7 @@
                         </c:forEach>
                     </div>
                 </c:if>
-                <div class="well">
+                <div class="well well-top">
                     <c:if test="${topQuestions==true}">
                         <p>Your top questions.</p>
                         <c:forEach var="post" items="${questionList}" varStatus="loop">
@@ -129,12 +132,8 @@
                 </div>
             </sec:authorize>
             <sec:authorize access="isAnonymous()">
-                <div class="thumbnail">
-                    <p>Upcoming Events:</p>
-                    <img src="paris.jpg" alt="Paris" width="400" height="300">
-                    <p><strong>Paris</strong></p>
-                    <p>Fri. 27 November 2015</p>
-                    <button class="btn btn-primary">Info</button>
+                <div class="well">
+                    <p>ADS</p>
                 </div>
                 <div class="well">
                     <p>ADS</p>
@@ -147,12 +146,27 @@
         <div class="col-sm-7">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="panel panel-default text-left">
-                        <div class="panel-body">
-                            <p contenteditable="true">Status: Feeling Blue</p>
-                            <button type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-thumbs-up"></span> Like
-                            </button>
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#collapse1">
+                                        <div id="icon-post-msg" class="glyphicon glyphicon-chevron-down"></div>
+                                        <span id="text-post-msg">Ask a question.</span></a>
+                                </h4>
+                            </div>
+                            <div id="collapse1" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <form id="new-post-form" action="/makePost" method="POST">
+                                        <div class="form-body">
+                                            <input id="post_title" class="form-control" type="text" name="title"
+                                                   placeholder="Title">
+                                            <input id="post_content" class="form-control" type="text" name="content"
+                                                   placeholder="Content">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,12 +230,8 @@
             </div>
         </div>
         <div class="col-sm-2 well">
-            <div class="thumbnail">
-                <p>Upcoming Events:</p>
-                <img src="paris.jpg" alt="Paris" width="400" height="300">
-                <p><strong>Paris</strong></p>
-                <p>Fri. 27 November 2015</p>
-                <button class="btn btn-primary">Info</button>
+            <div class="well">
+                <p>ADS</p>
             </div>
             <div class="well">
                 <p>ADS</p>
@@ -407,9 +417,6 @@
         }
     });
 </script>
-
-<!-- End Modal -->
-<jsp:include page="bootstrapFooter.jsp"/>
 
 </body>
 </html>
