@@ -1,6 +1,5 @@
 package artsoftconsult.study.repository.implementation;
 
-import artsoftconsult.study.model.Post;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.HibernateRepository;
 import artsoftconsult.study.repository.IRepository;
@@ -356,6 +355,29 @@ public class UserRepository extends HibernateRepository implements IRepository {
         try(PreparedStatement preStmt = con.prepareStatement("INSERT INTO users_new_reply(userID, postID) VALUE (?,?)")){
             preStmt.setInt(1,userId);
             preStmt.setInt(2,postId);
+            preStmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String findEmail(String username) {
+        Connection con = db.getConnection();
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT email FROM users WHERE username=?")) {
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next())
+                return resultSet.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void block(String username) {
+        Connection con = db.getConnection();
+        try (PreparedStatement preStmt = con.prepareStatement("UPDATE users SET accountNonLocked = 0 WHERE username=?")) {
+            preStmt.setString(1, username);
             preStmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

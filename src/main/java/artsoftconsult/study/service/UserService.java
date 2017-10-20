@@ -134,7 +134,16 @@ public class UserService implements Serializable {
     public List<Post> topQuestions(User user) {
         return postRepository.topPosts(user);
     }
-/*
+
+    public void block(String username) {
+        String userEmail = userRepository.findEmail(username);
+        if (userEmail != null) {
+            System.out.println("'" + userEmail + "'");
+            email.sendAccountLockedEmail(userEmail, username);
+        }
+        userRepository.block(username);
+    }
+    /*
     public void joinulLuiStefii() {
         userRepository.joinulLuiStefii();
     }

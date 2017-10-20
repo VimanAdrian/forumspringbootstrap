@@ -7,8 +7,7 @@ import artsoftconsult.study.service.PostService;
 import artsoftconsult.study.service.ReplyService;
 import artsoftconsult.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -96,7 +95,7 @@ public class MainController {
         }
         model.addObject("modal", true);
         if (loginFailure != null) {
-            model.addObject("loginFailure", "Invalid username and password!");
+            model.addObject("loginFailure", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
         }
         if (logoutSuccess != null) {
             model.addObject("logoutSuccess", "You've been logged out successfully!");
@@ -390,6 +389,24 @@ public class MainController {
         return modelAndView;
     }
 
+    //customize the error message
+    private String getErrorMessage(HttpServletRequest request, String key) {
+
+        Exception exception = (Exception) request.getSession().getAttribute(key);
+
+        String error = "";
+        if (exception instanceof BadCredentialsException) {
+            error = "Invalid username and password!";
+        } else if (exception instanceof DisabledException) {
+            error = "You need to activate your account!";
+        } else if (exception instanceof LockedException) {
+            error = "Your account is locked!";
+        } else {
+            error = "Something went wrong with the login process...";
+        }
+
+        return error;
+    }
 
     /**
      * Check if user is login by remember me cookie, refer

@@ -94,4 +94,25 @@ public class Email {
             e.printStackTrace();
         }
     }
+
+    public void sendAccountLockedEmail(String userEmail, String username) {
+        try {
+            String msg = "<p>Hello " + username + "</p>"
+                    + "<p>Your account was locked because someone failed to login 3 times in a row.</p>"
+                    + "<p>Thank you.</p>";
+
+            MimeMessage message = mailSender.createMimeMessage();
+            message.setSubject("Account locked");
+
+            MimeMessageHelper helper;
+            helper = new MimeMessageHelper(message, true);
+            helper.setFrom("forumspringartsoft@gmail.com");
+            helper.setTo(userEmail);
+            helper.setText(msg, true);
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }
