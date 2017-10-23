@@ -72,6 +72,25 @@
         .well-top {
             background-color: #CFD8DC !important;
         }
+
+        .panel-title-ask {
+            margin-bottom: 0 !important;
+        }
+
+        .panel-heading-ask {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .vresize {
+            resize: vertical;
+        }
+
+        .form-element {
+            margin-top: 10px;
+        }
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -148,8 +167,8 @@
                 <div class="col-sm-12">
                     <div class="panel-group">
                         <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
+                            <div class="panel-heading panel-heading-ask">
+                                <h4 class="panel-title well panel-title-ask">
                                     <a data-toggle="collapse" href="#collapse1">
                                         <div id="icon-post-msg" class="glyphicon glyphicon-chevron-down"></div>
                                         <span id="text-post-msg">Ask a question.</span></a>
@@ -159,10 +178,12 @@
                                 <div class="panel-body">
                                     <form id="new-post-form" action="/makePost" method="POST">
                                         <div class="form-body">
-                                            <input id="post_title" class="form-control" type="text" name="title"
+                                            <input id="post_title" class="form-control form-element" type="text"
+                                                   name="title"
                                                    placeholder="Title">
-                                            <input id="post_content" class="form-control" type="text" name="content"
-                                                   placeholder="Content">
+                                            <textarea id="post_content" class="form-control form-element vresize"
+                                                      name="content"
+                                                      placeholder="Content"></textarea>
                                         </div>
                                     </form>
                                 </div>

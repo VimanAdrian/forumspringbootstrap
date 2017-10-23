@@ -47,7 +47,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         auth.authenticationEventPublisher(this.defaultAuthenticationEventPublisher());
+        try {
+            auth.userDetailsService(userDetailsService);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
