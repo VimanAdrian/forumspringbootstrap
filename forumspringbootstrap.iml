@@ -92,5 +92,9 @@
     <orderEntry type="library" name="jquery-ui" level="application" />
     <orderEntry type="library" name="bootstrap-tokenfield" level="application" />
     <orderEntry type="library" name="typeahead.bundle" level="application" />
+    <orderEntry type="library" name="Markdown.Converter" level="application" />
+    <orderEntry type="library" name="Markdown.Editor" level="application" />
+    <orderEntry type="library" name="Markdown.Sanitizer" level="application" />
+    <orderEntry type="library" name="run_prettify" level="application" />
   </component>
 </module>

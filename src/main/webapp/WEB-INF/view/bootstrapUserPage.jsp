@@ -19,6 +19,11 @@
     <script src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js"></script>
     <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
+    <link rel="stylesheet" href="//cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <style>
 
         #update-modal .modal-dialog {
@@ -94,6 +99,7 @@
 
         .vresize {
             resize: vertical;
+            min-height: 200px;
         }
 
         .form-element {
@@ -105,6 +111,16 @@
         }
 
 
+    </style>
+    <style>
+        .wmd-button > span {
+            background-image: url('//cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
+            background-repeat: no-repeat;
+            background-position: 0px 0px;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -197,11 +213,19 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <%--TODO responsive this part--%>
                                             <div class="col-sm-offset-2 col-sm-10">
-                                                <textarea id="post_content"
-                                                          class="form-control vresize"
-                                                          name="content" required></textarea>
+                                                <div id="wmd-button-bar"></div>
+                                                <textarea id="wmd-input" class="wmd-input form-control vresize"
+                                                          name="content"
+                                                          required></textarea>
+                                                <%--<div id="wmd-preview" class="wmd-panel wmd-preview"></div>--%>
                                             </div>
+                                            <%--<div class="col-sm-offset-2 col-sm-10">--%>
+                                            <%--<textarea id="post_content"--%>
+                                            <%--class="form-control vresize"--%>
+                                            <%--name="content" required></textarea>--%>
+                                            <%--</div>--%>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label col-sm-2"
@@ -499,10 +523,10 @@
     });
 
 </script>
-<style>
-    .twitter-typeahead, .tt-hint, .tt-input, .tt-menu {
-        width: 100%;
-    }
-</style>
+<script>
+    var converter = Markdown.getSanitizingConverter();
+    var editor = new Markdown.Editor(converter);
+    editor.run();
+</script>
 </body>
 </html>
