@@ -11,6 +11,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <jsp:include page="bootstrapNavigation.jsp"/>
+    <link rel="stylesheet" href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/tokenfield-typeahead.css"/>
+    <link rel="stylesheet" href="http://sliptree.github.io/bootstrap-tokenfield/dist/css/bootstrap-tokenfield.css"/>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="http://sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js"></script>
+    <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
     <style>
 
         #update-modal .modal-dialog {
@@ -89,14 +97,18 @@
         }
 
         .form-element {
-            margin-top: 10px;
+            margin-top: 10px !important;
         }
+
+        .form-element {
+            margin-bottom: 10px !important;
+        }
+
+
     </style>
     <title>MemoryLeak</title>
 </head>
 <body>
-
-<jsp:include page="bootstrapNavigation.jsp"/>
 
 <div class="container text-center">
     <div class="row">
@@ -176,15 +188,35 @@
                             </div>
                             <div id="collapse1" class="panel-collapse collapse">
                                 <div class="panel-body">
-                                    <form id="new-post-form" action="/makePost" method="POST">
-                                        <div class="form-body">
-                                            <input id="post_title" class="form-control form-element" type="text"
-                                                   name="title"
-                                                   placeholder="Title">
-                                            <textarea id="post_content" class="form-control form-element vresize"
-                                                      name="content"
-                                                      placeholder="Content"></textarea>
+                                    <form id="new-post-form" action="/makePost" method="POST" class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2" for="post_title">Title:</label>
+                                            <div class="col-sm-10">
+                                                <input id="post_title" class="form-control " type="text"
+                                                       name="title" required>
+                                            </div>
                                         </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <textarea id="post_content"
+                                                          class="form-control vresize"
+                                                          name="content" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2"
+                                                   for="tokenfield-typeahead">Tags:</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="tokenfield-typeahead"
+                                                       name="tags"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-1">
+                                                <input type="submit" class="btn btn-primary" value="Ask"/>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     </form>
                                 </div>
                             </div>
@@ -367,77 +399,110 @@
     </div>
 </div>
 <script>
+    $(document).ready(function () {
+        $(function () {
+            var $formUpdate = $('#update-form');
+            var $formUpload = $('#upload-form');
+            var $formLink = $('#link-form');
+            var $divForms = $('#div-forms-user');
+            var $modalAnimateTime = 300;
+            var $msgAnimateTime = 150;
+            var $msgShowTime = 2000;
+            if ("${modalUpdate}") {
+                if ("${uploadFailure}")
+                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${uploadFailure}");
+                if ("${uploadSuccess}")
+                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${uploadSuccess}");
+                if ("${updateFailure}")
+                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${updateFailure}");
+                if ("${updateSuccess}")
+                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${updateSuccess}");
+                $("#update-modal").modal('show');
+            }
+            $('#update_upload_btn').click(function () {
+                modalAnimate($formUpdate, $formUpload)
+            });
+            $('#update_link_btn').click(function () {
+                modalAnimate($formUpdate, $formLink);
+            });
+            $('#upload_update_btn').click(function () {
+                modalAnimate($formUpload, $formUpdate)
+            });
+            $('#upload_link_btn').click(function () {
+                modalAnimate($formUpload, $formLink)
+            });
+            $('#link_update_btn').click(function () {
+                modalAnimate($formLink, $formUpdate)
+            });
+            $('#link_upload_btn').click(function () {
+                modalAnimate($formLink, $formUpload)
+            });
 
-    $(function () {
-        var $formUpdate = $('#update-form');
-        var $formUpload = $('#upload-form');
-        var $formLink = $('#link-form');
-        var $divForms = $('#div-forms-user');
-        var $modalAnimateTime = 300;
-        var $msgAnimateTime = 150;
-        var $msgShowTime = 2000;
-        if ("${modalUpdate}") {
-            if ("${uploadFailure}")
-                msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${uploadFailure}");
-            if ("${uploadSuccess}")
-                msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${uploadSuccess}");
-            if ("${updateFailure}")
-                msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${updateFailure}");
-            if ("${updateSuccess}")
-                msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${updateSuccess}");
-            $("#update-modal").modal('show');
-        }
-        $('#update_upload_btn').click(function () {
-            modalAnimate($formUpdate, $formUpload)
-        });
-        $('#update_link_btn').click(function () {
-            modalAnimate($formUpdate, $formLink);
-        });
-        $('#upload_update_btn').click(function () {
-            modalAnimate($formUpload, $formUpdate)
-        });
-        $('#upload_link_btn').click(function () {
-            modalAnimate($formUpload, $formLink)
-        });
-        $('#link_update_btn').click(function () {
-            modalAnimate($formLink, $formUpdate)
-        });
-        $('#link_upload_btn').click(function () {
-            modalAnimate($formLink, $formUpload)
-        });
-
-        function modalAnimate($oldForm, $newForm) {
-            var $oldH = $oldForm.height();
-            var $newH = $newForm.height();
-            $divForms.css("height", $oldH);
-            $oldForm.fadeToggle($modalAnimateTime, function () {
-                $divForms.animate({height: $newH}, $modalAnimateTime, function () {
-                    $newForm.fadeToggle($modalAnimateTime);
+            function modalAnimate($oldForm, $newForm) {
+                var $oldH = $oldForm.height();
+                var $newH = $newForm.height();
+                $divForms.css("height", $oldH);
+                $oldForm.fadeToggle($modalAnimateTime, function () {
+                    $divForms.animate({height: $newH}, $modalAnimateTime, function () {
+                        $newForm.fadeToggle($modalAnimateTime);
+                    });
                 });
-            });
-        }
+            }
 
-        function msgFade($msgId, $msgText) {
-            $msgId.fadeOut($msgAnimateTime, function () {
-                $(this).text($msgText).fadeIn($msgAnimateTime);
-            });
-        }
+            function msgFade($msgId, $msgText) {
+                $msgId.fadeOut($msgAnimateTime, function () {
+                    $(this).text($msgText).fadeIn($msgAnimateTime);
+                });
+            }
 
-        function msgChange($divTag, $iconTag, $textTag, $divClass, $iconClass, $msgText) {
-            var $msgOld = $divTag.text();
-            msgFade($textTag, $msgText);
-            $divTag.addClass($divClass);
-            $iconTag.removeClass("glyphicon-chevron-right");
-            $iconTag.addClass($iconClass + " " + $divClass);
-            setTimeout(function () {
-                msgFade($textTag, $msgOld);
-                $divTag.removeClass($divClass);
-                $iconTag.addClass("glyphicon-chevron-right");
-                $iconTag.removeClass($iconClass + " " + $divClass);
-            }, $msgShowTime);
-        }
+            function msgChange($divTag, $iconTag, $textTag, $divClass, $iconClass, $msgText) {
+                var $msgOld = $divTag.text();
+                msgFade($textTag, $msgText);
+                $divTag.addClass($divClass);
+                $iconTag.removeClass("glyphicon-chevron-right");
+                $iconTag.addClass($iconClass + " " + $divClass);
+                setTimeout(function () {
+                    msgFade($textTag, $msgOld);
+                    $divTag.removeClass($divClass);
+                    $iconTag.addClass("glyphicon-chevron-right");
+                    $iconTag.removeClass($iconClass + " " + $divClass);
+                }, $msgShowTime);
+            }
+        });
     });
 </script>
+<script>
+    $(document).ready(function () {
+        var engine = new Bloodhound({
+            local: [{value: 'java'}, {value: 'c#'}, {value: 'c++'}, {value: 'python'}, {value: 'ruby'}, {value: 'html'}, {value: 'css'}, {value: 'javascript'}],
+            datumTokenizer: function (d) {
+                return Bloodhound.tokenizers.whitespace(d.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace
+        });
 
+        engine.initialize();
+
+        $('#tokenfield-typeahead').tokenfield({
+            typeahead: [null, {source: engine.ttAdapter()}],
+            createTokensOnBlur: true,
+            delimiter: [',', ' ']
+        });
+    });
+
+    $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
+        var existingTokens = $(this).tokenfield('getTokens');
+        $.each(existingTokens, function (index, token) {
+            if (token.value === event.attrs.value)
+                event.preventDefault();
+        });
+    });
+
+</script>
+<style>
+    .twitter-typeahead, .tt-hint, .tt-input, .tt-menu {
+        width: 100%;
+    }
+</style>
 </body>
 </html>
