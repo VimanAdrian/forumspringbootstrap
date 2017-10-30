@@ -66,6 +66,11 @@
           <element id="library" level="project" name="Maven: com.google.errorprone:error_prone_annotations:2.0.18" />
           <element id="library" level="project" name="Maven: com.google.j2objc:j2objc-annotations:1.1" />
           <element id="library" level="project" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" />
+          <element id="library" level="project" name="Maven: com.vladsch.flexmark:flexmark:0.27.0" />
+          <element id="library" level="project" name="Maven: com.vladsch.flexmark:flexmark-util:0.27.0" />
+          <element id="library" level="project" name="Maven: com.vladsch.flexmark:flexmark-ext-autolink:0.14.0" />
+          <element id="library" level="project" name="Maven: org.nibor.autolink:autolink:0.6.0" />
+          <element id="library" level="project" name="Maven: com.vladsch.flexmark:flexmark-formatter:0.14.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

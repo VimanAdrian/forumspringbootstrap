@@ -38,6 +38,7 @@ public class MainController {
     @Autowired
     private ReplyService replyService;
 
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView goToDefaultPage() {
         ModelAndView modelAndView = new ModelAndView();
@@ -54,7 +55,7 @@ public class MainController {
                 modelAndView.addObject("newAnswers", true);
                 modelAndView.addObject("answerList", list);
             }
-            if(topQuestions.size()>0){
+            if (topQuestions.size() > 0) {
                 Post[] list2 = topQuestions.toArray(new Post[0]);
                 modelAndView.addObject("topQuestions", true);
                 modelAndView.addObject("questionList", list2);
@@ -87,7 +88,7 @@ public class MainController {
                 model.addObject("newAnswers", true);
                 model.addObject("answerList", list);
             }
-            if(topQuestions.size()>0){
+            if (topQuestions.size() > 0) {
                 Post[] list2 = topQuestions.toArray(new Post[0]);
                 model.addObject("topQuestions", true);
                 model.addObject("questionList", list2);
@@ -139,7 +140,7 @@ public class MainController {
                 model.addObject("newAnswers", true);
                 model.addObject("answerList", list);
             }
-            if(topQuestions.size()>0){
+            if (topQuestions.size() > 0) {
                 Post[] list2 = topQuestions.toArray(new Post[0]);
                 model.addObject("topQuestions", true);
                 model.addObject("questionList", list2);

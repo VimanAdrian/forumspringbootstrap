@@ -14,6 +14,8 @@
 <head>
     <title>PostPage</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
     <script>
         $(document).ready(function () {
             $(document).on("click", "#editButton", function () {

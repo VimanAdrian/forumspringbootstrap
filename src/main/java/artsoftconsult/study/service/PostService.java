@@ -5,6 +5,7 @@ import artsoftconsult.study.model.Post;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.implementation.PostRepository;
 import artsoftconsult.study.repository.implementation.UserRepository;
+import artsoftconsult.study.utils.MyAttributeProvider;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.PostValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +102,10 @@ public class PostService {
     public Post find(String postID, User currentUser, String page) {
         postRepository.markNotNew(postID, userRepository.findByUsername(currentUser.getUsername()));
         postRepository.incrementView(Integer.valueOf(postID));
-        return postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
+        Post p = postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
+        String html = MyAttributeProvider.commonMark(p.getContent());
+        p.setContent(html);
+        return p;
     }
 
     public Post[] searchByUser(String userID, String page, boolean disabled) {
