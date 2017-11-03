@@ -22,7 +22,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
-    <link rel="stylesheet" href="//cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <style>
 
@@ -114,7 +114,7 @@
     </style>
     <style>
         .wmd-button > span {
-            background-image: url('//cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
+            background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
             background-repeat: no-repeat;
             background-position: 0px 0px;
             width: 20px;
@@ -126,7 +126,7 @@
 </head>
 <body>
 
-<div class="container text-center">
+<div class="container text-center" id="mainContent">
     <div class="row">
         <div class="col-sm-3 well">
             <sec:authorize access="isAuthenticated()">
@@ -217,8 +217,7 @@
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <div id="wmd-button-bar"></div>
                                                 <textarea id="wmd-input" class="wmd-input form-control vresize"
-                                                          name="content"
-                                                          required></textarea>
+                                                          name="content" required></textarea>
                                                 <%--<div id="wmd-preview" class="wmd-panel wmd-preview"></div>--%>
                                             </div>
                                             <%--<div class="col-sm-offset-2 col-sm-10">--%>
@@ -524,9 +523,11 @@
 
 </script>
 <script>
-    var converter = Markdown.getSanitizingConverter();
-    var editor = new Markdown.Editor(converter);
-    editor.run();
+    $(document).ready(function () {
+        var converter = Markdown.getSanitizingConverter();
+        var editor = new Markdown.Editor(converter);
+        editor.run();
+    })
 </script>
 </body>
 </html>

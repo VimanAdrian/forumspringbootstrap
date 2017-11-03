@@ -162,7 +162,7 @@
         }
 
         @media screen and (min-width: 1024px) {
-            #register_gender{
+            #register_gender {
                 overflow: hidden;
             }
 
@@ -317,7 +317,8 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="http://localhost:8080/post?disabled=on&search&browse&page=0">Disabled questions</a>
+                        <li><a href="http://localhost:8080/post?disabled=on&search&browse&page=0">Disabled
+                            questions</a>
                         </li>
                         <li><a href="http://localhost:8080/admin/users?page=0">Users</a></li>
                     </ul>
@@ -559,6 +560,33 @@
 </script>
 <!-- End Modal -->
 <jsp:include page="bootstrapFooter.jsp"/>
+<script>
+    $(document).ready(function () {
+        var $window = $(window);
+        var $container = $('#mainContent');
+        var $brand = $('.navbar-brand');
+        var $search = $("#searchForm");
 
+        function checkWidth() {
+            var windowsize = $window.width();
+            if (windowsize > 1025) {
+                var margr = parseInt($container.css("marginLeft"));
+                var margl = margr - 30;
+                $brand.css("marginLeft", margl);
+                $search.css("marginRight", margl);
+            }
+            if (windowsize < 1025) {
+                $brand.css("marginLeft", -15);
+                $search.css("marginRight", -15);
+            }
+            if (windowsize < 768) {
+                $brand.css("marginLeft", 0);
+            }
+        }
+
+        checkWidth();
+        $(window).resize(checkWidth);
+    });
+</script>
 </body>
 </html>
