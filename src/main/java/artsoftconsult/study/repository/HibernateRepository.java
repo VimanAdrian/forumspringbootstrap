@@ -1,15 +1,8 @@
 package artsoftconsult.study.repository;
 
-import artsoftconsult.study.model.Post;
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.dbUtils.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.util.List;
 
 @Repository
 public abstract class HibernateRepository {
@@ -71,20 +64,4 @@ public abstract class HibernateRepository {
         }
     }
 
-
-    public void joinulLuiStefii() {
-        Transaction tx = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            tx = session.beginTransaction();
-            String hql = "SELECT user.username FROM User user JOIN HibernateUti uti ON uti.user.userId=user.userId WHERE uti.isEnabled=1";
-            Query query = session.createQuery(hql);
-            List result = query.list();
-            tx.commit();
-            System.out.println(result);
-        } catch (Exception e) {
-            tx.rollback();
-            System.out.println(e.getMessage());
-        }
-    }
 }

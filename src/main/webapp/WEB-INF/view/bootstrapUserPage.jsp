@@ -191,62 +191,6 @@
             </sec:authorize>
         </div>
         <div class="col-sm-7">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="panel-group">
-                        <div class="panel panel-default">
-                            <div class="panel-heading panel-heading-ask">
-                                <h4 class="panel-title well panel-title-ask">
-                                    <a data-toggle="collapse" href="#collapse1">
-                                        <div id="icon-post-msg" class="glyphicon glyphicon-chevron-down"></div>
-                                        <span id="text-post-msg">Ask a question.</span></a>
-                                </h4>
-                            </div>
-                            <div id="collapse1" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <form id="new-post-form" action="/makePost" method="POST" class="form-horizontal">
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-2" for="post_title">Title:</label>
-                                            <div class="col-sm-10">
-                                                <input id="post_title" class="form-control " type="text"
-                                                       name="title" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <%--TODO responsive this part--%>
-                                            <div class="col-sm-offset-2 col-sm-10">
-                                                <div id="wmd-button-bar"></div>
-                                                <textarea id="wmd-input" class="wmd-input form-control vresize"
-                                                          name="content" required></textarea>
-                                                <%--<div id="wmd-preview" class="wmd-panel wmd-preview"></div>--%>
-                                            </div>
-                                            <%--<div class="col-sm-offset-2 col-sm-10">--%>
-                                            <%--<textarea id="post_content"--%>
-                                            <%--class="form-control vresize"--%>
-                                            <%--name="content" required></textarea>--%>
-                                            <%--</div>--%>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-2"
-                                                   for="tokenfield-typeahead">Tags:</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="tokenfield-typeahead"
-                                                       name="tags"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-2 col-sm-1">
-                                                <input type="submit" class="btn btn-primary" value="Ask"/>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-sm-3">
