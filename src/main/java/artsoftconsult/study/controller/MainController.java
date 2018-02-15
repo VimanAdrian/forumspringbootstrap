@@ -192,14 +192,14 @@ public class MainController {
         modelAndView.addObject("userList", userService.getUserList(page));
         modelAndView.addObject("url", "/admin/users?page=");
         modelAndView.addObject("nrPagini", userService.getUserListNext());
-        modelAndView.setViewName("adminUsers");
+        modelAndView.setViewName("deprecated/adminUsers");
         return modelAndView;
     }
 
     @RequestMapping(value = "/admin/posts", method = RequestMethod.GET)
     public ModelAndView goToAdminPostsPage() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("postSearchResults");
+        modelAndView.setViewName("deprecated/postSearchResults");
         return modelAndView;
     }
 
@@ -217,7 +217,7 @@ public class MainController {
         ModelAndView model = new ModelAndView();
         if (error != null) {
             model.addObject("error", "Something went wrong...");
-            model.setViewName("postForm");
+            model.setViewName("bootstrapQuestionPage");
             return model;
         }
         if (postID != null) {
@@ -237,7 +237,7 @@ public class MainController {
             model.addObject("nrPagini", nrPagini);
             model.addObject("post", post);
             model.addObject("voteType", postService.voteTypesAvailable(Integer.valueOf(postID), userService.find(user.getUsername()).getUserId()));
-            model.setViewName("postPage");
+            model.setViewName("bootstrapQuestionPage");
             return model;
         }
         if (search != null) {
@@ -277,12 +277,12 @@ public class MainController {
             model.addObject("url", url);
             model.addObject("nrPagini", nrPagini);
             model.addObject("searchResults", list);
-            model.setViewName("postSearchResults");
+            model.setViewName("deprecated/postSearchResults");
             model.addObject("categoryList", categoryService.getAllCategories());
             model.addObject("searchParam", search);
             return model;
         }
-        model.setViewName("index");
+        model.setViewName("deprecated/index");
         return model;
     }
 
@@ -296,7 +296,7 @@ public class MainController {
             UserDetails userDetail = (UserDetails) auth.getPrincipal();
             model.addObject("username", userDetail.getUsername());
         }
-        model.setViewName("403");
+        model.setViewName("deprecated/403");
         return model;
     }
 
@@ -328,7 +328,7 @@ public class MainController {
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public ModelAndView goToAccount(@RequestParam(value = "username", required = false) String username) {
         ModelAndView model = new ModelAndView();
-        model.setViewName("accountPage");
+        model.setViewName("deprecated/accountPage");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (username == null) {
             if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -358,15 +358,15 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView();
         if (retryToken == null) {
             if (userService.useToken(token, Integer.valueOf(id))) {
-                modelAndView.setViewName("login");
+                modelAndView.setViewName("deprecated/login");
                 modelAndView.addObject("msg", "Account activated successfully");
             } else {
-                modelAndView.setViewName("accountActivate");
+                modelAndView.setViewName("deprecated/accountActivate");
                 modelAndView.addObject("succes", false);
             }
             return modelAndView;
         } else {
-            modelAndView.setViewName("accountActivate");
+            modelAndView.setViewName("deprecated/accountActivate");
             modelAndView.addObject("succes", true);
             User user = new User();
             user.setUserId(Integer.valueOf(id));
@@ -384,11 +384,11 @@ public class MainController {
                                       @RequestParam(value = "userId", required = true) String id) {
         ModelAndView modelAndView = new ModelAndView();
         if (userService.usePasswordReset(token, Integer.valueOf(id))) {
-            modelAndView.setViewName("accountResetPassword");
+            modelAndView.setViewName("deprecated/accountResetPassword");
             modelAndView.addObject("userID", id);
             return modelAndView;
         } else {
-            modelAndView.setViewName("accountForgotPassword");
+            modelAndView.setViewName("deprecated/accountForgotPassword");
             modelAndView.addObject("error", "There was a problem with your token. Please try again.");
             return modelAndView;
         }
@@ -397,7 +397,7 @@ public class MainController {
     @RequestMapping(value = "forgotPassword", method = RequestMethod.GET)
     public ModelAndView goToForgotPassword() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("accountForgotPassword");
+        modelAndView.setViewName("deprecated/accountForgotPassword");
         return modelAndView;
     }
 

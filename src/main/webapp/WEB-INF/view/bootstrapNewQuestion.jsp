@@ -1,5 +1,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   Created by IntelliJ IDEA.
   User: viorelv
@@ -7,115 +8,26 @@
   Time: 11:07 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <jsp:include page="bootstrapNavigation.jsp"/>
+    <%--default--%>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
+    <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
+    <%--extra--%>
+    <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
     <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-    <link href="resources/css/jquery.flexdatalist.css" rel="stylesheet">
     <script src="resources/javascript/jquery.flexdatalist.js"></script>
-    <style>
-
-        #update-modal .modal-dialog {
-            width: 350px;
-        }
-
-        #update-modal input[type=text], input[type=password] {
-            margin-top: 10px;
-        }
-
-        #div-update-msg {
-            border: 1px solid #dadfe1;
-            height: 30px;
-            line-height: 28px;
-            transition: all ease-in-out 500ms;
-        }
-
-        #div-update-msg.success {
-            border: 1px solid #68c3a3;
-            background-color: #c8f7c5;
-        }
-
-        #div-update-msg.error {
-            border: 1px solid #eb575b;
-            background-color: #ffcad1;
-        }
-
-        #update_gender {
-            margin-top: 10px;
-        }
-
-        .update_option {
-            max-width: 318px;
-            overflow: hidden;
-        }
-
-        @media screen and (min-width: 1024px) {
-            #update_gender {
-                overflow: hidden;
-            }
-
-            .update_option {
-                width: 318px !important;
-                max-width: 318px;
-                overflow: hidden;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            #update-modal .modal-dialog {
-                width: 95%;
-            }
-        }
-
-        .well {
-            background-color: #B0BEC5 !important;
-        }
-
-        .well-top {
-            background-color: #CFD8DC !important;
-        }
-
-        .panel-title-ask {
-            margin-bottom: 0 !important;
-        }
-
-        .panel-heading-ask {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-
-        .vresize {
-            resize: vertical;
-            min-height: 200px;
-        }
-
-        .form-element {
-            margin-top: 10px !important;
-        }
-
-        .form-element {
-            margin-bottom: 10px !important;
-        }
-
-        #wmd-preview * {
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-    </style>
+    <link href="resources/css/jquery.flexdatalist.css" rel="stylesheet">
     <style>
         .wmd-button > span {
             background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
@@ -125,78 +37,28 @@
             height: 20px;
             display: inline-block;
         }
+
+        #wmd-preview * {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .vresize {
+            resize: vertical;
+            min-height: 200px;
+        }
+
     </style>
     <title>MemoryLeak</title>
 </head>
 <body>
-
+<jsp:include page="bootstrapNavigationTopBottom.jsp"/>
 <div class="container text-center" id="mainContent">
     <div class="row">
-        <div class="col-sm-3 well">
-            <sec:authorize access="isAuthenticated()">
-                <div class="well well-top">
-                    <p><a href="http://localhost:8080/account?username=${user.username}">${user.username}</a></p>
-                    <img src="${user.profileImage}" class="img-circle" height="65"
-                         width="65" alt="Avatar">
-                </div>
-                <div class="well well-top">
-                    <c:if test="${user.username == pageContext.request.userPrincipal.name}">
-                        <p>
-                            <a href="#" class="" role="button" data-toggle="modal" data-target="#update-modal">
-                                <span class="glyphicons glyphicons-edit"></span> Update</a>
-                        </p>
-                    </c:if>
-                    <c:if test="${user.admin==true}">ADMIN</c:if>
-                    <c:if test="${user.firstNameForUpdate!=null}">
-                        <p>First name: ${user.firstName}</p>
-                    </c:if>
-                    <c:if test="${user.lastNameForUpdate!=null}">
-                        <p>Last name: ${user.lastName}</p>
-                    </c:if>
-                    <p>Email: ${user.email}</p>
-                    <p>Member since: ${user.memberSince}</p>
-                </div>
-                <c:if test="${newAnswers==true}">
-                    <div class="alert alert-success fade in">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-                        <p><strong>You have new answers!</strong></p>
-                        <c:forEach var="post" items="${answerList}" varStatus="loop">
-                            <p><a href="/post?postID=${post.postId}&page=0">${post.title}</a></p>
-                        </c:forEach>
-                    </div>
-                </c:if>
-                <div class="well well-top">
-                    <c:if test="${topQuestions==true}">
-                        <p>Your top questions.</p>
-                        <c:forEach var="post" items="${questionList}" varStatus="loop">
-                            <p><a href="/post?postID=${post.postId}&page=0">${post.title}
-                                <span class="badge">${post.score}</span></a></p>
-                        </c:forEach>
-                    </c:if>
-                    <c:if test="${topQuestions==false}">
-                        <p>
-                            It seems you don't have any questions.
-                            <br>
-                            You can ask one <a href="#">here</a>!
-                        </p>
-                    </c:if>
-                </div>
-            </sec:authorize>
-            <sec:authorize access="isAnonymous()">
-                <div class="well">
-                    <p>ADS</p>
-                </div>
-                <div class="well">
-                    <p>ADS</p>
-                </div>
-                <div class="well">
-                    <p>ADS</p>
-                </div>
-            </sec:authorize>
-        </div>
-
+        <jsp:include page="bootstrapNavigationLeft.jsp"/>
         <%-- NEW QUESTION FORM --%>
-        <div class="col-sm-7">
+        <div class="col-sm-9">
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
@@ -515,123 +377,7 @@
             </div>
             <div class="col-sm-1"></div>
         </div>
-
-        <div class="col-sm-2 well">
-            <div class="well">
-                <p>ADS</p>
-            </div>
-            <div class="well">
-                <p>ADS</p>
-            </div>
-            <div class="well">
-                <p>ADS</p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="update-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true"
-     style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" align="center">
-                <img class="img-circle" id="img_logo" src="/resources/images/logo4-alt.png">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
-            </div>
-
-            <!-- Begin # DIV Form -->
-            <div id="div-forms-user">
-
-                <!-- Begin | Update Form -->
-                <form id="update-form" action="/update" method="POST">
-                    <div class="modal-body">
-                        <div id="div-update-msg">
-                            <div id="icon-update-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-update-msg">Update your account.</span>
-                        </div>
-                        <input id="update_firstName" class="form-control" type="text" name="firstName"
-                               placeholder="${user.firstName}">
-                        <input id="update_lastName" class="form-control" type="text" name="lastName"
-                               placeholder="${user.lastName}">
-                        <select id="update_gender" class="form-control" name="gender">
-                            <option value="male" class="form-control update_option"
-                                    <c:if test="${user.gender=='male'}">selected</c:if>>Male
-                            </option>
-                            <option value="female" class="form-control update_option"
-                                    <c:if test="${user.gender=='female'}">selected</c:if>>Female
-                            </option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Update">
-                        </div>
-                        <div>
-                            <button id="update_reset_btn" type="button" class="btn btn-link">Reset password</button>
-                            <button id="update_upload_btn" type="button" class="btn btn-link">Upload</button>
-                            <button id="update_link_btn" type="button" class="btn btn-link">Link a picture</button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!-- End | Update Form -->
-
-                <!-- Begin | Upload Form -->
-                <form id="upload-form" action="/uploadOneFile" style="display:none;" method="POST"
-                      enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div id="div-upload-msg">
-                            <div id="icon-upload-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-upload-msg">Upload new profile picture.</span>
-                        </div>
-                        <input id="upload_file" class="form-control" type="file" name="file" required>
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Upload">
-                        </div>
-                        <div>
-                            <button id="upload_reset_btn" type="button" class="btn btn-link">Reset password</button>
-                            <button id="upload_update_btn" type="button" class="btn btn-link">Update</button>
-                            <button id="upload_link_btn" type="button" class="btn btn-link">Link a picture</button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!--End | Upload Form -->
-
-                <!-- Begin | Link Form -->
-                <form id="link-form" action="/update" style="display:none;" method="POST"
-                      enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div id="div-link-msg">
-                            <div id="icon-link-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-link-msg">Link a new profile picture.</span>
-                        </div>
-                        <input id="link_file" class="form-control" type="text" name="profileImage"
-                               placeholder="${user.profileImage}">
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Update">
-                        </div>
-                        <div>
-                            <button id="link_reset_btn" type="button" class="btn btn-link">Reset password</button>
-                            <button id="link_update_btn" type="button" class="btn btn-link">Update</button>
-                            <button id="link_upload_btn" type="button" class="btn btn-link">Upload</button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!--End | Link Form -->
-
-            </div>
-            <!-- End # DIV Form -->
-
-        </div>
+        <%--<jsp:include page="bootstrapNavigationRight.jsp"/>--%>
     </div>
 </div>
 <script>

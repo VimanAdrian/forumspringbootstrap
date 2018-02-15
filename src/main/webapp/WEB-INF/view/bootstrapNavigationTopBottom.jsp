@@ -1,302 +1,192 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: viorelv
-  Date: 09-Oct-17
-  Time: 10:25 AM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<style>
 
-        @import url(http://fonts.googleapis.com/css?family=Roboto);
+    @import url(http://fonts.googleapis.com/css?family=Roboto);
 
-        * {
-            font-family: 'Roboto', sans-serif;
-        }
+    * {
+        font-family: 'Roboto', sans-serif;
+    }
 
-        #login-modal .modal-dialog {
-            width: 350px;
-        }
+    #login-modal .modal-dialog {
+        width: 350px;
+    }
 
-        #login-modal input[type=text], input[type=password] {
-            margin-top: 10px;
-        }
+    #login-modal input[type=text], input[type=password] {
+        margin-top: 10px;
+    }
 
-        #div-login-msg,
-        #div-lost-msg,
-        #div-register-msg {
-            border: 1px solid #dadfe1;
-            height: 30px;
-            line-height: 28px;
-            transition: all ease-in-out 500ms;
-        }
+    #div-login-msg,
+    #div-lost-msg,
+    #div-register-msg {
+        border: 1px solid #dadfe1;
+        height: 30px;
+        line-height: 28px;
+        transition: all ease-in-out 500ms;
+    }
 
-        #div-login-msg.success,
-        #div-lost-msg.success,
-        #div-register-msg.success {
-            border: 1px solid #68c3a3;
-            background-color: #c8f7c5;
-        }
+    #div-login-msg.success,
+    #div-lost-msg.success,
+    #div-register-msg.success {
+        border: 1px solid #68c3a3;
+        background-color: #c8f7c5;
+    }
 
-        #div-login-msg.error,
-        #div-lost-msg.error,
-        #div-register-msg.error {
-            border: 1px solid #eb575b;
-            background-color: #ffcad1;
-        }
+    #div-login-msg.error,
+    #div-lost-msg.error,
+    #div-register-msg.error {
+        border: 1px solid #eb575b;
+        background-color: #ffcad1;
+    }
 
-        #icon-login-msg,
-        #icon-lost-msg,
-        #icon-register-msg {
-            width: 30px;
-            float: left;
-            line-height: 28px;
-            text-align: center;
-            background-color: #dadfe1;
-            margin-right: 5px;
-            transition: all ease-in-out 500ms;
-        }
+    #icon-login-msg,
+    #icon-lost-msg,
+    #icon-register-msg {
+        width: 30px;
+        float: left;
+        line-height: 28px;
+        text-align: center;
+        background-color: #dadfe1;
+        margin-right: 5px;
+        transition: all ease-in-out 500ms;
+    }
 
-        #icon-login-msg.success,
-        #icon-lost-msg.success,
-        #icon-register-msg.success {
-            background-color: #68c3a3 !important;
-        }
+    #icon-login-msg.success,
+    #icon-lost-msg.success,
+    #icon-register-msg.success {
+        background-color: #68c3a3 !important;
+    }
 
-        #icon-login-msg.error,
-        #icon-lost-msg.error,
-        #icon-register-msg.error {
-            background-color: #eb575b !important;
-        }
+    #icon-login-msg.error,
+    #icon-lost-msg.error,
+    #icon-register-msg.error {
+        background-color: #eb575b !important;
+    }
 
-        #img_logo {
-            max-height: 100px;
-            max-width: 100px;
-        }
+    #img_logo {
+        max-height: 100px;
+        max-width: 100px;
+        border-radius: 0px;
+    }
 
-        .modal-backdrop.in {
-            filter: alpha(opacity=50);
-            opacity: .8;
-        }
+    .modal-backdrop.in {
+        filter: alpha(opacity=50);
+        opacity: .8;
+    }
 
-        .modal-content {
-            background-color: #ececec;
-            border: 1px solid #bdc3c7;
-            border-radius: 0px;
-            outline: 0;
-        }
+    .modal-content {
+        background-color: white;
+        border: 1px solid white;
+        border-radius: 0px;
+        outline: 0;
+    }
 
-        .modal-header {
-            min-height: 16.43px;
-            padding: 15px 15px 15px 15px;
-            border-bottom: 0px;
-        }
+    .modal-header {
+        min-height: 16.43px;
+        padding: 15px 15px 15px 15px;
+        border-bottom: 0px;
+    }
 
-        .modal-body {
-            position: relative;
-            padding: 5px 15px 5px 15px;
-        }
+    .modal-body {
+        position: relative;
+        padding: 5px 15px 5px 15px;
+    }
 
-        .modal-footer {
-            padding: 15px 15px 15px 15px;
-            text-align: left;
-            border-top: 0px;
-        }
+    .modal-footer {
+        padding: 15px 15px 15px 15px;
+        text-align: left;
+        border-top: 0px;
+    }
 
-        .checkbox {
-            margin-bottom: 0px;
-        }
+    .checkbox {
+        margin-bottom: 0px;
+    }
 
-        .btn {
-            border-radius: 0px;
-        }
+    .btn {
+        border-radius: 0px;
+    }
 
-        .btn:focus,
-        .btn:active:focus,
-        .btn.active:focus,
-        .btn.focus,
-        .btn:active.focus,
-        .btn.active.focus {
-            outline: none;
-        }
+    .btn:focus,
+    .btn:active:focus,
+    .btn.active:focus,
+    .btn.focus,
+    .btn:active.focus,
+    .btn.active.focus {
+        outline: none;
+    }
 
-        .btn-lg, .btn-group-lg > .btn {
-            border-radius: 0px;
-        }
+    .btn-lg, .btn-group-lg > .btn {
+        border-radius: 0px;
+    }
 
-        .btn-link {
-            padding: 5px 10px 0px 0px;
-            color: #95a5a6;
-        }
+    .btn-link {
+        padding: 5px 10px 0px 0px;
+        color: #95a5a6;
+    }
 
-        .btn-link:hover, .btn-link:focus {
-            color: #2c3e50;
-            text-decoration: none;
-        }
+    .btn-link:hover, .btn-link:focus {
+        color: #2c3e50;
+        text-decoration: none;
+    }
 
-        .glyphicon {
-            top: 0px;
-        }
+    .glyphicon {
+        top: 0px;
+    }
 
-        .form-control {
-            border-radius: 0px;
-        }
+    .form-control {
+        border-radius: 0px;
+    }
 
+    #register_gender {
+        margin-top: 10px;
+    }
+
+    .register_option {
+        max-width: 318px;
+        overflow: hidden;
+    }
+
+    @media screen and (min-width: 1024px) {
         #register_gender {
-            margin-top: 10px;
-        }
-
-        .register_option {
-            max-width: 318px;
             overflow: hidden;
         }
 
-        @media screen and (min-width: 1024px) {
-            #register_gender {
-                overflow: hidden;
-            }
-
-            .register_option {
-                width: 318px !important;
-                max-width: 318px;
-                overflow: hidden;
-            }
+        .register_option {
+            width: 318px !important;
+            max-width: 318px;
+            overflow: hidden;
         }
+    }
 
-        @media screen and (max-width: 480px) {
-            #login-modal .modal-dialog {
-                width: 95%;
-            }
+    @media screen and (max-width: 480px) {
+        #login-modal .modal-dialog {
+            width: 95%;
         }
+    }
 
-        .navbar-default {
-            background-color: #607d8b;
-            border-color: #78909c;
-        }
+    .panel-footer {
+        background-color: #FFFFFF;
+    }
 
-        .navbar-default .navbar-brand {
-            color: #eceff1;
-        }
+    .footer {
+        background-color: #FFFFFF;
+    }
 
-        .navbar-default .navbar-brand:hover,
-        .navbar-default .navbar-brand:focus {
-            color: #cfd8dc;
-        }
+    .navbar-brand {
+        background-image: url("/resources/images/logo-only.png");
+        background-repeat: no-repeat;
+        background-size: contain; /* Make the image cover the td */
+        background-position: 50%; /* Center the image inside the td */
+        height: 60px;
+        width: 100px;
+    }
 
-        .navbar-default .navbar-text {
-            color: #eceff1;
-        }
+    .well {
+        border-radius: 0px;
+    }
 
-        .navbar-default .navbar-nav > li > a {
-            color: #eceff1;
-        }
-
-        .navbar-default .navbar-nav > li > a:hover,
-        .navbar-default .navbar-nav > li > a:focus {
-            color: #cfd8dc;
-        }
-
-        .navbar-default .navbar-nav > li > .dropdown-menu {
-            background-color: #607d8b;
-        }
-
-        .navbar-default .navbar-nav > li > .dropdown-menu > li > a {
-            color: #eceff1;
-        }
-
-        .navbar-default .navbar-nav > li > .dropdown-menu > li > a:hover,
-        .navbar-default .navbar-nav > li > .dropdown-menu > li > a:focus {
-            color: #cfd8dc;
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-nav > li > .dropdown-menu > li.divider {
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-        .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-        .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-            color: #cfd8dc;
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-nav > .active > a,
-        .navbar-default .navbar-nav > .active > a:hover,
-        .navbar-default .navbar-nav > .active > a:focus {
-            color: #cfd8dc;
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-nav > .open > a,
-        .navbar-default .navbar-nav > .open > a:hover,
-        .navbar-default .navbar-nav > .open > a:focus {
-            color: #cfd8dc;
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-toggle {
-            border-color: #78909c;
-        }
-
-        .navbar-default .navbar-toggle:hover,
-        .navbar-default .navbar-toggle:focus {
-            background-color: #78909c;
-        }
-
-        .navbar-default .navbar-toggle .icon-bar {
-            background-color: #eceff1;
-        }
-
-        .navbar-default .navbar-collapse,
-        .navbar-default .navbar-form {
-            border-color: #eceff1;
-        }
-
-        .navbar-default .navbar-link {
-            color: #eceff1;
-        }
-
-        .navbar-default .navbar-link:hover {
-            color: #cfd8dc;
-        }
-
-        @media (max-width: 767px) {
-            .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-                color: #eceff1;
-            }
-
-            .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-            .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-                color: #cfd8dc;
-            }
-
-            .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-            .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-                color: #cfd8dc;
-                background-color: #78909c;
-            }
-        }
-
-        .modal .modal-content {
-            background-color: #FFFFFF;
-        }
-    </style>
-    <title>Navigation</title>
-</head>
-<body>
-<!-- TopNavigation navbar navbar-inverse -->
+</style>
 <nav class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -305,7 +195,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">MemoryLeak</a>
+            <a class="navbar-brand" href="#"></a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-left">
@@ -364,14 +254,13 @@
     </div>
 </nav>
 <!-- END TopNavigation -->
-
 <!-- Modal -->
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" align="center">
-                <img class="img-circle" id="img_logo" src="/resources/images/logo4-alt.png">
+                <img class="img-circle" id="img_logo" src="/resources/images/logo-only.png">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
@@ -379,7 +268,6 @@
 
             <!-- Begin # DIV Form -->
             <div id="div-forms">
-
                 <!-- Begin # Login Form -->
                 <form id="login-form" action="/login_check" method="POST">
                     <div class="modal-body">
@@ -409,7 +297,6 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
                 <!-- End # Login Form -->
-
                 <!-- Begin | Lost Password Form -->
                 <form id="lost-form" style="display:none;" action="/forgotPassword" method="POST">
                     <div class="modal-body">
@@ -432,7 +319,6 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
                 <!-- End | Lost Password Form -->
-
                 <!-- Begin | Register Form -->
                 <form id="register-form" style="display:none;" action="/register" method="POST">
                     <div class="modal-body">
@@ -471,15 +357,18 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
                 <!-- End | Register Form -->
-
             </div>
             <!-- End # DIV Form -->
-
         </div>
     </div>
 </div>
+<!-- End Modal -->
+<!-- Footer -->
+<footer class="container-fluid text-center panel-footer footer navbar-fixed-bottom">
+    <p>Footer Text</p>
+</footer>
+<!-- END Footer -->
 <script>
-
     $(function () {
         var $formLogin = $('#login-form');
         var $formLost = $('#lost-form');
@@ -558,15 +447,12 @@
         }
     });
 </script>
-<!-- End Modal -->
-<jsp:include page="bootstrapFooter.jsp"/>
 <script>
     $(document).ready(function () {
         var $window = $(window);
         var $container = $('#mainContent');
         var $brand = $('.navbar-brand');
         var $search = $("#searchForm");
-
         function checkWidth() {
             var windowsize = $window.width();
             if (windowsize > 1025) {
@@ -583,10 +469,7 @@
                 $brand.css("marginLeft", 0);
             }
         }
-
         checkWidth();
         $(window).resize(checkWidth);
     });
 </script>
-</body>
-</html>

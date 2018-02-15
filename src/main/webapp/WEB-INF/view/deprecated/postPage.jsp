@@ -339,7 +339,7 @@
                             </table>
                         </c:if>
                     </td>
-                    <td colspan="1" class="contentCol">${post.content}</td>
+                    <td colspan="1" class="contentCol"><c:out value="${post.content}"/></td>
                 </tr>
                 </tbody>
             </table>
