@@ -2,6 +2,7 @@ package artsoftconsult.study.service;
 
 import artsoftconsult.study.model.Category;
 import artsoftconsult.study.model.Post;
+import artsoftconsult.study.model.Reply;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.implementation.PostRepository;
 import artsoftconsult.study.repository.implementation.UserRepository;
@@ -104,7 +105,12 @@ public class PostService {
         postRepository.incrementView(Integer.valueOf(postID));
         Post p = postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
         String html = MyAttributeProvider.commonMark(p.getContent());
+        Reply[] replies = p.getReplies();
+        for (Reply re : replies) {
+            re.setContent(MyAttributeProvider.commonMark(re.getContent()));
+        }
         p.setContent(html);
+        p.setReplies(replies);
         return p;
     }
 

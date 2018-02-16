@@ -20,14 +20,13 @@
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
     <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
     <%--extra--%>
-    <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
     <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-    <script src="resources/javascript/jquery.flexdatalist.js"></script>
-    <link href="resources/css/jquery.flexdatalist.css" rel="stylesheet">
+        <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
+        <link href="${pageContext.request.contextPath}/resources/css/jquery.flexdatalist.css" rel="stylesheet">
     <style>
         .wmd-button > span {
             background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
@@ -42,6 +41,7 @@
             width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            text-align: left;
         }
 
         .vresize {
@@ -53,11 +53,36 @@
             text-align: left;
         }
 
+        .answer-content {
+            text-align: left;
+        }
+
+        .question-title {
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .gi-2x {
+            font-size: 2em;
+        }
+
+        .gi-3x {
+            font-size: 3em;
+        }
+
+        .gi-4x {
+            font-size: 4em;
+        }
+
+        .gi-5x {
+            font-size: 5em;
+        }
+
     </style>
     <title>MemoryLeak</title>
 </head>
 <body>
-<jsp:include page="bootstrapNavigationTopBottom.jsp"/>
+<jsp:include page="bootstrapNavigationTop.jsp"/>
 <div class="container text-center" id="mainContent">
     <div class="row">
         <jsp:include page="bootstrapNavigationLeft.jsp"/>
@@ -66,44 +91,76 @@
 
             <div class="row">
                 <div class="col-sm-12">
+                    <div class="question-title">
+                        ${post.title}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-11">
                     <div class="well question-content">
                         ${post.content}
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="well">
-                        <p>Bo</p>
-                        <img src="bandmember.jpg" class="img-circle" height="55" width="55" alt="Avatar">
-                    </div>
-                </div>
-                <div class="col-sm-9">
-                    <div class="well">
-                        <p>This is an answer.</p>
+                <div class="col-sm-1">
+                    <div class="">
+                        <p><span class="glyphicon glyphicon-triangle-top gi-2x" aria-hidden="true"></span></p>
+                        <p><span>${post.score}</span></p>
+                        <p><span class="glyphicon glyphicon-triangle-bottom gi-2x" aria-hidden="true"></span></p>
+                        <p><span class="glyphicon glyphicon-exclamation-sign gi-2x text-muted"
+                                 aria-hidden="true"></span></p>
                     </div>
                 </div>
             </div>
 
+            <c:forEach var="reply" items="${post.replies}">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="well">
+                            <p>${reply.user.username}</p>
+                            <img src="${reply.user.profileImage}" class="img-circle" height="55" width="55"
+                                 alt="Avatar">
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="well answer-content">
+                            <c:if test="${reply.enabled==0}">
+                                <p>This reply was marked as violating our comunity guidlines and has been disabled.</p>
+                            </c:if>
+                            <c:if test="${reply.enabled==1}">
+                                ${reply.content}
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="">
+                            <p><span class="glyphicon glyphicon-triangle-top gi-2x" aria-hidden="true"></span></p>
+                            <p><span>${post.score}</span></p>
+                            <p><span class="glyphicon glyphicon-triangle-bottom gi-2x" aria-hidden="true"></span></p>
+                            <p><span class="glyphicon glyphicon-exclamation-sign gi-2x text-muted"
+                                     aria-hidden="true"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+
             <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
+                <div class="col-sm-12">
                     <div class="alert alert-warning fade in">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                         <%--TODO change this --%>
                         Please read the rules before posting. bla bla
                     </div>
                 </div>
-                <div class="col-sm-1"></div>
             </div>
             <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
-                    <form id="new-post-form" action="/makeReply" method="POST" class="form-horizontal">
+                <div class="col-sm-12">
+                    <form id="new-post-form" action="${pageContext.request.contextPath}/makeReply" method="POST"
+                          class="form-horizontal">
                         <div class="form-group">
                             <%--TODO responsive this part--%>
-                            <div class="col-sm-offset-1 col-sm-11">
+                            <div class="col-sm-12">
                                 <div id="wmd-button-bar"></div>
                                 <textarea id="wmd-input" class="wmd-input form-control vresize"
                                           name="content" required></textarea>
@@ -115,12 +172,12 @@
                             <%--</div>--%>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-offset-1 col-sm-1">
+                            <div class="col-sm-1">
                                 <input type="submit" class="btn btn-primary" value="Ask"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-offset-1 col-sm-11">
+                            <div class="col-sm-12">
                                 <div id="wmd-preview" class="wmd-preview"></div>
                             </div>
                         </div>
@@ -128,7 +185,6 @@
                     </form>
                 </div>
             </div>
-            <div class="col-sm-1"></div>
         </div>
         <%--<jsp:include page="bootstrapNavigationRight.jsp"/>--%>
     </div>
@@ -208,111 +264,11 @@
 </script>
 <script>
     $(document).ready(function () {
-        var engine = new Bloodhound({
-            local: [{value: 'java'}, {value: 'c#'}, {value: 'c++'}, {value: 'python'}, {value: 'ruby'}, {value: 'html'}, {value: 'css'}, {value: 'javascript'}],
-            datumTokenizer: function (d) {
-                return Bloodhound.tokenizers.whitespace(d.value);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace
-        });
-
-        engine.initialize();
-
-        $('#tokenfield-typeahead').tokenfield({
-            typeahead: [null, {source: engine.ttAdapter()}],
-            createTokensOnBlur: true,
-            delimiter: [',', ' ']
-        });
-    });
-
-    $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
-        var existingTokens = $(this).tokenfield('getTokens');
-        $.each(existingTokens, function (index, token) {
-            if (token.value === event.attrs.value)
-                event.preventDefault();
-        });
-    });
-
-</script>
-<script>
-    $(document).ready(function () {
         var converter = Markdown.getSanitizingConverter();
         var editor = new Markdown.Editor(converter);
         editor.run();
     })
 </script>
-<script>
-    $('#tags').flexdatalist({
-        // URL to remote data source.
-        url: null,
-        // Data source.
-        // Array of objects or a URL to JSON string/file.
-        data: [],
-        // Additional parameters on AJAX requests.
-        params: {},
-        // Input relatives. Accepts field(s) selector(s) or an jQuery instance of the fields.
-        // The relatives values will be sent with each remove server request.
-        relatives: null,
-        // If set to true the flexdatalist field will be disabled until all the relatives are filled.
-        chainedRelatives: false,
-        // Enable cache
-        cache: true,
-        // cache life time
-        cacheLifetime: 60,
-        // Search if there are n or greater characters.
-        minLength: 2,
-        // Group results by property value.
-        groupBy: false,
-        // Selection from search results is required.
-        selectionRequired: false,
-        //  Focus first result.
-        focusFirstResult: false,
-        // The text that will be visible to the user.
-        // You can use {property_name} to be replaced with property value.
-        textProperty: null,
-        // The property name that when selected its value will be sent with the form.
-        // If you wanna send properties from selected item, set this option to *
-        valueProperty: null,
-        // Name of properties values that will appear with the search result.
-        visibleProperties: [],
-        // Name of property (or properties) where it will search.
-        searchIn: ['label'],
-        // Name of property that holds path to image to be added as icon.
-        iconProperty: 'thumb',
-        // By default, Flexdatalist's search matches starting at the beginning of a word.
-        // Setting this option to true allows matches starting from anywhere within a word.
-        // This is especially useful for options that include a lot of special characters or phrases in ()s and []s.
-        searchContain: false,
-        searchEqual: false,
-        searchDisabled: false,
-        searchDelay: 200,
-        // search by word
-        searchByWord: false,
-        // This allows you to normalize the strings being compared before comparison.
-        normalizeString: null,
-        // Accept multiple values
-        multiple: $this.attr('multiple'),
-        // max results
-        maxShownResults: 10,
-        // Text that will show when no results are found. If empty string, it won't show message.
-        noResultsText: 'No results found for "{keyword}"',
-        // Toggle values on tap/click
-        toggleSelected: false,
-        // allows duplicate values
-        allowDuplicateValues: false,
-        // post or get
-        requestType: 'post',
-        // Flexdatalist expects the data from server to be in the main response object or responseObject.results but you can change the name of property that holds the results.
-        resultsProperty: 'results',
-        // By default, flexdatalist sends the keyword in request parameter with name keyword.
-        keywordParamName: 'keyword',
-        // Limit the number of values in a multiple input.
-        limitOfValues: 0,
-        //  Delimiter used in multiple values.
-        valuesSeparator: ',',
-        // debug mode
-        debug: true
-    });
-</script>
+<jsp:include page="bootstrapNavigationBottom.jsp"/>
 </body>
 </html>

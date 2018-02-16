@@ -165,14 +165,6 @@
         }
     }
 
-    .panel-footer {
-        background-color: #FFFFFF;
-    }
-
-    .footer {
-        background-color: #FFFFFF;
-    }
-
     .navbar-brand {
         background-image: url("/resources/images/logo-only.png");
         background-repeat: no-repeat;
@@ -199,18 +191,18 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="http://localhost:8080/post?search&browse&page=0">Browse</a></li>
+                <li><a href="${pageContext.request.contextPath}/post?search&browse&page=0">Browse</a></li>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="http://localhost:8080/newPost">Ask a question</a></li>
+                    <li><a href="${pageContext.request.contextPath}/newPost">Ask a question</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="http://localhost:8080/post?disabled=on&search&browse&page=0">Disabled
+                        <li><a href="${pageContext.request.contextPath}/post?disabled=on&search&browse&page=0">Disabled
                             questions</a>
                         </li>
-                        <li><a href="http://localhost:8080/admin/users?page=0">Users</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/users?page=0">Users</a></li>
                     </ul>
                     </sec:authorize>
             </ul>
@@ -232,7 +224,8 @@
             </script>
             <ul class="nav navbar-nav navbar-right">
                 <sec:authorize access="isAnonymous()">
-                    <li><a href="#" class="" role="button" data-toggle="modal" data-target="#login-modal"><span
+                    <li><a href="#${pageContext.request.contextPath}/" class="" role="button" data-toggle="modal"
+                           data-target="#login-modal"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
@@ -363,11 +356,6 @@
     </div>
 </div>
 <!-- End Modal -->
-<!-- Footer -->
-<footer class="container-fluid text-center panel-footer footer navbar-fixed-bottom">
-    <p>Footer Text</p>
-</footer>
-<!-- END Footer -->
 <script>
     $(function () {
         var $formLogin = $('#login-form');

@@ -38,11 +38,7 @@ public class MainController {
     @Autowired
     private ReplyService replyService;
 
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView goToDefaultPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("bootstrapUserPage");
+    private ModelAndView addUserInfo(ModelAndView modelAndView) {
         User user = getCurrentUser();
         if (user != null) {
             modelAndView.addObject("user", user);
@@ -64,6 +60,13 @@ public class MainController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView goToDefaultPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("bootstrapUserPage");
+        return addUserInfo(modelAndView);
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView goToLogin(@RequestParam(value = "loginFailure", required = false) String loginFailure,
                                   @RequestParam(value = "logoutSuccess", required = false) String logoutSuccess,
@@ -76,24 +79,6 @@ public class MainController {
                                   HttpServletRequest request) {
         ModelAndView model = new ModelAndView();
         model.setViewName("bootstrapUserPage");
-        User user = getCurrentUser();
-        if (user != null) {
-            model.addObject("user", user);
-            model.addObject("newAnswers", false);
-            model.addObject("topQuestions", false);
-            List<Post> newAnswers = userService.newAnswers(user);
-            List<Post> topQuestions = userService.topQuestions(user);
-            if (newAnswers.size() > 0) {
-                Post[] list = newAnswers.toArray(new Post[0]);
-                model.addObject("newAnswers", true);
-                model.addObject("answerList", list);
-            }
-            if (topQuestions.size() > 0) {
-                Post[] list2 = topQuestions.toArray(new Post[0]);
-                model.addObject("topQuestions", true);
-                model.addObject("questionList", list2);
-            }
-        }
         model.addObject("modal", true);
         if (loginFailure != null) {
             model.addObject("loginFailure", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
@@ -119,7 +104,7 @@ public class MainController {
         if (registerFailure != null) {
             model.addObject("registerFailure", "Register failed!");
         }
-        return model;
+        return addUserInfo(model);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
@@ -128,24 +113,6 @@ public class MainController {
                                    @RequestParam(value = "updateFailure", required = false) String updateFailure,
                                    @RequestParam(value = "updateSuccess", required = false) String updateSuccess) {
         ModelAndView model = new ModelAndView();
-        User user = getCurrentUser();
-        if (user != null) {
-            model.addObject("user", user);
-            model.addObject("newAnswers", false);
-            model.addObject("topQuestions", false);
-            List<Post> newAnswers = userService.newAnswers(user);
-            List<Post> topQuestions = userService.topQuestions(user);
-            if (newAnswers.size() > 0) {
-                Post[] list = newAnswers.toArray(new Post[0]);
-                model.addObject("newAnswers", true);
-                model.addObject("answerList", list);
-            }
-            if (topQuestions.size() > 0) {
-                Post[] list2 = topQuestions.toArray(new Post[0]);
-                model.addObject("topQuestions", true);
-                model.addObject("questionList", list2);
-            }
-        }
         model.addObject("modalUpdate", true);
         if (uploadFailure != null) {
             model.addObject("uploadFailure", "Upload failed!");
@@ -160,7 +127,7 @@ public class MainController {
             model.addObject("updateSuccess", "Update succeeded!");
         }
         model.setViewName("bootstrapUserPage");
-        return model;
+        return addUserInfo(model);
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
@@ -221,6 +188,7 @@ public class MainController {
             return model;
         }
         if (postID != null) {
+            //TODO FIX unauthenticated SHIT!!!
             Integer nrPagini = replyService.postNrPages(postID, request.isUserInRole("ROLE_ADMIN"));
             String url = "/post?postID=" + postID + "&page=";
             User user = new User();
@@ -238,7 +206,7 @@ public class MainController {
             model.addObject("post", post);
             model.addObject("voteType", postService.voteTypesAvailable(Integer.valueOf(postID), userService.find(user.getUsername()).getUserId()));
             model.setViewName("bootstrapQuestionPage");
-            return model;
+            return addUserInfo(model);
         }
         if (search != null) {
             boolean dis = false;
@@ -304,25 +272,7 @@ public class MainController {
     public ModelAndView goToNewPost() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bootstrapNewQuestion");
-        User user = getCurrentUser();
-        if (user != null) {
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("newAnswers", false);
-            modelAndView.addObject("topQuestions", false);
-            List<Post> newAnswers = userService.newAnswers(user);
-            List<Post> topQuestions = userService.topQuestions(user);
-            if (newAnswers.size() > 0) {
-                Post[] list = newAnswers.toArray(new Post[0]);
-                modelAndView.addObject("newAnswers", true);
-                modelAndView.addObject("answerList", list);
-            }
-            if (topQuestions.size() > 0) {
-                Post[] list2 = topQuestions.toArray(new Post[0]);
-                modelAndView.addObject("topQuestions", true);
-                modelAndView.addObject("questionList", list2);
-            }
-        }
-        return modelAndView;
+        return addUserInfo(modelAndView);
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.GET)

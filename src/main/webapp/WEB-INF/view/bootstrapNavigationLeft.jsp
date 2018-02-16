@@ -3,11 +3,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <style>
 </style>
-
+<%--TODO SANITISE ALL USER INPUT EVERYWHERE ALL OF IT--%>
 <div class="col-sm-3 well">
     <sec:authorize access="isAuthenticated()">
         <div class="well well-top">
-            <p><a href="http://localhost:8080/account?username=${user.username}">${user.username}</a></p>
+            <p><a href="${pageContext.request.contextPath}/account?username=${user.username}">${user.username}</a></p>
             <img src="${user.profileImage}" class="img-circle" height="65"
                  width="65" alt="Avatar">
         </div>

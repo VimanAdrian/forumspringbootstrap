@@ -20,14 +20,13 @@
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
     <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
     <%--extra--%>
-    <script src="http://sliptree.github.io/bootstrap-tokenfield/docs-assets/js/typeahead.bundle.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
     <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-    <script src="resources/javascript/jquery.flexdatalist.js"></script>
-    <link href="resources/css/jquery.flexdatalist.css" rel="stylesheet">
+        <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
+        <link href="${pageContext.request.contextPath}/resources/css/jquery.flexdatalist.css" rel="stylesheet">
     <style>
         .wmd-button > span {
             background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
@@ -42,6 +41,7 @@
             width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            text-align: left;
         }
 
         .vresize {
@@ -53,7 +53,7 @@
     <title>MemoryLeak</title>
 </head>
 <body>
-<jsp:include page="bootstrapNavigationTopBottom.jsp"/>
+<jsp:include page="bootstrapNavigationTop.jsp"/>
 <div class="container text-center" id="mainContent">
     <div class="row">
         <jsp:include page="bootstrapNavigationLeft.jsp"/>
@@ -73,7 +73,8 @@
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
-                    <form id="new-post-form" action="/makePost" method="POST" class="form-horizontal">
+                    <form id="new-post-form" action="${pageContext.request.contextPath}/makePost" method="POST"
+                          class="form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-sm-1" for="post_title">Title:</label>
                             <div class="col-sm-11">
@@ -455,34 +456,6 @@
 </script>
 <script>
     $(document).ready(function () {
-        var engine = new Bloodhound({
-            local: [{value: 'java'}, {value: 'c#'}, {value: 'c++'}, {value: 'python'}, {value: 'ruby'}, {value: 'html'}, {value: 'css'}, {value: 'javascript'}],
-            datumTokenizer: function (d) {
-                return Bloodhound.tokenizers.whitespace(d.value);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace
-        });
-
-        engine.initialize();
-
-        $('#tokenfield-typeahead').tokenfield({
-            typeahead: [null, {source: engine.ttAdapter()}],
-            createTokensOnBlur: true,
-            delimiter: [',', ' ']
-        });
-    });
-
-    $('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {
-        var existingTokens = $(this).tokenfield('getTokens');
-        $.each(existingTokens, function (index, token) {
-            if (token.value === event.attrs.value)
-                event.preventDefault();
-        });
-    });
-
-</script>
-<script>
-    $(document).ready(function () {
         var converter = Markdown.getSanitizingConverter();
         var editor = new Markdown.Editor(converter);
         editor.run();
@@ -561,5 +534,6 @@
         debug: true
     });
 </script>
+<jsp:include page="bootstrapNavigationBottom.jsp"/>
 </body>
 </html>

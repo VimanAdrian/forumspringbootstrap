@@ -23,7 +23,7 @@
     <title>MemoryLeak</title>
 </head>
 <body>
-<jsp:include page="bootstrapNavigationTopBottom.jsp"/>
+<jsp:include page="bootstrapNavigationTop.jsp"/>
 <div class="container text-center" id="mainContent">
     <div class="row">
         <jsp:include page="bootstrapNavigationLeft.jsp"/>
@@ -117,6 +117,6 @@
 <%--});--%>
 
 <%--</script>--%>
-
+<jsp:include page="bootstrapNavigationBottom.jsp"/>
 </body>
 </html>
