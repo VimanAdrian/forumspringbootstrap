@@ -28,7 +28,7 @@ public class HibernateUtil {
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Map<String, String> settings = new HashMap<>();
                 settings.put(Environment.DRIVER, "org.sqlite.JDBC");
-                settings.put(Environment.URL, "jdbc:sqlite:C:/Users/viorelv/IdeaProjects/springDataBase/springDB.db");
+                settings.put(Environment.URL, "jdbc:sqlite:D:/Artsoft-Consult/forumDB/springDB.db");
                 settings.put(Environment.DIALECT, "artsoftconsult.study.repository.dbUtils.dialect.SQLiteDialect");
 
                 // Apply settings

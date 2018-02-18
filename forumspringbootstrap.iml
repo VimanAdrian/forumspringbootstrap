@@ -37,6 +37,12 @@
     <orderEntry type="library" name="Markdown.Editor" level="application" />
     <orderEntry type="library" name="Markdown.Sanitizer" level="application" />
     <orderEntry type="library" name="run_prettify" level="application" />
+    <orderEntry type="library" name="jquery-ui" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="Markdown.Converter" level="application" />
+    <orderEntry type="library" name="Markdown.Editor" level="application" />
+    <orderEntry type="library" name="Markdown.Sanitizer" level="application" />
+    <orderEntry type="library" name="run_prettify" level="application" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.9.RELEASE" level="project" />

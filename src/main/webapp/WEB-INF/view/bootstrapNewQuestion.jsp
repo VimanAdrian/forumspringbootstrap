@@ -13,20 +13,20 @@
 <head>
     <%--default--%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <%--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>--%>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>--%>
     <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
     <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
     <%--extra--%>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
-    <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-        <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
-        <link href="${pageContext.request.contextPath}/resources/css/jquery.flexdatalist.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/tomorrow.css"/>
+    <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
+    <link href="${pageContext.request.contextPath}/resources/css/jquery.flexdatalist.css" rel="stylesheet">
     <style>
         .wmd-button > span {
             background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
@@ -37,11 +37,12 @@
             display: inline-block;
         }
 
-        #wmd-preview * {
+        #wmd-preview {
             width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             text-align: left;
+            background-color: #ecf0f1 !important;
         }
 
         .vresize {
@@ -368,8 +369,11 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-offset-1 col-sm-11">
-                                <div id="wmd-preview" class="wmd-preview"></div>
+                            <div class="col-sm-12">
+                                <p>You can see a live preview of how your question will look. </p>
+                                <hr/>
+                                <div id="wmd-preview" class="wmd-preview well"></div>
+                                <hr/>
                             </div>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -381,79 +385,6 @@
         <%--<jsp:include page="bootstrapNavigationRight.jsp"/>--%>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $(function () {
-            var $formUpdate = $('#update-form');
-            var $formUpload = $('#upload-form');
-            var $formLink = $('#link-form');
-            var $divForms = $('#div-forms-user');
-            var $modalAnimateTime = 300;
-            var $msgAnimateTime = 150;
-            var $msgShowTime = 2000;
-            if ("${modalUpdate}") {
-                if ("${uploadFailure}")
-                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${uploadFailure}");
-                if ("${uploadSuccess}")
-                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${uploadSuccess}");
-                if ("${updateFailure}")
-                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "error", "glyphicon-remove", "${updateFailure}");
-                if ("${updateSuccess}")
-                    msgChange($('#div-update-msg'), $('#icon-update-msg'), $('#text-update-msg'), "success", "glyphicon-ok", "${updateSuccess}");
-                $("#update-modal").modal('show');
-            }
-            $('#update_upload_btn').click(function () {
-                modalAnimate($formUpdate, $formUpload)
-            });
-            $('#update_link_btn').click(function () {
-                modalAnimate($formUpdate, $formLink);
-            });
-            $('#upload_update_btn').click(function () {
-                modalAnimate($formUpload, $formUpdate)
-            });
-            $('#upload_link_btn').click(function () {
-                modalAnimate($formUpload, $formLink)
-            });
-            $('#link_update_btn').click(function () {
-                modalAnimate($formLink, $formUpdate)
-            });
-            $('#link_upload_btn').click(function () {
-                modalAnimate($formLink, $formUpload)
-            });
-
-            function modalAnimate($oldForm, $newForm) {
-                var $oldH = $oldForm.height();
-                var $newH = $newForm.height();
-                $divForms.css("height", $oldH);
-                $oldForm.fadeToggle($modalAnimateTime, function () {
-                    $divForms.animate({height: $newH}, $modalAnimateTime, function () {
-                        $newForm.fadeToggle($modalAnimateTime);
-                    });
-                });
-            }
-
-            function msgFade($msgId, $msgText) {
-                $msgId.fadeOut($msgAnimateTime, function () {
-                    $(this).text($msgText).fadeIn($msgAnimateTime);
-                });
-            }
-
-            function msgChange($divTag, $iconTag, $textTag, $divClass, $iconClass, $msgText) {
-                var $msgOld = $divTag.text();
-                msgFade($textTag, $msgText);
-                $divTag.addClass($divClass);
-                $iconTag.removeClass("glyphicon-chevron-right");
-                $iconTag.addClass($iconClass + " " + $divClass);
-                setTimeout(function () {
-                    msgFade($textTag, $msgOld);
-                    $divTag.removeClass($divClass);
-                    $iconTag.addClass("glyphicon-chevron-right");
-                    $iconTag.removeClass($iconClass + " " + $divClass);
-                }, $msgShowTime);
-            }
-        });
-    });
-</script>
 <script>
     $(document).ready(function () {
         var converter = Markdown.getSanitizingConverter();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$" libraries="{Markdown.Converter, Markdown.Editor, Markdown.Sanitizer, bootstrap-tokenfield, jquery-ui, run_prettify, typeahead.bundle}" />
+    <file url="file://$PROJECT_DIR$" libraries="{Markdown.Converter, Markdown.Editor, Markdown.Sanitizer, bootstrap, jquery-ui, run_prettify}" />
   </component>
 </project>

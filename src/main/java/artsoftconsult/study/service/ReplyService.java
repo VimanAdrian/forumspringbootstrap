@@ -38,7 +38,7 @@ public class ReplyService {
     }
 
     public boolean vote(Integer replyId, Integer userID, String type) {
-        if (type.equals("upvote"))
+        if (type.equals("Upvote"))
             return replyRepository.vote(replyId, userID, 1);
         return replyRepository.vote(replyId, userID, -1);
     }

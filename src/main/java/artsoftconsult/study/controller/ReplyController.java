@@ -70,9 +70,6 @@ public class ReplyController {
     @RequestMapping(value = "/voteReply", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     boolean makeVote(HttpServletRequest request, HttpServletResponse response, @RequestParam("type") String type, @RequestParam("replyID") String replyID) {
-        System.out.println(type);
-        System.out.println(replyID);
-        System.out.println();
         return replyService.vote(Integer.valueOf(replyID), userService.find(request.getUserPrincipal().getName()).getUserId(), type);
     }
 

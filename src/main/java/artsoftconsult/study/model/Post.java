@@ -14,6 +14,7 @@ public class Post {
     private Integer postId;
     private String title;
     private String content;
+    private String rawContent;
     private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
     private Integer views = 0;
     private Integer score = 0;
@@ -119,6 +120,14 @@ public class Post {
 
     public void setCategories(Category[] categories) {
         this.categories = categories;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     @Override

@@ -65,6 +65,7 @@ public class MyAttributeProvider {
             if (node instanceof IndentedCodeBlock && part == AttributablePart.NODE) {
                 // Put info in custom attribute instead
                 attributes.addValue("class", "prettyprint");
+                attributes.addValue("class", "linenums");
             }
         }
     }

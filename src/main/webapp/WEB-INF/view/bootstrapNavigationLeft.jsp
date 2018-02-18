@@ -49,7 +49,7 @@
                 <p>
                     It seems you don't have any questions.
                     <br>
-                    You can ask one <a href="#">here</a>!
+                    You can ask one <a href="${pageContext.request.contextPath}/newPost">here</a>!
                 </p>
             </c:if>
         </div>

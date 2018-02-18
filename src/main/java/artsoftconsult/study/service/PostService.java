@@ -104,13 +104,13 @@ public class PostService {
         postRepository.markNotNew(postID, userRepository.findByUsername(currentUser.getUsername()));
         postRepository.incrementView(Integer.valueOf(postID));
         Post p = postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
-        String html = MyAttributeProvider.commonMark(p.getContent());
         Reply[] replies = p.getReplies();
         for (Reply re : replies) {
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
         }
-        p.setContent(html);
         p.setReplies(replies);
+        p.setRawContent(p.getContent());
+        p.setContent(MyAttributeProvider.commonMark(p.getContent()));
         return p;
     }
 
