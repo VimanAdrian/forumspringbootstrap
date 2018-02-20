@@ -68,42 +68,10 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView goToLogin(@RequestParam(value = "loginFailure", required = false) String loginFailure,
-                                  @RequestParam(value = "logoutSuccess", required = false) String logoutSuccess,
-                                  @RequestParam(value = "resetSuccess", required = false) String resetSuccess,
-                                  @RequestParam(value = "resetFailure", required = false) String resetFailure,
-                                  @RequestParam(value = "sendSuccess", required = false) String sendSuccess,
-                                  @RequestParam(value = "sendFailure", required = false) String sendFailure,
-                                  @RequestParam(value = "registerSuccess", required = false) String registerSuccess,
-                                  @RequestParam(value = "registerFailure", required = false) String registerFailure,
-                                  HttpServletRequest request) {
+    public ModelAndView goToLogin() {
         ModelAndView model = new ModelAndView();
         model.setViewName("bootstrapUserPage");
         model.addObject("modal", true);
-        if (loginFailure != null) {
-            model.addObject("loginFailure", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
-        }
-        if (logoutSuccess != null) {
-            model.addObject("logoutSuccess", "You've been logged out successfully!");
-        }
-        if (resetSuccess != null) {
-            model.addObject("resetSuccess", "Password reset successful!");
-        }
-        if (resetFailure != null) {
-            model.addObject("resetFailure", "Password reset failed!");
-        }
-        if (sendSuccess != null) {
-            model.addObject("sendSuccess", "Email was sent successfully!");
-        }
-        if (sendFailure != null) {
-            model.addObject("sendFailure", "Email failed to send!");
-        }
-        if (registerSuccess != null) {
-            model.addObject("registerSuccess", "You've been registered successfully.");
-        }
-        if (registerFailure != null) {
-            model.addObject("registerFailure", "Register failed!");
-        }
         return addUserInfo(model);
     }
 
@@ -333,15 +301,15 @@ public class MainController {
     public ModelAndView resetPassword(@RequestParam(value = "token", required = true) String token,
                                       @RequestParam(value = "userId", required = true) String id) {
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("bootstrapUserPage");
+        modelAndView.addObject("userID", id);
+        modelAndView.addObject("modal", true);
         if (userService.usePasswordReset(token, Integer.valueOf(id))) {
-            modelAndView.setViewName("deprecated/accountResetPassword");
-            modelAndView.addObject("userID", id);
-            return modelAndView;
+            modelAndView.addObject("validToken", 1);
         } else {
-            modelAndView.setViewName("deprecated/accountForgotPassword");
-            modelAndView.addObject("error", "There was a problem with your token. Please try again.");
-            return modelAndView;
+            modelAndView.addObject("validToken", 0);
         }
+        return modelAndView;
     }
 
     @RequestMapping(value = "forgotPassword", method = RequestMethod.GET)

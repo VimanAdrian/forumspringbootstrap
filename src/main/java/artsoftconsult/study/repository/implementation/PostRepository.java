@@ -186,7 +186,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public Integer findPoster(Integer postID) {
         Connection con = db.getConnection();
-        try (PreparedStatement preSmt = con.prepareStatement("SELECT userID FROM forum.posts WHERE postID=?")) {
+        try (PreparedStatement preSmt = con.prepareStatement("SELECT userID FROM posts WHERE postID=?")) {
             preSmt.setInt(1, postID);
             ResultSet resultSet = preSmt.executeQuery();
             if (resultSet.next()) {

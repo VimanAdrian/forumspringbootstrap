@@ -29,7 +29,7 @@ public class ReplyController {
     }
 
     @RequestMapping(value = "/makeReply", method = RequestMethod.POST)
-    public void makeReply(@ModelAttribute("Reply") Reply reply, @ModelAttribute("Post") Post post, @RequestParam("page") String page, HttpServletResponse response) {
+    public @ResponseBody Boolean makeReply(@ModelAttribute("Reply") Reply reply, @ModelAttribute("Post") Post post) {
         User user = new User();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -38,14 +38,7 @@ public class ReplyController {
         }
         reply.setUser(user);
         reply.setPost(post);
-        //System.out.println(reply);
-        if (replyService.save(reply)) {
-            try {
-                response.sendRedirect("/post?postID=" + post.getPostId() + "&page=" + page);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        return replyService.save(reply);
     }
 
     //without ajax
@@ -74,14 +67,9 @@ public class ReplyController {
     }
 
     @RequestMapping(value = "/favoriteReply", method = RequestMethod.POST)
-    public void makeFavorite(@RequestParam("postID") String postID, @RequestParam("replyID") String replyID, @RequestParam("page") String page, HttpServletResponse response) {
-        replyService.favorite(Integer.valueOf(replyID), Integer.valueOf(postID));
-        try {
-            String redirect = "/post?postID=" + postID + "&page=" + page;
-            response.sendRedirect(redirect);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public @ResponseBody
+    Boolean makeFavorite(@RequestParam("postID") String postID, @RequestParam("replyID") String replyID, HttpServletResponse response) {
+        return replyService.favorite(Integer.valueOf(replyID), Integer.valueOf(postID));
     }
 
     @RequestMapping(value = "/toggleReplyStatus", method = RequestMethod.POST)
@@ -94,6 +82,12 @@ public class ReplyController {
             e.printStackTrace();
         }
     }
+
+    @RequestMapping(value = "editReply", method = RequestMethod.POST)
+    public @ResponseBody Boolean makeEdit(@ModelAttribute("Reply") Reply reply) {
+        return replyService.update(reply);
+    }
+
 }
 
 

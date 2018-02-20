@@ -25,8 +25,6 @@ public class User {
     private String firstName = "";
     private String lastName = "";
     private String email = "";
-    private Date dateOfBirth;
-    private String gender = "";
     private String role = "ROLE_USER";
     private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
     private Byte enabled = 0;
@@ -105,26 +103,6 @@ public class User {
     }
 
     @Basic
-    @Column(name = "dateOfBirth", nullable = true)
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    @Basic
-    @Column(name = "gender", nullable = true, length = 50)
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    @Basic
     @Column(name = "role", nullable = false, length = 50)
     public String getRole() {
         return role;
@@ -177,8 +155,6 @@ public class User {
         if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
         if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (dateOfBirth != null ? !dateOfBirth.equals(that.dateOfBirth) : that.dateOfBirth != null) return false;
-        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
         if (role != null ? !role.equals(that.role) : that.role != null) return false;
         if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
         if (enabled != null ? !enabled.equals(that.enabled) : that.enabled != null) return false;
@@ -195,8 +171,6 @@ public class User {
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
@@ -214,8 +188,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", gender='" + gender + '\'' +
                 ", role='" + role + '\'' +
                 ", creationDate=" + creationDate +
                 ", enabled=" + enabled +
@@ -265,13 +237,6 @@ public class User {
         if (email.equals(""))
             return null;
         return email;
-    }
-
-    @Transient
-    public Date getDateOfBirthForUpdate() {
-        if (dateOfBirth == null)
-            return Date.valueOf("1970-01-01");
-        return dateOfBirth;
     }
 
     @Transient

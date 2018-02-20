@@ -79,17 +79,10 @@ public class PostController {
         return succes;
     }
 
-    @RequestMapping(value = "editPost", method = RequestMethod.POST)
-    public void makeEdit(HttpServletResponse response, @ModelAttribute("Post") Post post) {
-        System.out.println("editPost");
-        System.out.println(post);
+    @RequestMapping(value = "/editPost", method = RequestMethod.POST)
+    public @ResponseBody Boolean makeEdit(@ModelAttribute("Post") Post post) {
         postService.update(post);
-        try {
-            String redirect = "/post?postID=" + post.getPostId() + "&page=" + 0;
-            response.sendRedirect(redirect);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return true;
     }
 
 }

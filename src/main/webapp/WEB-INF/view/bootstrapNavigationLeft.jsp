@@ -11,23 +11,6 @@
             <img src="${user.profileImage}" class="img-circle" height="65"
                  width="65" alt="Avatar">
         </div>
-        <div class="well well-top">
-            <c:if test="${user.username == pageContext.request.userPrincipal.name}">
-                <p>
-                    <a href="#" class="" role="button" data-toggle="modal" data-target="#update-modal">
-                        <span class="glyphicons glyphicons-edit"></span> Update</a>
-                </p>
-            </c:if>
-            <c:if test="${user.admin==true}">ADMIN</c:if>
-            <c:if test="${user.firstNameForUpdate!=null}">
-                <p>First name: ${user.firstName}</p>
-            </c:if>
-            <c:if test="${user.lastNameForUpdate!=null}">
-                <p>Last name: ${user.lastName}</p>
-            </c:if>
-            <p>Email: ${user.email}</p>
-            <p>Member since: ${user.memberSince}</p>
-        </div>
         <c:if test="${newAnswers==true}">
             <div class="alert alert-dismissible alert-info">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>

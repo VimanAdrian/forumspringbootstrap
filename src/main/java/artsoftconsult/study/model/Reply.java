@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 public class Reply {
     private Integer replyId;
     private String content;
+    private String rawContent;
     private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
     private Integer score = 0;
     private Byte bestAnswer = 0;
@@ -101,6 +102,16 @@ public class Reply {
     public void setPost(Post post) {
         this.post = post;
     }
+
+    @Transient
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
+    }
+
 
     @Override
     public boolean equals(Object o) {

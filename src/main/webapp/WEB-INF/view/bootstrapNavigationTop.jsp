@@ -9,6 +9,11 @@
         font-family: 'Roboto', sans-serif;
     }
 
+    .modal-dialog {
+        margin: auto;
+        margin-top: 40px;
+    }
+
     #login-modal .modal-dialog {
         width: 350px;
     }
@@ -19,7 +24,8 @@
 
     #div-login-msg,
     #div-lost-msg,
-    #div-register-msg {
+    #div-register-msg,
+    #div-reset-msg {
         border: 1px solid #dadfe1;
         height: 30px;
         line-height: 28px;
@@ -28,21 +34,32 @@
 
     #div-login-msg.success,
     #div-lost-msg.success,
-    #div-register-msg.success {
+    #div-register-msg.success,
+    #div-reset-msg.success {
         border: 1px solid #68c3a3;
         background-color: #c8f7c5;
     }
 
     #div-login-msg.error,
     #div-lost-msg.error,
-    #div-register-msg.error {
+    #div-register-msg.error,
+    #div-reset-msg.error {
         border: 1px solid #eb575b;
         background-color: #ffcad1;
     }
 
+    #div-login-msg.info,
+    #div-lost-msg.info,
+    #div-register-msg.info,
+    #div-reset-msg.info {
+        border: 1px solid #31708f;
+        background-color: #bce8f1;
+    }
+
     #icon-login-msg,
     #icon-lost-msg,
-    #icon-register-msg {
+    #icon-register-msg,
+    #icon-reset-msg {
         width: 30px;
         float: left;
         line-height: 28px;
@@ -54,14 +71,23 @@
 
     #icon-login-msg.success,
     #icon-lost-msg.success,
-    #icon-register-msg.success {
+    #icon-register-msg.success,
+    #icon-reset-msg.success {
         background-color: #68c3a3 !important;
     }
 
     #icon-login-msg.error,
     #icon-lost-msg.error,
-    #icon-register-msg.error {
+    #icon-register-msg.error,
+    #icon-reset-msg.error {
         background-color: #eb575b !important;
+    }
+
+    #icon-login-msg.info,
+    #icon-lost-msg.info,
+    #icon-register-msg.info,
+    #icon-reset-msg.info {
+        background-color: #337ab7 !important;
     }
 
     #img_logo {
@@ -148,10 +174,6 @@
     }
 
     @media screen and (min-width: 1024px) {
-        #register_gender {
-            overflow: hidden;
-        }
-
         .register_option {
             width: 318px !important;
             max-width: 318px;
@@ -166,7 +188,7 @@
     }
 
     .navbar-brand {
-        background-image: url("/resources/images/logo-only.png");
+        background-image: url("${pageContext.request.contextPath}/resources/images/logo-only.png");
         background-repeat: no-repeat;
         background-size: contain; /* Make the image cover the td */
         background-position: 50%; /* Center the image inside the td */
@@ -206,7 +228,8 @@
                     </ul>
                     </sec:authorize>
             </ul>
-            <form class="navbar-form navbar-right" id="searchForm" role="search" action="/post" method="GET">
+            <form class="navbar-form navbar-right" id="searchForm" role="search"
+                  action="${pageContext.request.contextPath}/post" method="GET">
                 <div class="form-group input-group">
                     <input type="text" class="form-control" name="search" placeholder="Search..">
                     <span class="input-group-btn">
@@ -229,18 +252,12 @@
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="javascript:formSubmit()" class="" role="button"><span
-                            class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                    <c:url value="/logout" var="logoutUrl"/>
-                    <form action="${logoutUrl}" method="post" id="logoutForm" style="display: none;">
-                        <input type="hidden" name="${_csrf.parameterName}"
-                               value="${_csrf.token}"/>
+                    <li><a role="button" id="logoutButton"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                    </li>
+                    <form action="${pageContext.request.contextPath}/logout" method="post" id="logoutForm"
+                          style="display: none;">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
-                    <script>
-                        function formSubmit() {
-                            document.getElementById("logoutForm").submit();
-                        }
-                    </script>
                 </sec:authorize>
             </ul>
         </div>
@@ -262,7 +279,7 @@
             <!-- Begin # DIV Form -->
             <div id="div-forms">
                 <!-- Begin # Login Form -->
-                <form id="login-form" action="/login_check" method="POST">
+                <form id="login-form" action="${pageContext.request.contextPath}/login_check" method="POST">
                     <div class="modal-body">
                         <div id="div-login-msg">
                             <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
@@ -291,7 +308,8 @@
                 </form>
                 <!-- End # Login Form -->
                 <!-- Begin | Lost Password Form -->
-                <form id="lost-form" style="display:none;" action="/forgotPassword" method="POST">
+                <form id="lost-form" style="display:none;" action="${pageContext.request.contextPath}/forgotPassword"
+                      method="POST">
                     <div class="modal-body">
                         <div id="div-lost-msg">
                             <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
@@ -313,7 +331,8 @@
                 </form>
                 <!-- End | Lost Password Form -->
                 <!-- Begin | Register Form -->
-                <form id="register-form" style="display:none;" action="/register" method="POST">
+                <form id="register-form" style="display:none;" action="${pageContext.request.contextPath}/reset"
+                      method="POST">
                     <div class="modal-body">
                         <div id="div-register-msg">
                             <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
@@ -331,11 +350,6 @@
                                placeholder="First name">
                         <input id="register_lastName" class="form-control" type="text" name="lastName"
                                placeholder="Last name">
-                        <select id="register_gender" class="form-control" name="gender">
-                            <option value="placeholder" disabled selected hidden>Gender</option>
-                            <option value="male" class="form-control register_option">Male</option>
-                            <option value="female" class="form-control register_option">Female</option>
-                        </select>
                     </div>
                     <div class="modal-footer">
                         <div>
@@ -350,6 +364,33 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
                 <!-- End | Register Form -->
+                <!-- Begin | Reset Form -->
+                <form id="reset-form" style="display:none;" action="${pageContext.request.contextPath}/resetPassword"
+                      method="POST">
+                    <div class="modal-body">
+                        <div id="div-reset-msg">
+                            <div id="icon-reset-msg" class="glyphicon glyphicon-chevron-right"></div>
+                            <span id="text-reset-msg">Reset your password.</span>
+                        </div>
+                        <input id="reset_password" class="form-control" type="password" name="password"
+                               placeholder="Password" required>
+                        <input id="reset_password2" class="form-control" type="password" name="password2"
+                               placeholder="Password" required>
+                    </div>
+                    <div class="modal-footer">
+                        <div>
+                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Reset">
+                        </div>
+                        <div>
+                            <button id="reset_login_btn" type="button" class="btn btn-link">Log In</button>
+                            <button id="reset_register_btn" type="button" class="btn btn-link">Register</button>
+                            <button id="reset_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <input type="hidden" name="userId" value="${userID}"/>
+                </form>
+                <!-- End | Reset Form -->
             </div>
             <!-- End # DIV Form -->
         </div>
@@ -357,83 +398,213 @@
 </div>
 <!-- End Modal -->
 <script>
-    $(function () {
-        var $formLogin = $('#login-form');
-        var $formLost = $('#lost-form');
-        var $formRegister = $('#register-form');
-        var $divForms = $('#div-forms');
-        var $modalAnimateTime = 300;
-        var $msgAnimateTime = 150;
-        var $msgShowTime = 2000;
-        if ("${modal}") {
-            if ("${loginFailure}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "${loginFailure}");
-            if ("${logoutSuccess}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "${logoutSuccess}");
-            if ("${resetSuccess}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "${resetSuccess}");
-            if ("${resetFailure}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "${resetFailure}");
-            if ("${sendSuccess}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "${sendSuccess}");
-            if ("${sendFailure}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "${sendFailure}");
-            if ("${registerSuccess}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "${registerSuccess}");
-            if ("${registerFailure}")
-                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "${registerFailure}");
-            $("#login-modal").modal('show');
-        }
-        $('#login_register_btn').click(function () {
-            modalAnimate($formLogin, $formRegister)
-        });
-        $('#register_login_btn').click(function () {
-            modalAnimate($formRegister, $formLogin);
-        });
-        $('#login_lost_btn').click(function () {
-            modalAnimate($formLogin, $formLost);
-        });
-        $('#lost_login_btn').click(function () {
-            modalAnimate($formLost, $formLogin);
-        });
-        $('#lost_register_btn').click(function () {
-            modalAnimate($formLost, $formRegister);
-        });
-        $('#register_lost_btn').click(function () {
-            modalAnimate($formRegister, $formLost);
-        });
 
-        function modalAnimate($oldForm, $newForm) {
-            var $oldH = $oldForm.height();
-            var $newH = $newForm.height();
-            $divForms.css("height", $oldH);
-            $oldForm.fadeToggle($modalAnimateTime, function () {
-                $divForms.animate({height: $newH}, $modalAnimateTime, function () {
-                    $newForm.fadeToggle($modalAnimateTime);
-                });
-            });
-        }
-
-        function msgFade($msgId, $msgText) {
-            $msgId.fadeOut($msgAnimateTime, function () {
-                $(this).text($msgText).fadeIn($msgAnimateTime);
-            });
-        }
-
-        function msgChange($divTag, $iconTag, $textTag, $divClass, $iconClass, $msgText) {
-            var $msgOld = $divTag.text();
-            msgFade($textTag, $msgText);
-            $divTag.addClass($divClass);
-            $iconTag.removeClass("glyphicon-chevron-right");
-            $iconTag.addClass($iconClass + " " + $divClass);
-            setTimeout(function () {
-                msgFade($textTag, $msgOld);
-                $divTag.removeClass($divClass);
-                $iconTag.addClass("glyphicon-chevron-right");
-                $iconTag.removeClass($iconClass + " " + $divClass);
-            }, $msgShowTime);
-        }
+    var $formLogin = $('#login-form');
+    var $formLost = $('#lost-form');
+    var $formRegister = $('#register-form');
+    var $formReset = $('#reset-form');
+    var $divForms = $('#div-forms');
+    var $modalAnimateTime = 300;
+    var $msgAnimateTime = 150;
+    var $msgShowTime = 2000;
+    <sec:authorize access="isAnonymous()">
+    $('#login-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                location.reload(true);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401)
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "Invalid username or password!");
+                else if (jqXHR.status === 417)
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "You account is locked!");
+                else
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "glyphicon-remove", "Something went wrong!");
+            },
+            beforeSend: function () {
+                msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
     });
+
+    $('#register-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                if (data) {
+                    modalAnimate($formRegister, $formLogin);
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "You've been registered successfully!");
+                } else {
+                    msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Register failed!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Something went wrong!");
+                console.log(errorThrown);
+            },
+            beforeSend: function () {
+                msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
+    });
+
+    $('#lost-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                if (data) {
+                    modalAnimate($formLost, $formLogin);
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "An email has been sent!");
+                } else {
+                    msgChange($('#div-lost-msg'), $('#icon-lost-msg'), $('#text-lost-msg'), "error", "glyphicon-remove", "An email could not be sent!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                msgChange($('#div-lost-msg'), $('#icon-lost-msg'), $('#text-lost-msg'), "error", "glyphicon-remove", "Something went wrong!");
+                console.log(errorThrown);
+            },
+            beforeSend: function () {
+                msgChange($('#div-lost-msg'), $('#icon-lost-msg'), $('#text-lost-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
+    });
+
+    $('#reset-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                if (data) {
+                    modalAnimate($formReset, $formLogin);
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "Reset successfull!");
+                    setTimeout(function () {
+                        window.location.replace("${pageContext.request.contextPath}/login");
+                    }, 1000);
+                } else {
+                    msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "error", "glyphicon-remove", "Reset unsuccessfull!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "error", "glyphicon-remove", "Something went wrong!");
+                console.log(errorThrown);
+            },
+            beforeSend: function () {
+                msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
+    });
+    </sec:authorize>
+
+    <sec:authorize access="isAuthenticated()">
+    $("#logoutButton").click(function () {
+        $("#logoutForm").submit();
+        $('#logoutForm').submit(function () {
+            $theForm = $(this);
+            $.ajax({
+                type: $theForm.attr('method'),
+                url: $theForm.attr('action'),
+                data: $theForm.serialize(),
+                success: function (data) {
+                    location.reload(true);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            });
+            return false;
+        });
+    });
+    </sec:authorize>
+
+    checkModal();
+    function checkModal() {
+        <c:if test="${modal==true}">
+        $("#login-modal").modal('show');
+        <c:if test="${validToken==1}">
+        modalAnimate($formLogin, $formReset);
+        msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "info", "glyphicon-refresh", "Insert your new password!");
+        </c:if>
+        <c:if test="${validToken==0}">
+        modalAnimate($formLogin, $formReset);
+        msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "error", "glyphicon-remove", "Invalid token!");
+        </c:if>
+        </c:if>
+    }
+
+    $('#login_register_btn').click(function () {
+        modalAnimate($formLogin, $formRegister)
+    });
+    $('#register_login_btn').click(function () {
+        modalAnimate($formRegister, $formLogin);
+    });
+    $('#login_lost_btn').click(function () {
+        modalAnimate($formLogin, $formLost);
+    });
+    $('#lost_login_btn').click(function () {
+        modalAnimate($formLost, $formLogin);
+    });
+    $('#lost_register_btn').click(function () {
+        modalAnimate($formLost, $formRegister);
+    });
+    $('#register_lost_btn').click(function () {
+        modalAnimate($formRegister, $formLost);
+    });
+    $('#reset_login_btn').click(function () {
+        modalAnimate($formReset, $formLogin);
+    });
+    $('#reset_lost_btn').click(function () {
+        modalAnimate($formReset, $formLost);
+    });
+    $('#reset_register_btn').click(function () {
+        modalAnimate($formReset, $formRegister);
+    });
+
+    function modalAnimate($oldForm, $newForm) {
+        var $oldH = $oldForm.height();
+        var $newH = $newForm.height();
+        $divForms.css("height", $oldH);
+        $oldForm.fadeToggle($modalAnimateTime, function () {
+            $divForms.animate({height: $newH}, $modalAnimateTime, function () {
+                $newForm.fadeToggle($modalAnimateTime);
+            });
+        });
+    }
+
+    function msgFade($msgId, $msgText) {
+        $msgId.fadeOut($msgAnimateTime, function () {
+            $(this).text($msgText).fadeIn($msgAnimateTime);
+        });
+    }
+
+    function msgChange($divTag, $iconTag, $textTag, $divClass, $iconClass, $msgText) {
+        var $msgOld = $divTag.text();
+        msgFade($textTag, $msgText);
+        $divTag.addClass($divClass);
+        $iconTag.removeClass("glyphicon-chevron-right");
+        $iconTag.addClass($iconClass + " " + $divClass);
+        setTimeout(function () {
+            msgFade($textTag, $msgOld);
+            $divTag.removeClass($divClass);
+            $iconTag.addClass("glyphicon-chevron-right");
+            $iconTag.removeClass($iconClass + " " + $divClass);
+        }, $msgShowTime);
+    }
 </script>
 <script>
     $(document).ready(function () {
@@ -441,6 +612,7 @@
         var $container = $('#mainContent');
         var $brand = $('.navbar-brand');
         var $search = $("#searchForm");
+
         function checkWidth() {
             var windowsize = $window.width();
             if (windowsize > 1025) {
@@ -457,7 +629,9 @@
                 $brand.css("marginLeft", 0);
             }
         }
+
         checkWidth();
         $(window).resize(checkWidth);
     });
 </script>
+

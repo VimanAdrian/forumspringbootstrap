@@ -8,10 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,19 +21,9 @@ public class UserController implements Serializable {
     private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register(@ModelAttribute("User") User user, HttpServletResponse response) {
-        if (userService.save(user))
-            try {
-                response.sendRedirect("/login?registerSuccess");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        else
-            try {
-                response.sendRedirect("/login?registerFailure");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public @ResponseBody
+    Boolean register(@ModelAttribute("User") User user, HttpServletResponse response) {
+        return userService.save(user);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -120,31 +107,20 @@ public class UserController implements Serializable {
     }
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-    public void sendPasswordReset(@ModelAttribute("User") User user, HttpServletResponse response) {
+    public @ResponseBody
+    Boolean sendPasswordReset(@ModelAttribute("User") User user, HttpServletResponse response) {
         user = userService.find(user.getUsername());
-        userService.sendPasswordReset(user);
-        try {
-            response.sendRedirect("/login?sendSuccess");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (user.getEmail() != null) {
+            return userService.sendPasswordReset(user);
+        } else {
+            return false;
         }
     }
 
-    @RequestMapping(value = "resetPassword", method = RequestMethod.POST)
-    public void resetPassword(@ModelAttribute("User") User user, HttpServletResponse response) {
-        System.out.println("HERE!");
-        if (userService.resetPassword(user)) {
-            try {
-                response.sendRedirect("/login?resetSuccess");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else
-            try {
-                response.sendRedirect("forgotPassword");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
+    public @ResponseBody
+    Boolean resetPassword(@ModelAttribute("User") User user, HttpServletResponse response) {
+        return userService.resetPassword(user);
     }
 
 }

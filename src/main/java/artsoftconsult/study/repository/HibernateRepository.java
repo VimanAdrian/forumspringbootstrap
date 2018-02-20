@@ -1,5 +1,6 @@
 package artsoftconsult.study.repository;
 
+import artsoftconsult.study.model.Reply;
 import artsoftconsult.study.repository.dbUtils.HibernateUtil;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;

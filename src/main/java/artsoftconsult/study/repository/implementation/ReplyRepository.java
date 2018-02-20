@@ -32,10 +32,11 @@ public class ReplyRepository extends HibernateRepository implements IRepository 
         User user = new User();
         user.setUserId(userRepository.findId(reply.getUser().getUsername()));
         reply.setUser(user);
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO replies(postID, userID, content) VALUES(?,?,?)")) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO replies(postID, userID, content, creationDate) VALUES(?,?,?,?)")) {
             preStmt.setInt(1, reply.getPost().getPostId());
             preStmt.setInt(2, reply.getUser().getUserId());
             preStmt.setString(3, reply.getContent());
+            preStmt.setTimestamp(4, reply.getCreationDate());
             preStmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -266,6 +267,19 @@ public class ReplyRepository extends HibernateRepository implements IRepository 
         Connection con = db.getConnection();
         try (PreparedStatement preparedStatement = con.prepareStatement("UPDATE replies SET enabled=NOT(enabled) WHERE replyId = ?")) {
             preparedStatement.setInt(1, replyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateContent(Reply reply){
+        Connection con = db.getConnection();
+        try(PreparedStatement preparedStatement = con.prepareStatement("UPDATE replies SET content = ? WHERE replyId = ?")){
+            preparedStatement.setInt(2,reply.getReplyId());
+            preparedStatement.setString(1,reply.getContent());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

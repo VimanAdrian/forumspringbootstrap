@@ -54,4 +54,9 @@ public class ReplyService {
     public Reply bestReply(String postID, String username) {
         return replyRepository.bestReply(Integer.valueOf(postID), userRepository.findId(username));
     }
+
+    public Boolean update(Reply reply) {
+        replyRepository.updateContent(reply);
+        return true;
+    }
 }

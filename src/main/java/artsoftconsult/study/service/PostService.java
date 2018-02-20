@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -106,12 +108,31 @@ public class PostService {
         Post p = postRepository.find(Integer.valueOf(postID), currentUser, Integer.valueOf(page));
         Reply[] replies = p.getReplies();
         for (Reply re : replies) {
+            re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
         }
-        p.setReplies(replies);
+        p.setReplies(sort(replies));
         p.setRawContent(p.getContent());
         p.setContent(MyAttributeProvider.commonMark(p.getContent()));
         return p;
+    }
+
+    private Reply[] sort(Reply[] replies) {
+        Reply favorite = null;
+        List<Reply> sortedReplies = new ArrayList<>();
+        for (Reply reply : replies) {
+            if (reply.getBestAnswer() == 1) {
+                favorite = reply;
+            } else {
+                sortedReplies.add(reply);
+            }
+        }
+        sortedReplies.sort(Comparator.comparing(Reply::getScore));
+        if(sortedReplies.size()!=replies.length){
+            sortedReplies.add(favorite);
+        }
+        Collections.reverse(sortedReplies);
+        return sortedReplies.toArray(new Reply[0]);
     }
 
     public Post[] searchByUser(String userID, String page, boolean disabled) {

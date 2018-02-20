@@ -26,15 +26,13 @@ public class UserRepository extends HibernateRepository implements IRepository {
 
     public Integer save(User user) {
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO users(username, password, firstName, lastName, email, dateOfBirth, gender) " +
-                "VALUES(?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO users(username, password, firstName, lastName, email) " +
+                "VALUES(?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
             preStmt.setString(1, user.getUsername());
             preStmt.setString(2, user.getPassword());
             preStmt.setString(3, user.getFirstName());
             preStmt.setString(4, user.getLastName());
             preStmt.setString(5, user.getEmail());
-            preStmt.setDate(6, user.getDateOfBirth());
-            preStmt.setString(7, user.getGender());
             preStmt.executeUpdate();
             ResultSet resultSet = preStmt.getGeneratedKeys();
             if (resultSet.next())
@@ -54,17 +52,13 @@ public class UserRepository extends HibernateRepository implements IRepository {
                 "firstName = IFNULL(?, firstName)," +
                 "lastName = IFNULL(?, lastName)," +
                 "email = IFNULL(?, email)," +
-                "dateOfBirth = IFNULL(?, dateOfBirth)," +
-                "gender = IFNULL(?, gender)," +
                 "profileImage = IFNULL(?, profileImage) WHERE username = ?")) {
             preStmt.setString(1,user.getNewUsernameForUpdate());
             preStmt.setString(2, user.getFirstNameForUpdate());
             preStmt.setString(3, user.getLastNameForUpdate());
             preStmt.setString(4, user.getEmailForUpdate());
-            preStmt.setDate(5, user.getDateOfBirthForUpdate());
-            preStmt.setString(6, user.getGender());
-            preStmt.setString(7, user.getProfileImageForUpdate());
-            preStmt.setString(8, user.getUsernameForUpdate());
+            preStmt.setString(5, user.getProfileImageForUpdate());
+            preStmt.setString(6, user.getUsernameForUpdate());
             preStmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -117,9 +111,7 @@ public class UserRepository extends HibernateRepository implements IRepository {
             user.setFirstName(resultSet1.getString("firstName"));
             user.setLastName(resultSet1.getString("lastName"));
             user.setEmail(resultSet1.getString("email"));
-            user.setDateOfBirth(resultSet1.getDate("dateOfBirth"));
             user.setCreationDate(resultSet1.getTimestamp("creationDate"));
-            user.setGender(resultSet1.getString("gender"));
             user.setRole(resultSet1.getString("role"));
             user.setProfileImage(resultSet1.getString("profileImage"));
             user.setEnabled(resultSet1.getByte("enabled"));
@@ -222,9 +214,7 @@ public class UserRepository extends HibernateRepository implements IRepository {
             user.setFirstName(resultSet1.getString("firstName"));
             user.setLastName(resultSet1.getString("lastName"));
             user.setEmail(resultSet1.getString("email"));
-            user.setDateOfBirth(resultSet1.getDate("dateOfBirth"));
             user.setCreationDate(resultSet1.getTimestamp("creationDate"));
-            user.setGender(resultSet1.getString("gender"));
             user.setProfileImage(resultSet1.getString("profileImage"));
             user.setEnabled(resultSet1.getByte("enabled"));
             userList.add(user);
@@ -338,8 +328,6 @@ public class UserRepository extends HibernateRepository implements IRepository {
     }
 
     public void resetPassword(User user) {
-        System.out.println("pass");
-        System.out.println(user);
         Connection con = db.getConnection();
         try (PreparedStatement preStmt = con.prepareStatement("UPDATE users SET password=? WHERE userID=?")) {
             preStmt.setString(1, user.getPassword());
@@ -352,7 +340,7 @@ public class UserRepository extends HibernateRepository implements IRepository {
 
     public void newReply(Integer userId, Integer postId){
         Connection con = db.getConnection();
-        try(PreparedStatement preStmt = con.prepareStatement("INSERT INTO users_new_reply(userID, postID) VALUE (?,?)")){
+        try(PreparedStatement preStmt = con.prepareStatement("INSERT INTO users_new_reply(userID, postID) VALUES (?,?)")){
             preStmt.setInt(1,userId);
             preStmt.setInt(2,postId);
             preStmt.executeUpdate();
