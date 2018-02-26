@@ -21,6 +21,8 @@ public class Reply {
     private User user;
     private Post post;
     private Integer replyVoteType;
+    private ReplyComment[] comments;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,6 +103,15 @@ public class Reply {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    @Transient
+    public ReplyComment[] getComments() {
+        return comments;
+    }
+
+    public void setComments(ReplyComment[] comments) {
+        this.comments = comments;
     }
 
     @Transient

@@ -22,6 +22,7 @@ public class Post {
     private User user;
     private Reply[] replies;
     private Category[] categories;
+    private PostComment[] comments;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -121,6 +122,16 @@ public class Post {
     public void setCategories(Category[] categories) {
         this.categories = categories;
     }
+
+    @Transient
+    public PostComment[] getComments() {
+        return comments;
+    }
+
+    public void setComments(PostComment[] comments) {
+        this.comments = comments;
+    }
+
 
     public String getRawContent() {
         return rawContent;

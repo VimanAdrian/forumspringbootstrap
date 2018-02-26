@@ -4,7 +4,7 @@
 <style>
 </style>
 <%--TODO SANITISE ALL USER INPUT EVERYWHERE ALL OF IT--%>
-<div class="col-sm-3 well">
+<div class="col-md-3 well">
     <sec:authorize access="isAuthenticated()">
         <div class="well well-top">
             <p><a href="${pageContext.request.contextPath}/account?username=${user.username}">${user.username}</a></p>

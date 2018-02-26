@@ -300,8 +300,8 @@
                             <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login"/>
                         </div>
                         <div>
-                            <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
                             <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
+                            <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
                         </div>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

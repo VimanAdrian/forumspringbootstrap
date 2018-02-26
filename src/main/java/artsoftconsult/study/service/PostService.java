@@ -1,14 +1,13 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.model.Category;
-import artsoftconsult.study.model.Post;
-import artsoftconsult.study.model.Reply;
-import artsoftconsult.study.model.User;
+import artsoftconsult.study.model.*;
 import artsoftconsult.study.repository.implementation.PostRepository;
 import artsoftconsult.study.repository.implementation.UserRepository;
 import artsoftconsult.study.utils.MyAttributeProvider;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.PostValidator;
+import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
+import com.vladsch.flexmark.formatter.internal.MarkdownWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,6 +108,7 @@ public class PostService {
         Reply[] replies = p.getReplies();
         for (Reply re : replies) {
             re.setRawContent(re.getContent());
+
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
         }
         p.setReplies(sort(replies));

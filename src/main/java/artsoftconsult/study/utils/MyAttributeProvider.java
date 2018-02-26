@@ -9,6 +9,7 @@ import com.vladsch.flexmark.html.AttributeProviderFactory;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.html.IndependentAttributeProviderFactory;
 import com.vladsch.flexmark.html.renderer.AttributablePart;
+import com.vladsch.flexmark.html.renderer.LinkResolverContext;
 import com.vladsch.flexmark.html.renderer.NodeRendererContext;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.html.Attributes;
@@ -27,7 +28,7 @@ public class MyAttributeProvider {
 
         Parser parser = Parser.builder(options).build();
         Node document = parser.parse(markdown);
-        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).escapeHtml(true).build();
         final String html = renderer.render(document);
         return html;
     }
@@ -53,8 +54,7 @@ public class MyAttributeProvider {
         static AttributeProviderFactory Factory() {
             return new IndependentAttributeProviderFactory() {
                 @Override
-                public AttributeProvider create(NodeRendererContext context) {
-                    //noinspection ReturnOfInnerClass
+                public AttributeProvider create(LinkResolverContext linkResolverContext) {
                     return new MyAttributeProvider.SampleAttributeProvider();
                 }
             };

@@ -110,13 +110,45 @@
             margin-bottom: 5px;
         }
 
-        @media screen and (min-width: 768px) {
+        .padding-left-15px {
+            padding-left: 15px;
+        }
+
+        .hr-comments {
+            border-color: lightgray;
+        }
+
+        .comment-input {
+            width: 100%;
+            border: none;
+            padding-left: 15px;
+            background-color: inherit;
+            outline: none;
+        }
+
+        @media screen and (min-width: 992px) {
             .text-left-responsive {
                 text-align: left;
             }
 
             .text-right-responsive {
                 text-align: right;
+            }
+
+        }
+
+        .buttons-p {
+        }
+
+        @media screen and (max-width: 992px) {
+            .buttons-p {
+                display: inline;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+            .gi-1x {
+                font-size: 2em !important;
             }
         }
 
@@ -129,10 +161,10 @@
     <div class="row">
         <jsp:include page="bootstrapNavigationLeft.jsp"/>
         <%-- NEW QUESTION FORM --%>
-        <div class="col-sm-9">
+        <div class="col-md-9">
 
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-md-11">
                     <div class="question-title">
                         ${post.title}
                     </div>
@@ -140,16 +172,16 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-md-11">
                     <div class="well pading-top-5px pading-bottom-5px">
                         <div class="row">
-                            <div class="text-left col-sm-12">
+                            <div class="text-left col-md-12">
                                 ${post.content}
                             </div>
                         </div>
                         <hr class="hr-5px"/>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-md-6">
                                 <p class="text-left-responsive">
                                     <c:forEach var="tag" items="${post.categories}">
                                         <a href="${pageContext.request.contextPath}/post?search&tag=${tag.url}&page=0"><span
@@ -157,7 +189,7 @@
                                     </c:forEach>
                                 </p>
                             </div>
-                            <div class="col-sm-6 text-right-responsive">
+                            <div class="col-md-6 text-right-responsive">
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
                                     asked ${post.creationDate.toLocaleString()} by <a
                                         href="${pageContext.request.contextPath}/account?username=${post.user.username}"><img
@@ -173,46 +205,62 @@
                                 </p>
                             </div>
                         </div>
+
+                        <div class="row comment-row">
+                            <c:forEach var="comment" items="${post.comments}">
+                                <hr class="hr-5px "/>
+                                <p class="text-left margin-bottom-0px padding-left-15px gi-08x">
+                                    <c:out value="${comment.content}"/> - <a
+                                        href="${pageContext.request.contextPath}/account?username=${comment.user.username}">${comment.user.username}</a>
+                                    at ${comment.creationDate.toLocaleString()}
+                                </p>
+                            </c:forEach>
+                            <sec:authorize access="isAuthenticated()">
+                                <hr class="hr-5px "/>
+                                <input type="text" placeholder="Post a comment." class="comment-input">
+                            </sec:authorize>
+                        </div>
+
                     </div>
                 </div>
-                <div class="col-sm-1">
+                <div class="col-md-1">
                     <div class="question-buttons" id="${post.postId}">
                         <sec:authorize access="isAuthenticated()">
                             <c:if test="${voteType==1}">
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
                                         aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
                             <c:if test="${voteType==-1}">
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
                                         aria-hidden="true"></span></p>
                             </c:if>
                             <c:if test="${voteType==0}">
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
-                            <p class="margin-bottom-0px"><span
-                                    class="glyphicon glyphicon-bookmark glyphicon-button text-muted clickable"
+                            <p class="margin-bottom-0px buttons-p"><span
+                                    class="gi-1x glyphicon glyphicon-bookmark glyphicon-button text-muted clickable"
                                     aria-hidden="true"></span></p>
                             <c:if test="${post.user.username!=pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon-exclamation-signglyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-exclamation-signglyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
                             <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px"><span
-                                        class="glyphicon glyphicon glyphicon-edit glyphicon-button text-muted clickable"
+                                <p class="margin-bottom-0px buttons-p"><span
+                                        class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
                         </sec:authorize>
@@ -223,24 +271,24 @@
             <%--edit question--%>
             <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
                 <div class="row edit-question hidden">
-                    <div class="col-sm-11">
+                    <div class="col-md-11">
                         <form id="edit-post-form" action="${pageContext.request.contextPath}/editPost" method="POST"
                               class="form-horizontal form">
                             <div class="form-group">
                                     <%--TODO responsive this part--%>
-                                <div class="col-sm-12">
+                                <div class="col-md-12">
                                     <div id="wmd-button-bar"></div>
                                     <textarea id="wmd-input" class="wmd-input form-control vresize"
                                               name="content" tabindex="-1" required>${post.rawContent}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-1">
+                                <div class="col-md-1">
                                     <input type="submit" class="btn btn-primary" value="Update"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-12">
+                                <div class="col-md-12">
                                     <p>You can see a live preview of how your question will look. </p>
                                     <hr/>
                                     <div id="wmd-preview" class="wmd-preview well"></div>
@@ -258,20 +306,20 @@
             <c:forEach var="reply" items="${post.replies}">
                 <hr/>
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-md-11">
                         <div class="well pading-top-5px pading-bottom-5px">
                             <c:if test="${reply.enabled==0}">
                                 <p>This reply was marked as violating our comunity guidlines and has been disabled.</p>
                             </c:if>
                             <c:if test="${reply.enabled==1}">
                                 <div class="row">
-                                    <div class="text-left col-sm-12">
+                                    <div class="text-left col-md-12">
                                             ${reply.content}
                                     </div>
                                 </div>
                                 <hr class="hr-5px"/>
                                 <div class="row">
-                                    <div class="col-sm-6 col-sm-offset-6">
+                                    <div class="col-md-6 col-md-offset-6">
                                         <p class="text-right-responsive margin-bottom-0px gi-08x">
                                             answered ${reply.creationDate.toLocaleString()} by <a
                                                 href="${pageContext.request.contextPath}/account?username=${reply.user.username}"><img
@@ -288,66 +336,67 @@
                             </c:if>
                         </div>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-md-1">
                         <div class="answer-buttons" id="${reply.replyId}">
                             <sec:authorize access="isAuthenticated()">
                                 <c:if test="${reply.replyVoteType==1}">
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
                                             aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
                                 <c:if test="${reply.replyVoteType==-1}">
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
                                             aria-hidden="true"></span></p>
                                 </c:if>
                                 <c:if test="${reply.replyVoteType==0}">
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
                                 <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
                                     <c:if test="${reply.bestAnswer==1}">
-                                        <p class="margin-bottom-0px"><span
-                                                class="glyphicon glyphicon-star glyphicon-button"
+                                        <p class="margin-bottom-0px buttons-p"><span
+                                                class="gi-1x glyphicon glyphicon-star glyphicon-button"
                                                 aria-hidden="true"></span></p>
                                     </c:if>
                                     <c:if test="${reply.bestAnswer==0}">
-                                        <p class="margin-bottom-0px"><span
-                                                class="glyphicon glyphicon-star glyphicon-button  text-muted clickable"
+                                        <p class="margin-bottom-0px buttons-p"><span
+                                                class="gi-1x glyphicon glyphicon-star glyphicon-button  text-muted clickable"
                                                 aria-hidden="true"></span></p>
                                     </c:if>
                                 </c:if>
                                 <c:if test="${post.user.username!=pageContext.request.userPrincipal.name}">
                                     <c:if test="${reply.bestAnswer==1}">
-                                        <p class="margin-bottom-0px"><span class="glyphicon glyphicon-star"
-                                                                           aria-hidden="true"></span></p>
+                                        <p class="margin-bottom-0px buttons-p"><span
+                                                class="gi-1x glyphicon glyphicon-star"
+                                                aria-hidden="true"></span></p>
                                     </c:if>
                                 </c:if>
                                 <c:if test="${reply.user.username!=pageContext.request.userPrincipal.name}">
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon-exclamation-sign glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-exclamation-sign glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
                                 <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
-                                    <p class="margin-bottom-0px"><span
-                                            class="glyphicon glyphicon glyphicon-edit glyphicon-button text-muted clickable"
+                                    <p class="margin-bottom-0px buttons-p"><span
+                                            class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
                             </sec:authorize>
                             <sec:authorize access="isAnonymous()">
                                 <c:if test="${reply.bestAnswer==1}">
-                                    <p class="margin-bottom-0px"><span class="glyphicon glyphicon-star"
-                                                                       aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p"><span class="gi-1x glyphicon glyphicon-star"
+                                                                                 aria-hidden="true"></span></p>
                                 </c:if>
                             </sec:authorize>
                         </div>
@@ -357,24 +406,24 @@
                 <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
                     <c:set var="hasAnswered" value="true"/>
                     <div class="row edit-answer hidden">
-                        <div class="col-sm-11">
+                        <div class="col-md-11">
                             <form id="edit-answer-form" action="${pageContext.request.contextPath}/editReply"
                                   method="POST" class="form-horizontal form">
                                 <div class="form-group">
                                         <%--TODO responsive this part--%>
-                                    <div class="col-sm-12">
+                                    <div class="col-md-12">
                                         <div id="wmd-button-bar"></div>
                                         <textarea id="wmd-input" class="wmd-input form-control vresize"
                                                   name="content" tabindex="-1" required>${reply.rawContent}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-1">
+                                    <div class="col-md-1">
                                         <input type="submit" class="btn btn-primary" value="Update"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-12">
+                                    <div class="col-md-12">
                                         <p>You can see a live preview of how your answer will look. </p>
                                         <hr/>
                                         <div id="wmd-preview" class="wmd-preview well"></div>
@@ -394,7 +443,7 @@
             <c:if test="${hasAnswered=='false'}">
             <hr/>
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-md-11">
                     <div class="alert alert-warning fade in">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                             <%--TODO change this --%>
@@ -403,24 +452,24 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-11">
+                <div class="col-md-11">
                     <form id="new-reply-form" action="${pageContext.request.contextPath}/makeReply" method="POST"
                           class="form-horizontal form">
                         <div class="form-group">
                                 <%--TODO responsive this part--%>
-                            <div class="col-sm-12">
+                            <div class="col-md-12">
                                 <div id="wmd-button-bar"></div>
                                 <textarea id="wmd-input" class="wmd-input form-control vresize"
                                           name="content" required></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-1">
+                            <div class="col-md-1">
                                 <input type="submit" class="btn btn-primary" value="Answer"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-12">
+                            <div class="col-md-12">
                                 <hr/>
                                 <div id="wmd-preview" class="wmd-preview"></div>
                                 <hr/>

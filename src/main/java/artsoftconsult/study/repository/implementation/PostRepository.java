@@ -28,6 +28,8 @@ public class PostRepository extends HibernateRepository implements IRepository {
     private ReplyRepository replyRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     public PostRepository() {
 
@@ -216,6 +218,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
             user = userRepository.findById(userID);
             post.setUser(user);
             post.setReplies(replyRepository.findByPostId(resultSet.getInt("postID"), page, currentUser));
+            post.setComments(commentRepository.findByPostId(resultSet.getInt("postID")));
             for (Integer id : categoryRepository.findCategoryByPost(resultSet.getInt("postID"))) {
                 categoryList.add(categoryRepository.findById(id));
             }

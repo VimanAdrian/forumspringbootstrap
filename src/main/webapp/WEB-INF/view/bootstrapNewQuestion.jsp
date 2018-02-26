@@ -23,6 +23,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css"/>
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/tomorrow.css"/>
     <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
@@ -72,8 +73,7 @@
                 <div class="col-sm-1"></div>
             </div>
             <div class="row">
-                <div class="col-sm-1"></div>
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-sm-offset-1">
                     <form id="new-post-form" action="${pageContext.request.contextPath}/makePost" method="POST"
                           class="form-horizontal">
                         <div class="form-group">
