@@ -30,7 +30,6 @@ public class User {
     private Byte enabled = 0;
     private String profileImage = "";
     private Boolean isAdmin = false;
-    private Collection<HibernateUti> utisByUserId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -254,15 +253,6 @@ public class User {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
-    }
-
-    @OneToMany(mappedBy = "user")
-    public Collection<HibernateUti> getUtisByUserId() {
-        return utisByUserId;
-    }
-
-    public void setUtisByUserId(Collection<HibernateUti> utisByUserId) {
-        this.utisByUserId = utisByUserId;
     }
 
     @Transient

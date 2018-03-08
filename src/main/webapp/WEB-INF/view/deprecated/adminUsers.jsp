@@ -82,7 +82,7 @@
             display: none;
         }
 
-        .pages {
+        .page {
             margin: auto;
             width: 50%;
             text-align: center;
@@ -114,7 +114,7 @@
                 <div class="msg">${enableSucces}</div>
             </c:if>
         </div>
-        <div class="pages">
+        <div class="page">
             <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
         </div>
         <div id="userTableBox">
@@ -190,7 +190,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="pages">
+        <div class="page">
             <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
         </div>
     </sec:authorize>

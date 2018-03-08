@@ -22,7 +22,7 @@
         </c:if>
         <div class="well well-top">
             <c:if test="${topQuestions==true}">
-                <p>Your top questions.</p>
+                <p>Your top question.</p>
                 <c:forEach var="post" items="${questionList}" varStatus="loop">
                     <p><a href="/post?postID=${post.postId}&page=0">${post.title}
                         <span class="badge">${post.score}</span></a></p>
@@ -30,7 +30,7 @@
             </c:if>
             <c:if test="${topQuestions==false}">
                 <p>
-                    It seems you don't have any questions.
+                    It seems you don't have any question.
                     <br>
                     You can ask one <a href="${pageContext.request.contextPath}/newPost">here</a>!
                 </p>

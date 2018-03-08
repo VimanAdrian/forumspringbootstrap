@@ -78,7 +78,7 @@ public class CategoryRepository extends HibernateRepository implements IReposito
 
     public boolean saveAssociation(Integer postID, Integer categoryID) {
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO posts_categories(postId, categoryId) VALUES (?,?)")) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO question_categories(postId, categoryId) VALUES (?,?)")) {
             preStmt.setInt(1, postID);
             preStmt.setInt(2, categoryID);
             preStmt.executeUpdate();
@@ -92,7 +92,7 @@ public class CategoryRepository extends HibernateRepository implements IReposito
     public Integer[] findCategoryByPost(Integer postID) {
         List<Integer> list = new ArrayList<>();
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("SELECT categoryId FROM posts_categories WHERE postId=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("SELECT categoryId FROM question_categories WHERE postId=?")) {
             preStmt.setInt(1, postID);
             ResultSet resultSet = preStmt.executeQuery();
             while (resultSet.next()) {
@@ -107,7 +107,7 @@ public class CategoryRepository extends HibernateRepository implements IReposito
     public Integer[] findPostByCategory(Integer categoryId) {
         List<Integer> list = new ArrayList<>();
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("SELECT postId FROM posts_categories WHERE categoryId=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("SELECT postId FROM question_categories WHERE categoryId=?")) {
             preStmt.setInt(1, categoryId);
             ResultSet resultSet = preStmt.executeQuery();
             while (resultSet.next()) {

@@ -16,19 +16,6 @@ public class RandomUtils {
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static SecureRandom rnd = new SecureRandom();
 
-    public static String removeStopWords(String string) {
-        try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\viorelv\\IdeaProjects\\spring\\src\\main\\resources\\stopList.tx"))) {
-            String stopWord;
-            while ((stopWord = br.readLine()) != null) {
-                String regex = "\\s*\\b" + stopWord + "\\b\\s*";
-                string = string.replaceAll(regex, " ");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return string;
-    }
-
     public static String[] split(String string) {
         return string.split("\\s+");
     }

@@ -222,9 +222,9 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="${pageContext.request.contextPath}/post?disabled=on&search&browse&page=0">Disabled
-                            questions</a>
+                            question</a>
                         </li>
-                        <li><a href="${pageContext.request.contextPath}/admin/users?page=0">Users</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/user?page=0">Users</a></li>
                     </ul>
                     </sec:authorize>
             </ul>

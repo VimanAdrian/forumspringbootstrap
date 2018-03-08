@@ -303,7 +303,7 @@
                 </div>
             </c:if>
 
-            <c:forEach var="reply" items="${post.replies}">
+            <c:forEach var="reply" items="${post.reply}">
                 <hr/>
                 <div class="row">
                     <div class="col-md-11">

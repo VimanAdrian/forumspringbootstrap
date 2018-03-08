@@ -29,7 +29,7 @@
             text-transform: uppercase;
         }
 
-        .pages {
+        .page {
             margin: auto;
             width: 50%;
             text-align: center;
@@ -185,7 +185,7 @@
 <jsp:include page="navigation.jsp"/>
 <body>
 <br/>
-<div class="pages">
+<div class="page">
     <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
 </div>
 <div id="stack">
@@ -249,7 +249,7 @@
         </c:forEach>
     </div>
 </div>
-<div class="pages">
+<div class="page">
     <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
 </div>
 <div id="categories">

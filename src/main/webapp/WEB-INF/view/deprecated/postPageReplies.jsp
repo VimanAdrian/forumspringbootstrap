@@ -135,7 +135,7 @@
         <br/>
     </c:if>
 </c:if>
-<c:forEach var="reply" items="${post.replies}">
+<c:forEach var="reply" items="${post.reply}">
     <div class="reply">
         <c:if test="${reply.enabled==0}">
             <p class="disabledReply">This reply is disabled!</p>

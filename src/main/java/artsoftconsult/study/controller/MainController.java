@@ -116,7 +116,7 @@ public class MainController {
             modelAndView.addObject("error", "Something went wrong...");
         }
         if (adminSucces != null) {
-            modelAndView.addObject("adminSucces", "Users is now admin!");
+            modelAndView.addObject("adminSucces", "User is now admin!");
         }
         if (disableSucces != null) {
             modelAndView.addObject("disableSucces", "User is now disabled!");

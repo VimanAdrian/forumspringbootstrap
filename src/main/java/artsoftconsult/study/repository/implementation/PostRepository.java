@@ -40,7 +40,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
         User user = new User();
         user.setUserId(userRepository.findId(post.getUser().getUsername()));
         post.setUser(user);
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO posts(userID, title, content) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO question(userID, title, content) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             preStmt.setInt(1, post.getUser().getUserId());
             preStmt.setString(2, post.getTitle());
             preStmt.setString(3, post.getContent());
@@ -70,7 +70,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public void incrementView(Integer postID) {
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("UPDATE posts SET views = views + 1 WHERE postID=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("UPDATE question SET views = views + 1 WHERE questioID=?")) {
             preStmt.setInt(1, postID);
             preStmt.executeUpdate();
         } catch (SQLException e) {
@@ -82,9 +82,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT * FROM posts WHERE active='1' AND title LIKE ? LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='1' AND title LIKE ? LIMIT ?,?";
         else
-            select = "SELECT * FROM posts WHERE active='0' AND title LIKE ? LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='0' AND title LIKE ? LIMIT ?,?";
         for (String searchTerm : searchString) {
             try (PreparedStatement preStmt = con.prepareStatement(select)) {
                 preStmt.setString(1, "%" + searchTerm + "%");
@@ -103,9 +103,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT * FROM posts WHERE active='1' LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='1' LIMIT ?,?";
         else
-            select = "SELECT * FROM posts WHERE active='0' LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='0' LIMIT ?,?";
         try (PreparedStatement preStmt = con.prepareStatement(select)) {
             preStmt.setInt(1, page * 20);
             preStmt.setInt(2, 20);
@@ -120,9 +120,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT * FROM posts WHERE active='1' AND postID IN (SELECT postId FROM posts_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?)) LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='1' AND questioID IN (SELECT questioID FROM question_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?)) LIMIT ?,?";
         else
-            select = "SELECT * FROM posts WHERE active='0' AND postID IN (SELECT postId FROM posts_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?)) LIMIT ?,?";
+            select = "SELECT * FROM question WHERE active='0' AND questioID IN (SELECT questioID FROM question_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?)) LIMIT ?,?";
         try (PreparedStatement preStmt = con.prepareStatement(select)) {
             preStmt.setString(1, tag);
             preStmt.setInt(2, page * 20);
@@ -169,14 +169,14 @@ public class PostRepository extends HibernateRepository implements IRepository {
     public Post find(Integer postID, User currentUser, Integer page) {
         Connection con = db.getConnection();
         if (currentUser.getAdmin()) {
-            try (PreparedStatement preStmt = con.prepareStatement("SELECT * FROM posts WHERE postID=?")) {
+            try (PreparedStatement preStmt = con.prepareStatement("SELECT * FROM question WHERE questioID=?")) {
                 preStmt.setInt(1, postID);
                 return find(preStmt, currentUser, page);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
-            try (PreparedStatement preStmt = con.prepareStatement("SELECT * FROM posts WHERE postID=? AND active='1'")) {
+            try (PreparedStatement preStmt = con.prepareStatement("SELECT * FROM question WHERE questioID=? AND active='1'")) {
                 preStmt.setInt(1, postID);
                 return find(preStmt, currentUser, page);
             } catch (SQLException e) {
@@ -188,7 +188,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public Integer findPoster(Integer postID) {
         Connection con = db.getConnection();
-        try (PreparedStatement preSmt = con.prepareStatement("SELECT userID FROM posts WHERE postID=?")) {
+        try (PreparedStatement preSmt = con.prepareStatement("SELECT userID FROM question WHERE questioID=?")) {
             preSmt.setInt(1, postID);
             ResultSet resultSet = preSmt.executeQuery();
             if (resultSet.next()) {
@@ -232,9 +232,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT COUNT(postID) FROM posts WHERE title LIKE ? AND active='1' ";
+            select = "SELECT COUNT(questioID) FROM question WHERE title LIKE ? AND active='1' ";
         else
-            select = "SELECT COUNT(postID) FROM posts WHERE title LIKE ? AND active='0'";
+            select = "SELECT COUNT(questioID) FROM question WHERE title LIKE ? AND active='0'";
         for (String searchTerm : searchString) {
             try (PreparedStatement preStmt = con.prepareStatement(select)) {
                 preStmt.setString(1, "%" + searchTerm + "%");
@@ -254,9 +254,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT COUNT(postID) FROM posts WHERE active='1'";
+            select = "SELECT COUNT(questioID) FROM question WHERE active='1'";
         else
-            select = "SELECT COUNT(postID) FROM posts WHERE active='0'";
+            select = "SELECT COUNT(questioID) FROM question WHERE active='0'";
         try (PreparedStatement preStmt = con.prepareStatement(select)) {
             ResultSet resultSet = preStmt.executeQuery();
             if (resultSet.next())
@@ -272,9 +272,9 @@ public class PostRepository extends HibernateRepository implements IRepository {
         Connection con = db.getConnection();
         String select;
         if (!disabled)
-            select = "SELECT COUNT(postID) FROM posts WHERE active='1' AND postID IN (SELECT postId FROM posts_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?))";
+            select = "SELECT COUNT(questioID) FROM question WHERE active='1' AND questioID IN (SELECT questioID FROM question_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?))";
         else
-            select = "SELECT COUNT(postID) FROM posts WHERE active='0' AND postID IN (SELECT postId FROM posts_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?))";
+            select = "SELECT COUNT(questioID) FROM question WHERE active='0' AND questioID IN (SELECT questioID FROM question_categories WHERE categoryId = (SELECT categoryId FROM categories WHERE categories.title=?))";
         try (PreparedStatement preStmt = con.prepareStatement(select)) {
             preStmt.setString(1, tag);
             ResultSet resultSet = preStmt.executeQuery();
@@ -335,7 +335,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try (PreparedStatement preStmt = con.prepareStatement("UPDATE posts SET score=score+? WHERE postID=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("UPDATE question SET score=score+? WHERE questioID=?")) {
             preStmt.setInt(1, voteType);
             preStmt.setInt(2, postID);
             preStmt.executeUpdate();
@@ -361,7 +361,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public boolean togglePostStatus(Integer postID) {
         Connection con = db.getConnection();
-        try (PreparedStatement preStmt = con.prepareStatement("UPDATE posts SET active=NOT(active) WHERE postID=?")) {
+        try (PreparedStatement preStmt = con.prepareStatement("UPDATE question SET active=NOT(active) WHERE questioID=?")) {
             preStmt.setInt(1, postID);
             preStmt.executeUpdate();
             return true;
@@ -386,7 +386,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public Post[] searchByUser(Integer userID, Integer page, boolean disabled) {
         Connection con = db.getConnection();
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM posts WHERE userID=? AND active=? LIMIT ?, ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM question WHERE userID=? AND active=? LIMIT ?, ?")) {
             preparedStatement.setInt(1, userID);
             preparedStatement.setBoolean(2, !disabled);
             preparedStatement.setInt(3, page * 20);
@@ -401,7 +401,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public Integer searchByUserNext(Integer userID, boolean disabled) {
         Connection con = db.getConnection();
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT COUNT(postID) FROM posts WHERE userID=? AND active=?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT COUNT(questioID) FROM question WHERE userID=? AND active=?")) {
             preparedStatement.setInt(1, userID);
             preparedStatement.setBoolean(2, !disabled);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -416,7 +416,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
 
     public void update(Post post) {
         Connection con = db.getConnection();
-        try (PreparedStatement prestmt = con.prepareStatement("UPDATE posts SET title=IFNULL(?, title), content=IFNULL(?, content) WHERE postID=?")) {
+        try (PreparedStatement prestmt = con.prepareStatement("UPDATE question SET title=IFNULL(?, title), content=IFNULL(?, content) WHERE questioID=?")) {
             prestmt.setString(1, post.getTitleForUpdate());
             prestmt.setString(2, post.getContentForUpdate());
             prestmt.setInt(3, post.getPostId());
@@ -434,7 +434,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
             ResultSet resultSet = preStmt.executeQuery();
             while (resultSet.next()) {
                 Integer postId = resultSet.getInt(1);
-                try (PreparedStatement preStmt2 = con.prepareStatement("SELECT title FROM posts WHERE postID=?")) {
+                try (PreparedStatement preStmt2 = con.prepareStatement("SELECT title FROM question WHERE questioID=?")) {
                     preStmt2.setInt(1, postId);
                     ResultSet resultSet2 = preStmt2.executeQuery();
                     if (resultSet2.next()) {
@@ -456,7 +456,7 @@ public class PostRepository extends HibernateRepository implements IRepository {
         List<Post> arrayList = new ArrayList<>();
         Connection con = db.getConnection();
         List<Post> list = new ArrayList<>();
-        try(PreparedStatement prestmt = con.prepareStatement("SELECT * FROM posts WHERE userID=? ORDER BY score DESC LIMIT 5;")){
+        try(PreparedStatement prestmt = con.prepareStatement("SELECT * FROM question WHERE userID=? ORDER BY score DESC LIMIT 5;")){
             prestmt.setInt(1,user.getUserId());
             ResultSet resultSet = prestmt.executeQuery();
             while(resultSet.next()){

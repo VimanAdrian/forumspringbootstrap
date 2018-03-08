@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ attribute name="url" rtexprvalue="true" required="true" type="java.lang.String" description="Base url" %>
-<%@ attribute name="nrPagini" rtexprvalue="true" required="true" type="java.lang.Integer" description="Nr of pages" %>
+<%@ attribute name="nrPagini" rtexprvalue="true" required="true" type="java.lang.Integer" description="Nr of page" %>
 
 <c:if test="${(param.page!=0) && (param.page!=1)}"><a href="${pageContext.request.contextPath}${url}0">First</a></c:if>
 <c:if test="${param.page!=0}"><a href="${pageContext.request.contextPath}${url}${param.page-1}">Back</a></c:if>

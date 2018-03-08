@@ -163,7 +163,7 @@
         <sec:authorize access="hasRole('ROLE_ADMIN')">
             <li class="element"><a href="http://localhost:8080/post?disabled=on&search&browse&page=0">Disabled Posts</a>
             </li>
-            <li class="element"><a href="http://localhost:8080/admin/users?page=0">Users</a></li>
+            <li class="element"><a href="http://localhost:8080/admin/user?page=0">Users</a></li>
         </sec:authorize>
         <!-- search -->
         <li id="search">

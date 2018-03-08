@@ -25,7 +25,7 @@ public class CommentRepository {
     public PostComment[] findByPostId(int postID) {
         List<PostComment> list = new ArrayList<>();
         Connection con = db.getConnection();
-        try (PreparedStatement preSmt = con.prepareStatement("SELECT * FROM posts_comments WHERE postID = ? ")) {
+        try (PreparedStatement preSmt = con.prepareStatement("SELECT * FROM question_comments WHERE postID = ? ")) {
             preSmt.setInt(1, postID);
             ResultSet resultSet = preSmt.executeQuery();
             while(resultSet.next()){

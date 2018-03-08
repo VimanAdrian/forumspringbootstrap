@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="springDB.db">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.7">
+    <root id="1"/>
+    <schema id="2" parent="1" name="main">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <collation id="3" parent="1" name="BINARY"/>
+    <collation id="4" parent="1" name="NOCASE"/>
+    <collation id="5" parent="1" name="RTRIM"/>
+    <table id="6" parent="2" name="activation_tokens"/>
+    <table id="7" parent="2" name="categories"/>
+    <table id="8" parent="2" name="chapter"/>
+    <table id="9" parent="2" name="class"/>
+    <table id="10" parent="2" name="class_follow"/>
+    <table id="11" parent="2" name="class_rights"/>
+    <table id="12" parent="2" name="invites"/>
+    <table id="13" parent="2" name="lecture"/>
+    <table id="14" parent="2" name="page"/>
+    <table id="15" parent="2" name="password_tokens"/>
+    <table id="16" parent="2" name="persistent_logins"/>
+    <table id="17" parent="2" name="question"/>
+    <table id="18" parent="2" name="question_categories"/>
+    <table id="19" parent="2" name="question_comments"/>
+    <table id="20" parent="2" name="replies"/>
+    <table id="21" parent="2" name="replies_comments"/>
+    <table id="22" parent="2" name="sqlite_master">
+      <System>1</System>
+    </table>
+    <table id="23" parent="2" name="sqlite_sequence">
+      <System>1</System>
+    </table>
+    <table id="24" parent="2" name="user_follow"/>
+    <table id="25" parent="2" name="users"/>
+    <table id="26" parent="2" name="users_new_reply"/>
+    <table id="27" parent="2" name="votes_users_posts"/>
+    <table id="28" parent="2" name="votes_users_replies"/>
+    <column id="29" parent="6" name="userID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="30" parent="6" name="token">
+      <Position>2</Position>
+      <DataType>VARCHAR(30)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="31" parent="6" name="creationDate">
+      <Position>3</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <index id="32" parent="6" name="sqlite_autoindex_activation_tokens_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>token</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="33" parent="6">
+      <ColNames>token</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_activation_tokens_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="34" parent="6" name="activation_tokens_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <column id="35" parent="7" name="categoryId">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="36" parent="7" name="title">
+      <Position>2</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+    </column>
+    <column id="37" parent="7" name="url">
+      <Position>3</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="38" parent="7">
+      <ColNames>categoryId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="39" parent="8" name="chapter_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="40" parent="8" name="title">
+      <Position>2</Position>
+      <DataType>VARCHAR(1024)|0</DataType>
+    </column>
+    <column id="41" parent="8" name="description">
+      <Position>3</Position>
+      <DataType>VARCHAR(4096)|0</DataType>
+    </column>
+    <column id="42" parent="8" name="views">
+      <Position>4</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <column id="43" parent="8" name="score">
+      <Position>5</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <key id="44" parent="8">
+      <ColNames>chapter_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="45" parent="9" name="class_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="46" parent="9" name="owner">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="47" parent="9" name="title">
+      <Position>3</Position>
+      <DataType>VARCHAR(1024)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="48" parent="9" name="description">
+      <Position>4</Position>
+      <DataType>VARCHAR(4096)|0</DataType>
+    </column>
+    <column id="49" parent="9" name="created">
+      <Position>5</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="50" parent="9" name="last_active">
+      <Position>6</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="51" parent="9" name="visibility">
+      <Position>7</Position>
+      <DataType>VARCHAR(256)|0</DataType>
+    </column>
+    <column id="52" parent="9" name="score">
+      <Position>8</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <column id="53" parent="9" name="views">
+      <Position>9</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <key id="54" parent="9">
+      <ColNames>class_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="55" parent="10" name="class_follow_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="56" parent="10" name="user_id">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="57" parent="10" name="class_id">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <key id="58" parent="10">
+      <ColNames>class_follow_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="59" parent="11" name="class_edit_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="60" parent="11" name="user_id">
+      <Position>2</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="61" parent="11" name="rights">
+      <Position>3</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="62" parent="11" name="class_id">
+      <Position>4</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <key id="63" parent="11">
+      <ColNames>class_edit_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="64" parent="12" name="invite_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="65" parent="12" name="user_id">
+      <Position>2</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="66" parent="12" name="class_id">
+      <Position>3</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <key id="67" parent="12">
+      <ColNames>invite_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="68" parent="13" name="lecture_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="69" parent="13" name="title">
+      <Position>2</Position>
+      <DataType>VARCHAR(1024)|0</DataType>
+    </column>
+    <column id="70" parent="13" name="description">
+      <Position>3</Position>
+      <DataType>VARCHAR(4096)|0</DataType>
+    </column>
+    <column id="71" parent="13" name="visibility">
+      <Position>4</Position>
+      <DataType>VARCHAR(256)|0</DataType>
+    </column>
+    <column id="72" parent="13" name="score">
+      <Position>5</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <column id="73" parent="13" name="views">
+      <Position>6</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <column id="74" parent="13" name="class_id">
+      <Position>7</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="75" parent="13" name="can_post">
+      <Position>8</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+    </column>
+    <key id="76" parent="13">
+      <ColNames>lecture_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="77" parent="14" name="page_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="78" parent="14" name="title">
+      <Position>2</Position>
+      <DataType>VARCHAR(1024)|0</DataType>
+    </column>
+    <column id="79" parent="14" name="content">
+      <Position>3</Position>
+      <DataType>VARCHAR(8192)|0</DataType>
+    </column>
+    <column id="80" parent="14" name="views">
+      <Position>4</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <column id="81" parent="14" name="score">
+      <Position>5</Position>
+      <DataType>LONG|0</DataType>
+    </column>
+    <key id="82" parent="14">
+      <ColNames>page_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="83" parent="15" name="userID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="84" parent="15" name="token">
+      <Position>2</Position>
+      <DataType>VARCHAR(30)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="85" parent="15" name="creationDate">
+      <Position>3</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <index id="86" parent="15" name="sqlite_autoindex_password_tokens_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>token</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="87" parent="15">
+      <ColNames>token</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_password_tokens_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="88" parent="15" name="password_tokens_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <column id="89" parent="16" name="username">
+      <Position>1</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="90" parent="16" name="series">
+      <Position>2</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="91" parent="16" name="token">
+      <Position>3</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="92" parent="16" name="last_used">
+      <Position>4</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="93" parent="17" name="questioID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="94" parent="17" name="userID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="95" parent="17" name="title">
+      <Position>3</Position>
+      <DataType>VARCHAR(500)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="96" parent="17" name="content">
+      <Position>4</Position>
+      <DataType>VARCHAR(5000)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="97" parent="17" name="creationDate">
+      <Position>5</Position>
+      <DataType>DATE|0</DataType>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="98" parent="17" name="views">
+      <Position>6</Position>
+      <DataType>INTEGER|0</DataType>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+    </column>
+    <column id="99" parent="17" name="score">
+      <Position>7</Position>
+      <DataType>INTEGER|0</DataType>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+    </column>
+    <column id="100" parent="17" name="active">
+      <Position>8</Position>
+      <DataType>BOOLEAN|0</DataType>
+      <DefaultExpression>&apos;1&apos;</DefaultExpression>
+    </column>
+    <column id="101" parent="17" name="lecture_id">
+      <Position>9</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <key id="102" parent="17">
+      <ColNames>questioID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="103" parent="17" name="posts_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <column id="104" parent="18" name="posts_categoriesId">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="105" parent="18" name="postId">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="106" parent="18" name="categoryId">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="107" parent="18">
+      <ColNames>posts_categoriesId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="108" parent="18" name="posts_categories_posts_postID_fk">
+      <ColNames>postId</ColNames>
+      <RefTableName>posts</RefTableName>
+      <RefColNames>postID</RefColNames>
+    </foreign-key>
+    <foreign-key id="109" parent="18" name="posts_categories_categories_categoryId_fk">
+      <ColNames>categoryId</ColNames>
+      <RefTableName>categories</RefTableName>
+      <RefColNames>categoryId</RefColNames>
+    </foreign-key>
+    <column id="110" parent="19" name="commentID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="111" parent="19" name="userID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="112" parent="19" name="postID">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="113" parent="19" name="creationDate">
+      <Position>4</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="114" parent="19" name="content">
+      <Position>5</Position>
+      <DataType>VARCHAR(5000)|0</DataType>
+    </column>
+    <column id="115" parent="20" name="replyId">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="116" parent="20" name="postID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="117" parent="20" name="userID">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="118" parent="20" name="content">
+      <Position>4</Position>
+      <DataType>VARCHAR(5000)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="119" parent="20" name="creationDate">
+      <Position>5</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="120" parent="20" name="score">
+      <Position>6</Position>
+      <DataType>INTEGER|0</DataType>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+    </column>
+    <column id="121" parent="20" name="bestAnswer">
+      <Position>7</Position>
+      <DataType>BOOLEAN|0</DataType>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+    </column>
+    <column id="122" parent="20" name="enabled">
+      <Position>8</Position>
+      <DataType>INTEGER|0</DataType>
+      <DefaultExpression>&apos;1&apos;</DefaultExpression>
+    </column>
+    <key id="123" parent="20">
+      <ColNames>replyId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="124" parent="20" name="replies_posts_postID_fk">
+      <ColNames>postID</ColNames>
+      <RefTableName>posts</RefTableName>
+      <RefColNames>postID</RefColNames>
+    </foreign-key>
+    <foreign-key id="125" parent="20" name="replies_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <column id="126" parent="21" name="commentID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="127" parent="21" name="userID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="128" parent="21" name="replyID">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="129" parent="21" name="creationDate">
+      <Position>4</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="130" parent="21" name="content">
+      <Position>5</Position>
+      <DataType>VARCHAR(5000)|0</DataType>
+    </column>
+    <index id="131" parent="21" name="posts_comments_commentID_uindex">
+      <ColNames>commentID</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="132" parent="21" name="replies_comments_commentID_uindex">
+      <ColNames>commentID</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <column id="133" parent="22" name="type">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="134" parent="22" name="name">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="135" parent="22" name="tbl_name">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="136" parent="22" name="rootpage">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+    </column>
+    <column id="137" parent="22" name="sql">
+      <Position>5</Position>
+      <DataType>text|0</DataType>
+    </column>
+    <column id="138" parent="23" name="name">
+      <Position>1</Position>
+    </column>
+    <column id="139" parent="23" name="seq">
+      <Position>2</Position>
+    </column>
+    <column id="140" parent="24" name="user_follow_id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="141" parent="24" name="user">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="142" parent="24" name="followed">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <key id="143" parent="24">
+      <ColNames>user_follow_id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="144" parent="24" name="user_follow_users_userID_fk">
+      <ColNames>user</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <column id="145" parent="25" name="userID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="146" parent="25" name="username">
+      <Position>2</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="147" parent="25" name="password">
+      <Position>3</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="148" parent="25" name="firstName">
+      <Position>4</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+    </column>
+    <column id="149" parent="25" name="lastname">
+      <Position>5</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+    </column>
+    <column id="150" parent="25" name="email">
+      <Position>6</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="151" parent="25" name="role">
+      <Position>7</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&quot;ROLE_USER&quot;</DefaultExpression>
+    </column>
+    <column id="152" parent="25" name="creationDate">
+      <Position>8</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>current_timestamp</DefaultExpression>
+    </column>
+    <column id="153" parent="25" name="enabled">
+      <Position>9</Position>
+      <DataType>BOOLEAN|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;0&apos;</DefaultExpression>
+    </column>
+    <column id="154" parent="25" name="profileImage">
+      <Position>10</Position>
+      <DataType>VARCHAR(50)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;/profileImage/generic.png&apos;</DefaultExpression>
+    </column>
+    <column id="155" parent="25" name="accountNonLocked">
+      <Position>11</Position>
+      <DataType>BOOLEAN|0</DataType>
+      <DefaultExpression>&apos;1&apos;</DefaultExpression>
+    </column>
+    <column id="156" parent="25" name="type">
+      <Position>12</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+    </column>
+    <index id="157" parent="25" name="users_username_uindex">
+      <ColNames>username</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="158" parent="25" name="users_email_uindex">
+      <ColNames>email</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="159" parent="25">
+      <ColNames>userID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="160" parent="26" name="userID">
+      <Position>1</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="161" parent="26" name="postID">
+      <Position>2</Position>
+      <DataType>INT|0</DataType>
+    </column>
+    <column id="162" parent="27" name="userID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="163" parent="27" name="postID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="164" parent="27" name="voteType">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="165" parent="27" name="sqlite_autoindex_votes_users_posts_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userID
+postID</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="166" parent="27" name="votes_users_posts_userID_postID_pk">
+      <ColNames>userID
+postID</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_votes_users_posts_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="167" parent="27" name="votes_users_posts_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <foreign-key id="168" parent="27" name="votes_users_posts_posts_postID_fk">
+      <ColNames>postID</ColNames>
+      <RefTableName>posts</RefTableName>
+      <RefColNames>postID</RefColNames>
+    </foreign-key>
+    <column id="169" parent="28" name="userID">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="170" parent="28" name="replyID">
+      <Position>2</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="171" parent="28" name="voteType">
+      <Position>3</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <index id="172" parent="28" name="sqlite_autoindex_votes_users_replies_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userID
+replyID</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="173" parent="28" name="votes_users_replies_userID_replyID_pk">
+      <ColNames>userID
+replyID</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_votes_users_replies_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="174" parent="28" name="votes_users_replies_users_userID_fk">
+      <ColNames>userID</ColNames>
+      <RefTableName>users</RefTableName>
+      <RefColNames>userID</RefColNames>
+    </foreign-key>
+    <foreign-key id="175" parent="28" name="votes_users_replies_replies_replyId_fk">
+      <ColNames>replyID</ColNames>
+      <RefTableName>replies</RefTableName>
+      <RefColNames>replyId</RefColNames>
+    </foreign-key>
+  </database-model>
+</dataSource>

@@ -19,10 +19,6 @@ public class ReplyComment {
     private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
     private String content;
 
-    public ReplyComment() {
-    }
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="commmentID", nullable = false)
