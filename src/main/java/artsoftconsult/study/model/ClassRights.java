@@ -1,4 +1,4 @@
-package artsoftconsult.study.model.generated2;
+package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.util.Objects;

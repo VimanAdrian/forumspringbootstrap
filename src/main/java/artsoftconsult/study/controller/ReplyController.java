@@ -1,8 +1,5 @@
 package artsoftconsult.study.controller;
 
-import artsoftconsult.study.model.Post;
-import artsoftconsult.study.model.Reply;
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.ReplyService;
 import artsoftconsult.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

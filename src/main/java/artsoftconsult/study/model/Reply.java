@@ -1,42 +1,35 @@
 package artsoftconsult.study.model;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.util.Collection;
+import java.util.Objects;
 
-@Component
 @Entity
-@DynamicInsert
-@Table(name = "replies", schema = "forum")
+@Table(name="replies")
 public class Reply {
-    private Integer replyId;
+    private Long replyId;
     private String content;
-    private String rawContent;
-    private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
-    private Integer score = 0;
-    private Byte bestAnswer = 0;
-    private Byte enabled = 1;
-    private User user;
-    private Post post;
-    private Integer replyVoteType;
-    private ReplyComment[] comments;
-
+    private Date creationDate;
+    private Long score;
+    private Boolean bestAnswer;
+    private Long enabled;
+    private User userByUserId;
+    private Collection<ReplyComment> replyCommentByReplyId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "replyId", nullable = false)
-    public Integer getReplyId() {
+    @Column(name = "reply_id")
+    public Long getReplyId() {
         return replyId;
     }
 
-    public void setReplyId(Integer replyId) {
+    public void setReplyId(Long replyId) {
         this.replyId = replyId;
     }
 
     @Basic
-    @Column(name = "content", nullable = true, length = 5000)
+    @Column(name = "content")
     public String getContent() {
         return content;
     }
@@ -46,135 +39,80 @@ public class Reply {
     }
 
     @Basic
-    @Column(name = "creationDate", nullable = false)
-    public Timestamp getCreationDate() {
+    @Column(name = "creation_date")
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
     @Basic
-    @Column(name = "score", nullable = true)
-    public Integer getScore() {
+    @Column(name = "score")
+    public Long getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Long score) {
         this.score = score;
     }
 
     @Basic
-    @Column(name = "bestAnswer", nullable = true)
-    public Byte getBestAnswer() {
+    @Column(name = "bestanswer")
+    public Boolean getBestAnswer() {
         return bestAnswer;
     }
 
-    public void setBestAnswer(Byte bestAnswer) {
-        this.bestAnswer = bestAnswer;
+    public void setBestAnswer(Boolean bestanswer) {
+        this.bestAnswer = bestanswer;
     }
 
     @Basic
-    @Column(name = "enabled", nullable = true)
-    public Byte getEnabled() {
+    @Column(name = "enabled")
+    public Long getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Byte enabled) {
+    public void setEnabled(Long enabled) {
         this.enabled = enabled;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "userID", referencedColumnName = "userID")
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User usersByUserId) {
-        this.user = usersByUserId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "postID", referencedColumnName = "postID")
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    @Transient
-    public ReplyComment[] getComments() {
-        return comments;
-    }
-
-    public void setComments(ReplyComment[] comments) {
-        this.comments = comments;
-    }
-
-    @Transient
-    public String getRawContent() {
-        return rawContent;
-    }
-
-    public void setRawContent(String rawContent) {
-        this.rawContent = rawContent;
-    }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Reply that = (Reply) o;
-
-        if (replyId != null ? !replyId.equals(that.replyId) : that.replyId != null) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        if (score != null ? !score.equals(that.score) : that.score != null) return false;
-        if (bestAnswer != null ? !bestAnswer.equals(that.bestAnswer) : that.bestAnswer != null) return false;
-        if (enabled != null ? !enabled.equals(that.enabled) : that.enabled != null) return false;
-
-        return true;
+        Reply reply = (Reply) o;
+        return Objects.equals(replyId, reply.replyId) &&
+                Objects.equals(content, reply.content) &&
+                Objects.equals(creationDate, reply.creationDate) &&
+                Objects.equals(score, reply.score) &&
+                Objects.equals(bestAnswer, reply.bestAnswer) &&
+                Objects.equals(enabled, reply.enabled);
     }
 
     @Override
     public int hashCode() {
-        int result = replyId != null ? replyId.hashCode() : 0;
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (score != null ? score.hashCode() : 0);
-        result = 31 * result + (bestAnswer != null ? bestAnswer.hashCode() : 0);
-        result = 31 * result + (enabled != null ? enabled.hashCode() : 0);
-        return result;
+        return Objects.hash(replyId, content, creationDate, score, bestAnswer, enabled);
     }
 
-    @Override
-    public String toString() {
-        return "Reply{" +
-                "replyId=" + replyId +
-                ", content='" + content + '\'' +
-                ", creationDate=" + creationDate +
-                ", score=" + score +
-                ", bestAnswer=" + bestAnswer +
-                ", enabled=" + enabled +
-                ", user=" + user +
-                ", post=" + post +
-                ", replyVoteType=" + replyVoteType +
-                '}';
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    public User getUserByUserId() {
+        return userByUserId;
     }
 
-    //shame to the family
-
-    @Transient
-    public Integer getReplyVoteType() {
-        return replyVoteType;
+    public void setUserByUserId(User userByUserId) {
+        this.userByUserId = userByUserId;
     }
 
-    public void setReplyVoteType(Integer replyVoteType) {
-        this.replyVoteType = replyVoteType;
+    @OneToMany(mappedBy = "getReplyByReplyId")
+    public Collection<ReplyComment> getReplyCommentByReplyId() {
+        return replyCommentByReplyId;
     }
+
+    public void setReplyCommentByReplyId(Collection<ReplyComment> replyCommentByReplyId) {
+        this.replyCommentByReplyId = replyCommentByReplyId;
+    }
+
 }

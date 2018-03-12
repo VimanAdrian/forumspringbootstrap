@@ -1,7 +1,5 @@
 package artsoftconsult.study.repository.implementation;
 
-import artsoftconsult.study.model.PostComment;
-import artsoftconsult.study.model.ReplyComment;
 import artsoftconsult.study.repository.dbUtils.DbConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

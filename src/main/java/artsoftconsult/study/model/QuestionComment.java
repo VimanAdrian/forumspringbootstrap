@@ -1,26 +1,25 @@
-package artsoftconsult.study.model.generated2;
+package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "replies_comments", schema = "public", catalog = "memoryleak")
-public class RepliesComments {
-    private Long replyCommentId;
+@Table(name = "question_comments")
+public class QuestionComment {
+    private Long questionCommentId;
     private Date creationDate;
     private String content;
     private User userByUserId;
-    private Reply replyByReplyId;
 
     @Id
-    @Column(name = "reply_comment_id")
-    public Long getReplyCommentId() {
-        return replyCommentId;
+    @Column(name = "question_comment_id")
+    public Long getQuestionCommentId() {
+        return questionCommentId;
     }
 
-    public void setReplyCommentId(Long replyCommentId) {
-        this.replyCommentId = replyCommentId;
+    public void setQuestionCommentId(Long questionCommentId) {
+        this.questionCommentId = questionCommentId;
     }
 
     @Basic
@@ -47,15 +46,15 @@ public class RepliesComments {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RepliesComments that = (RepliesComments) o;
-        return Objects.equals(replyCommentId, that.replyCommentId) &&
+        QuestionComment that = (QuestionComment) o;
+        return Objects.equals(questionCommentId, that.questionCommentId) &&
                 Objects.equals(creationDate, that.creationDate) &&
                 Objects.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(replyCommentId, creationDate, content);
+        return Objects.hash(questionCommentId, creationDate, content);
     }
 
     @ManyToOne
@@ -66,15 +65,5 @@ public class RepliesComments {
 
     public void setUserByUserId(User userByUserId) {
         this.userByUserId = userByUserId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "reply_id", referencedColumnName = "reply_id", nullable = false)
-    public Reply getReplyByReplyId() {
-        return replyByReplyId;
-    }
-
-    public void setReplyByReplyId(Reply replyByReplyId) {
-        this.replyByReplyId = replyByReplyId;
     }
 }

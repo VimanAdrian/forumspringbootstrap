@@ -1,6 +1,5 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.model.Category;
 import artsoftconsult.study.repository.implementation.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,33 +1,30 @@
-package artsoftconsult.study.model.generated2;
+package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "chapters")
-public class Chapter {
-    private Long chapterId;
+@Table(name="pages")
+public class Page {
+    private Long pageId;
     private String title;
-    private String description;
+    private String content;
     private Date created;
     private Date lastActive;
     private String visibility;
     private Long score;
     private Long views;
     private Boolean active;
-    private Collection<Page> pagesByChapterId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chapter_id")
-    public Long getChapterId() {
-        return chapterId;
+    @Column(name = "page_id")
+    public Long getPageId() {
+        return pageId;
     }
 
-    public void setChapterId(Long chapterId) {
-        this.chapterId = chapterId;
+    public void setPageId(Long pageId) {
+        this.pageId = pageId;
     }
 
     @Basic
@@ -41,13 +38,13 @@ public class Chapter {
     }
 
     @Basic
-    @Column(name = "description")
-    public String getDescription() {
-        return description;
+    @Column(name = "content")
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Basic
@@ -114,29 +111,20 @@ public class Chapter {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Chapter chapter = (Chapter) o;
-        return Objects.equals(chapterId, chapter.chapterId) &&
-                Objects.equals(title, chapter.title) &&
-                Objects.equals(description, chapter.description) &&
-                Objects.equals(created, chapter.created) &&
-                Objects.equals(lastActive, chapter.lastActive) &&
-                Objects.equals(visibility, chapter.visibility) &&
-                Objects.equals(score, chapter.score) &&
-                Objects.equals(views, chapter.views) &&
-                Objects.equals(active, chapter.active);
+        Page page = (Page) o;
+        return Objects.equals(pageId, page.pageId) &&
+                Objects.equals(title, page.title) &&
+                Objects.equals(content, page.content) &&
+                Objects.equals(created, page.created) &&
+                Objects.equals(lastActive, page.lastActive) &&
+                Objects.equals(visibility, page.visibility) &&
+                Objects.equals(score, page.score) &&
+                Objects.equals(views, page.views) &&
+                Objects.equals(active, page.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chapterId, title, description, created, lastActive, visibility, score, views, active);
-    }
-
-    @OneToMany(mappedBy = "getChapterByChapterId")
-    public Collection<Page> getPagesByChapterId() {
-        return pagesByChapterId;
-    }
-
-    public void setPagesByChapterId(Collection<Page> pagesByChapterId) {
-        this.pagesByChapterId = pagesByChapterId;
+        return Objects.hash(pageId, title, content, created, lastActive, visibility, score, views, active);
     }
 }

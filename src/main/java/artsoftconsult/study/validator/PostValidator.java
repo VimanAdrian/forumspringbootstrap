@@ -1,6 +1,5 @@
 package artsoftconsult.study.validator;
 
-import artsoftconsult.study.model.Post;
 import org.springframework.stereotype.Component;
 
 @Component

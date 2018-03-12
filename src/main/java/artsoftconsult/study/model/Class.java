@@ -1,4 +1,4 @@
-package artsoftconsult.study.model.generated2;
+package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "lectures")
-public class Lecture {
-    private Long lectureId;
+@Table(name="classes")
+public class Class {
+    private Long classId;
     private String title;
     private String description;
     private Date created;
@@ -17,18 +17,17 @@ public class Lecture {
     private Long score;
     private Long views;
     private Boolean active;
-    private Collection<Chapter> chaptersByLectureId;
-    private Collection<Question> questionsByLectureId;
+    private User userByOwner;
+    private Collection<Lecture> lecturesByClassId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lecture_id")
-    public Long getLectureId() {
-        return lectureId;
+    @Column(name = "class_id")
+    public Long getClassId() {
+        return classId;
     }
 
-    public void setLectureId(Long lectureId) {
-        this.lectureId = lectureId;
+    public void setClassId(Long classId) {
+        this.classId = classId;
     }
 
     @Basic
@@ -115,38 +114,39 @@ public class Lecture {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Lecture lecture = (Lecture) o;
-        return Objects.equals(lectureId, lecture.lectureId) &&
-                Objects.equals(title, lecture.title) &&
-                Objects.equals(description, lecture.description) &&
-                Objects.equals(created, lecture.created) &&
-                Objects.equals(lastActive, lecture.lastActive) &&
-                Objects.equals(visibility, lecture.visibility) &&
-                Objects.equals(score, lecture.score) &&
-                Objects.equals(views, lecture.views) &&
-                Objects.equals(active, lecture.active);
+        Class aClass = (Class) o;
+        return Objects.equals(classId, aClass.classId) &&
+                Objects.equals(title, aClass.title) &&
+                Objects.equals(description, aClass.description) &&
+                Objects.equals(created, aClass.created) &&
+                Objects.equals(lastActive, aClass.lastActive) &&
+                Objects.equals(visibility, aClass.visibility) &&
+                Objects.equals(score, aClass.score) &&
+                Objects.equals(views, aClass.views) &&
+                Objects.equals(active, aClass.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lectureId, title, description, created, lastActive, visibility, score, views, active);
+        return Objects.hash(classId, title, description, created, lastActive, visibility, score, views, active);
     }
 
-    @OneToMany(mappedBy = "getLectureByLectureId")
-    public Collection<Chapter> getChaptersByLectureId() {
-        return chaptersByLectureId;
+    @ManyToOne
+    @JoinColumn(name = "owner", referencedColumnName = "user_id", nullable = false)
+    public User getUserByOwner() {
+        return userByOwner;
     }
 
-    public void setChaptersByLectureId(Collection<Chapter> chaptersByLectureId) {
-        this.chaptersByLectureId = chaptersByLectureId;
+    public void setUserByOwner(User userByOwner) {
+        this.userByOwner = userByOwner;
     }
 
-    @OneToMany(mappedBy = "getLectureByLectureId")
-    public Collection<Question> getQuestionsByLectureId() {
-        return questionsByLectureId;
+    @OneToMany(mappedBy = "getClassByClassId")
+    public Collection<Lecture> getLecturesByClassId() {
+        return lecturesByClassId;
     }
 
-    public void setQuestionsByLectureId(Collection<Question> questionsByLectureId) {
-        this.questionsByLectureId = questionsByLectureId;
+    public void setLecturesByClassId(Collection<Lecture> lecturesByClassId) {
+        this.lecturesByClassId = lecturesByClassId;
     }
 }

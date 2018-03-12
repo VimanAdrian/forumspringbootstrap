@@ -1,6 +1,5 @@
 package artsoftconsult.study.controller;
 
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

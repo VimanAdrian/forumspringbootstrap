@@ -1,6 +1,5 @@
 package artsoftconsult.study.repository.implementation;
 
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.HibernateRepository;
 import artsoftconsult.study.repository.IRepository;
 import artsoftconsult.study.repository.dbUtils.DbConnection;

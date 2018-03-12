@@ -1,7 +1,5 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.model.Post;
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.implementation.PostRepository;
 import artsoftconsult.study.repository.implementation.UserRepository;
 import artsoftconsult.study.utils.Email;

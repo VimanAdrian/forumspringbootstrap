@@ -1,7 +1,5 @@
 package artsoftconsult.study.controller;
 
-import artsoftconsult.study.model.Post;
-import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.CategoryService;
 import artsoftconsult.study.service.PostService;
 import artsoftconsult.study.service.ReplyService;

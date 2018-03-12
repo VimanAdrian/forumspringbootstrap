@@ -1,6 +1,5 @@
 package artsoftconsult.study.validator;
 
-import artsoftconsult.study.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
