@@ -110,6 +110,7 @@
           <element id="library" level="project" name="Maven: org.flywaydb:flyway-core:4.2.0" />
           <element id="library" level="project" name="Maven: com.h2database:h2:1.4.196" />
           <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.2.1" />
+          <element id="library" level="project" name="Maven: org.modelmapper:modelmapper:1.1.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

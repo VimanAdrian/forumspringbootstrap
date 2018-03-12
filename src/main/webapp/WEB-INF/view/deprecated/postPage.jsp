@@ -32,7 +32,7 @@
 
     <script>
         $(document).ready(function () {
-            localPostId = "${post.postId}";
+            localPostId = "${post.questionId}";
             $(document).on("click", ".voteButton", function () {
                 localVoteType = $(this).val();
                 $.ajax({
@@ -419,7 +419,7 @@
                     </tbody>
                 </table>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <input type="hidden" name="postId" value="${post.postId}"/>
+                <input type="hidden" name="questionId" value="${post.questionId}"/>
             </form>
         </div>
         <sec:authorize access="isAuthenticated()">
@@ -435,7 +435,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <input type="hidden" name="postId" value="${post.postId}">
+                <input type="hidden" name="questionId" value="${post.questionId}">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <input type="hidden" name="page" value="${param.page}">
             </form>

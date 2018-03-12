@@ -1,29 +1,26 @@
 package artsoftconsult.study.dto.model;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class UserDTO {
-    private Integer userId;
-    private String username = "";
-    private String newUsername = "";
-    private String password = "";
-    private String password2 = "";
-    private String firstName = "";
-    private String lastName = "";
-    private String email = "";
-    private String role = "ROLE_USER";
-    private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
-    private Byte enabled = 0;
-    private String profileImage = "";
-    private Boolean isAdmin = false;
+    private Long userId;
+    private String username;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String role;
+    private Date creationDate;
+    private Boolean enabled;
+    private String profileImage;
+    private Boolean accountNonLocked;
+    private String type;
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -41,14 +38,6 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
     }
 
     public String getFirstName() {
@@ -83,19 +72,19 @@ public class UserDTO {
         this.role = role;
     }
 
-    public Timestamp getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Byte getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Byte enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -107,17 +96,19 @@ public class UserDTO {
         this.profileImage = profileImage;
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
+    public Boolean getAccountNonLocked() {
+        return accountNonLocked;
     }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
     }
 
-    public String getMemberSince() {
-        Date date = new Date(this.creationDate.getTime());
-        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    public String getType() {
+        return type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 }

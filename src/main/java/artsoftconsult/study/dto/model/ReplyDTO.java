@@ -1,26 +1,23 @@
 package artsoftconsult.study.dto.model;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
+import java.sql.Date;
+import java.util.Collection;
 
 public class ReplyDTO {
-    private Integer replyId;
+    private Long replyId;
     private String content;
-    private String rawContent;
-    private Timestamp creationDate = new Timestamp(new java.util.Date().getTime());
-    private Integer score = 0;
-    private Byte bestAnswer = 0;
-    private Byte enabled = 1;
-    private UserDTO user;
-    private PostDTO post;
-    private Integer replyVoteType;
-    private ReplyCommentDTO[] comments;
+    private Date creationDate;
+    private Long score;
+    private Boolean bestAnswer;
+    private Long enabled;
+    private UserDTO userByUserId;
+    private Collection<RepliesCommentsDTO> repliesCommentsByReplyId;
 
-    public Integer getReplyId() {
+    public Long getReplyId() {
         return replyId;
     }
 
-    public void setReplyId(Integer replyId) {
+    public void setReplyId(Long replyId) {
         this.replyId = replyId;
     }
 
@@ -32,92 +29,51 @@ public class ReplyDTO {
         this.content = content;
     }
 
-    public Timestamp getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Integer getScore() {
+    public Long getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Long score) {
         this.score = score;
     }
 
-    public Byte getBestAnswer() {
+    public Boolean getBestAnswer() {
         return bestAnswer;
     }
 
-    public void setBestAnswer(Byte bestAnswer) {
+    public void setBestAnswer(Boolean bestAnswer) {
         this.bestAnswer = bestAnswer;
     }
 
-    public Byte getEnabled() {
+    public Long getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Byte enabled) {
+    public void setEnabled(Long enabled) {
         this.enabled = enabled;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public UserDTO getUserByUserId() {
+        return userByUserId;
     }
 
-    public void setUser(UserDTO usersByUserId) {
-        this.user = usersByUserId;
+    public void setUserByUserId(UserDTO userByUserId) {
+        this.userByUserId = userByUserId;
     }
 
-    public PostDTO getPost() {
-        return post;
+    public Collection<RepliesCommentsDTO> getRepliesCommentsByReplyId() {
+        return repliesCommentsByReplyId;
     }
 
-    public void setPost(PostDTO post) {
-        this.post = post;
-    }
-
-    public ReplyCommentDTO[] getComments() {
-        return comments;
-    }
-
-    public void setComments(ReplyCommentDTO[] comments) {
-        this.comments = comments;
-    }
-
-    public String getRawContent() {
-        return rawContent;
-    }
-
-    public void setRawContent(String rawContent) {
-        this.rawContent = rawContent;
-    }
-
-    public Integer getReplyVoteType() {
-        return replyVoteType;
-    }
-
-    public void setReplyVoteType(Integer replyVoteType) {
-        this.replyVoteType = replyVoteType;
-    }
-
-    @Override
-    public String toString() {
-        return "Reply{" +
-                "replyId=" + replyId +
-                ", content='" + content + '\'' +
-                ", rawContent='" + rawContent + '\'' +
-                ", creationDate=" + creationDate +
-                ", score=" + score +
-                ", bestAnswer=" + bestAnswer +
-                ", enabled=" + enabled +
-                ", user=" + user +
-                ", post=" + post +
-                ", replyVoteType=" + replyVoteType +
-                ", comments=" + Arrays.toString(comments) +
-                '}';
+    public void setRepliesCommentsByReplyId(Collection<RepliesCommentsDTO> repliesCommentsByReplyId) {
+        this.repliesCommentsByReplyId = repliesCommentsByReplyId;
     }
 }

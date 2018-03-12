@@ -1,16 +1,15 @@
 package artsoftconsult.study.dto.model;
 
-
 public class CategoryDTO {
-    private Integer categoryId;
+    private Long categoryId;
     private String title;
     private String url;
 
-    public Integer getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -28,14 +27,5 @@ public class CategoryDTO {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return "CategoryDTO{" +
-                "categoryId=" + categoryId +
-                ", title='" + title + '\'' +
-                ", url='" + url + '\'' +
-                '}';
     }
 }

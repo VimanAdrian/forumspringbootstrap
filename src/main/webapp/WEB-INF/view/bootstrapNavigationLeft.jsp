@@ -16,7 +16,7 @@
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <p><strong>You have new answers!</strong></p>
                 <c:forEach var="post" items="${answerList}" varStatus="loop">
-                    <p><a href="/post?postID=${post.postId}&page=0" class="alert-link">${post.title}</a></p>
+                    <p><a href="/post?postID=${post.questionId}&page=0" class="alert-link">${post.title}</a></p>
                 </c:forEach>
             </div>
         </c:if>
@@ -24,7 +24,7 @@
             <c:if test="${topQuestions==true}">
                 <p>Your top question.</p>
                 <c:forEach var="post" items="${questionList}" varStatus="loop">
-                    <p><a href="/post?postID=${post.postId}&page=0">${post.title}
+                    <p><a href="/post?postID=${post.questionId}&page=0">${post.title}
                         <span class="badge">${post.score}</span></a></p>
                 </c:forEach>
             </c:if>

@@ -63,7 +63,7 @@
                                                    style="display: none"/>
                                             <input type="hidden" name="replyID" value="${bestReply.replyId}"
                                                    style="display: none"/>
-                                            <input type="hidden" name="postID" value="${post.postId}"
+                                            <input type="hidden" name="postID" value="${post.questionId}"
                                                    style="display: none"/>
                                             <input type="hidden" name="page" value="${param.page}"
                                                    style="display: none"/>
@@ -177,7 +177,7 @@
                                                style="display: none"/>
                                         <input type="hidden" name="replyID" value="${reply.replyId}"
                                                style="display: none"/>
-                                        <input type="hidden" name="postID" value="${post.postId}"
+                                        <input type="hidden" name="postID" value="${post.questionId}"
                                                style="display: none"/>
                                         <input type="hidden" name="page" value="${param.page}"
                                                style="display: none"/>
@@ -207,7 +207,7 @@
                                     <form action="/favoriteReply" method="post">
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"
                                                style="display: none"/>
-                                        <input type="hidden" name="postID" value="${post.postId}"
+                                        <input type="hidden" name="postID" value="${post.questionId}"
                                                style="display: none"/>
                                         <input type="hidden" name="page" value="${param.page}" style="display: none"/>
                                         <input type="hidden" name="replyID" value="${reply.replyId}"

@@ -224,7 +224,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <div class="question-buttons" id="${post.postId}">
+                    <div class="question-buttons" id="${post.questionId}">
                         <sec:authorize access="isAuthenticated()">
                             <c:if test="${voteType==1}">
                                 <p class="margin-bottom-0px buttons-p"><span
@@ -297,7 +297,7 @@
                             </div>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <input type="hidden" name="title" value="${post.title}"/>
-                            <input type="hidden" name="postId" value="${post.postId}"/>
+                            <input type="hidden" name="questionId" value="${post.questionId}"/>
                         </form>
                     </div>
                 </div>
@@ -476,7 +476,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input type="hidden" name="postId" value="${post.postId}"/>
+                        <input type="hidden" name="questionId" value="${post.questionId}"/>
                     </form>
                 </div>
             </div>
@@ -557,12 +557,12 @@
                 }
             });
 
-            function voteQuestion(postId, voteType) {
+            function voteQuestion(questionId, voteType) {
                 $.ajax({
                     type: "POST",
                     url: '${pageContext.request.contextPath}/votePost',
                     data: {
-                        postID: postId,
+                        postID: questionId,
                         type: voteType,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },

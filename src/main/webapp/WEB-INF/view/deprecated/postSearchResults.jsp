@@ -198,7 +198,7 @@
     <div id="center">
         <c:forEach var="post" items="${searchResults}">
             <div class="post">
-                <p id="titleRow"><a href="http://localhost:8080/post?postID=${post.postId}&page=0"
+                <p id="titleRow"><a href="http://localhost:8080/post?postID=${post.questionId}&page=0"
                                     id="questionTitle">${post.title}</a></p>
                 <table class="postTables">
                     <tbody>
