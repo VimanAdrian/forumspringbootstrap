@@ -1,15 +1,24 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.repository.implementation.PostRepository;
-import artsoftconsult.study.repository.implementation.UserRepository;
+import artsoftconsult.study.dto.model.UserDTO;
+import artsoftconsult.study.model.Question;
+import artsoftconsult.study.model.User;
+import artsoftconsult.study.repository.QuestionRepository;
+import artsoftconsult.study.repository.UserRepository;
+import artsoftconsult.study.repository.implementation.TokenRepository;
 import artsoftconsult.study.utils.Email;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.UserValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -22,128 +31,183 @@ public class UserService implements Serializable {
     @Autowired
     private Email email;
     @Autowired
-    private PostRepository postRepository;
+    private QuestionRepository questionRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     public UserService() {
     }
 
-    public boolean save(User user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Integer userID = -1;
-        if (userValidator.validateUserPassword(user))
-            userID = userRepository.saveHibernate(user);
-        if (userID != -1) {
-            user.setUserId(userID);
-            sendToken(user);
-            return true;
+    private User prepareForSave(User user) {
+        user.setUserId(null);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
+        user.setCreationDate(new Date(System.currentTimeMillis()));
+        user.setEnabled(false);
+        user.setProfileImage("/profileImage/generic.png");
+        user.setAccountNonLocked(true);
+        user.setType("NORMAL");
+        return user;
+    }
+
+    private User prepareForUpdate(User userFromDb, User userFromDto) {
+        userFromDto.setType(userFromDb.getType());
+        userFromDto.setAccountNonLocked(userFromDb.getAccountNonLocked());
+        userFromDto.setEnabled(userFromDb.getEnabled());
+        userFromDto.setCreationDate(userFromDb.getCreationDate());
+        userFromDto.setRole(userFromDb.getRole());
+        userFromDto.setPassword(userFromDb.getRole());
+        userFromDto.setEmail(userFromDb.getEmail());
+        userFromDto.setUserId(userFromDb.getUserId());
+        return userFromDto;
+    }
+
+    public boolean save(UserDTO user) {
+        if (userValidator.validate(user)) {
+            User userFromDto = new User();
+            modelMapper.map(user, userFromDto);
+            userFromDto = prepareForSave(userFromDto);
+            if (userRepository.findByEmail(userFromDto.getEmail()) == null) {
+                User savedUser = userRepository.save(userFromDto);
+                sendToken(savedUser);
+                return true;
+            } else {
+                return false;
+            }
         }
         return false;
     }
 
+    public boolean updateUser(UserDTO user) {
+        User userFromDb = userRepository.findByUsername(user.getEmail());
+        User userFromDto = new User();
+        modelMapper.map(user, userFromDto);
+        userFromDto = prepareForUpdate(userFromDb, userFromDto);
+        userRepository.save(userFromDto);
+        return true;
+    }
+
     public boolean sendToken(User user) {
         String token = RandomUtils.randomString(30);
-        userRepository.deleteToken(user);
-        if (userRepository.saveToken(user, token)) {
+        tokenRepository.deleteToken(user.getUserId());
+        if (tokenRepository.saveToken(user.getUserId(), token)) {
             email.sendActivationEmail(user.getEmail(), user.getUsername(), "http://localhost:8080/activate?token=" + token + "&userId=" + user.getUserId());
             return true;
         }
         return false;
     }
 
-    public boolean useToken(String token, Integer userID) {
-        User user = new User();
-        user.setUserId(userID);
-        boolean used = userRepository.useToken(token, user);
-        userRepository.deleteToken(user);
-        return used;
+    public boolean useToken(String token, Long userId) {
+        long found = tokenRepository.findToken(token, userId);
+        if (found != 0) {
+            long timeCurrent = new java.util.Date().getTime();
+            if (timeCurrent - found > 7200000) {
+                tokenRepository.deleteToken(userId);
+                return false;
+            } else {
+                tokenRepository.deleteToken(userId);
+                enableUser(userId);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean sendPasswordReset(User user) {
+    private boolean enableUser(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            user.setEnabled(true);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean sendPasswordReset(UserDTO userFromDto) {
+        User user = userRepository.findByUsername(userFromDto.getUsername());
         String token = RandomUtils.randomString(30);
-        userRepository.deletePasswordReset(user);
-        if (userRepository.savePasswordReset(user, token)) {
+        tokenRepository.deletePasswordReset(user.getUserId());
+        if (tokenRepository.savePasswordReset(user.getUserId(), token)) {
             email.sendPasswordResetEmail(user.getEmail(), user.getUsername(), "http://localhost:8080/reset?token=" + token + "&userId=" + user.getUserId());
             return true;
         }
         return false;
     }
 
-    public boolean usePasswordReset(String token, Integer userID) {
-        User user = new User();
-        user.setUserId(userID);
-        boolean used = userRepository.usePasswordReset(token, user);
-        userRepository.deletePasswordReset(user);
-        return used;
+    public boolean usePasswordReset(String token, Long userId) {
+        long found = tokenRepository.findPasswordResetToken(token, userId);
+        if (found != 0) {
+            long timeCurrent = new java.util.Date().getTime();
+            if (timeCurrent - found > 7200000) {
+                tokenRepository.deletePasswordReset(userId);
+                return false;
+            } else {
+                tokenRepository.deletePasswordReset(userId);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean resetPassword(User user) {
+    public boolean resetPassword(UserDTO user) {
+        User userFromDto = new User();
+        modelMapper.map(user, userFromDto);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (userValidator.validateUserPassword(user)) {
-            user.setPassword2("");
-            userRepository.resetPassword(user);
+            userRepository.updatePasswordById(user.getPassword(), user.getUserId());
             return true;
-        } else
-            return false;
-    }
-
-    public boolean updateUser(User user) {
-        return userRepository.update(user);
+        }
+        return false;
     }
 
     public User[] getAll() {
-        return userRepository.getAll();
+        return userRepository.findAll().toArray(new User[0]);
     }
 
     public boolean makeAdmin(User user) {
-        return userRepository.makeAdmin(user);
+        userRepository.updateRoleById("ROLE_ADMIN",user.getUserId());
+        return true;
     }
 
     public User find(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public User find(Integer id) {
-        return userRepository.findById(id);
+    public User find(Long id) {
+        return userRepository.findByUserId(id);
     }
 
-    public Integer toggleEnabled(User user) {
-        return userRepository.toggleEnabled(user);
+    public Long toggleEnabled(User user) {
+        return userRepository.toggleEnabled(user.getUserId()).getUserId();
     }
 
-    public User[] getUserList(String page) {
-        return userRepository.getAll(Integer.valueOf(page));
-    }
-
-    public Integer getUserListNext() {
-        double nrPag = userRepository.getAllNext() / 20;
-        return (int) Math.round(nrPag);
+    public Page<User> getUserList(Integer page, Integer size) {
+        return userRepository.findAll(PageRequest.of(page,size));
     }
 
     public void updateProfileImage(String filename, String username) {
         userRepository.updateProfileImage("/profileImage/" + filename, username);
     }
 
-    public List<Post> newAnswers(User user) {
-        return postRepository.newReplies(find(user.getUsername()));
+    public List<Question> newAnswers(User user) {
+        return questionRepository.newReplies(find(user.getUsername()).getUserId());
     }
 
-    public List<Post> topQuestions(User user) {
-        return postRepository.topPosts(user);
+    public List<Question> topQuestions(User user) {
+        return questionRepository.topQuestion(user.getUserId());
     }
 
     public void block(String username) {
-        String userEmail = userRepository.findEmail(username);
-        if (userEmail != null) {
-            System.out.println("'" + userEmail + "'");
-            email.sendAccountLockedEmail(userEmail, username);
+        User user = userRepository.findByUsername(username);
+        if (user.getEmail() != null) {
+            email.sendAccountLockedEmail(user.getEmail(), username);
         }
-        userRepository.block(username);
+        userRepository.block(user.getUserId());
     }
-    /*
-    public void joinulLuiStefii() {
-        userRepository.joinulLuiStefii();
-    }
-*/
+
 }

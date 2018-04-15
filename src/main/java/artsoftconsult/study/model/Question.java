@@ -11,6 +11,7 @@ public class Question {
     private Long questionId;
     private String title;
     private String content;
+    private String rawContent;
     private Date created;
     private Date lastActive;
     private Long views;
@@ -20,6 +21,18 @@ public class Question {
     private Collection<Category> questionCategoriesByQuestionId;
     private Collection<QuestionComment> questionCommentsByQuestionId;
     private Collection<Reply> repliesByQuestionId;
+    private Integer voteType;
+
+    public Question(){
+
+    }
+
+    public Question(Long id, String title, Long views, Long score){
+        this.questionId = id;
+        this.title = title;
+        this.views = views;
+        this.score = score;
+    }
 
     @Id
     @Column(name = "question_id")
@@ -47,8 +60,17 @@ public class Question {
         return content;
     }
 
+    @Transient
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     @Basic
@@ -159,4 +181,12 @@ public class Question {
         this.repliesByQuestionId = repliesByQuestionId;
     }
 
+    @Transient
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
+    }
 }

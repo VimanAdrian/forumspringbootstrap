@@ -166,7 +166,7 @@
             <div class="row">
                 <div class="col-md-11">
                     <div class="question-title">
-                        ${post.title}
+                        ${question.title}
                     </div>
                 </div>
             </div>
@@ -176,14 +176,14 @@
                     <div class="well pading-top-5px pading-bottom-5px">
                         <div class="row">
                             <div class="text-left col-md-12">
-                                ${post.content}
+                                ${question.content}
                             </div>
                         </div>
                         <hr class="hr-5px"/>
                         <div class="row">
                             <div class="col-md-6">
                                 <p class="text-left-responsive">
-                                    <c:forEach var="tag" items="${post.categories}">
+                                    <c:forEach var="tag" items="${question.questionCategoriesByQuestionId}">
                                         <a href="${pageContext.request.contextPath}/post?search&tag=${tag.url}&page=0"><span
                                                 class="label label-default">${tag.title}</span></a>
                                     </c:forEach>
@@ -191,27 +191,27 @@
                             </div>
                             <div class="col-md-6 text-right-responsive">
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
-                                    asked ${post.creationDate.toLocaleString()} by <a
-                                        href="${pageContext.request.contextPath}/account?username=${post.user.username}"><img
-                                        src="${post.user.profileImage}" class="img-circle" height="35" width="35"
-                                        alt="Avatar"> ${post.user.username}
+                                    asked ${question.created.toLocaleString()} by <a
+                                        href="${pageContext.request.contextPath}/account?username=${question.userByUserId.username}"><img
+                                        src="${question.userByUserId.profileImage}" class="img-circle" height="35" width="35"
+                                        alt="Avatar"> ${question.userByUserId.username}
                                 </a>
                                 </p>
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
-                                    views ${post.views}
+                                    views ${question.views}
                                 </p>
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
-                                    votes <span class="question-score">${post.score}</span>
+                                    votes <span class="question-score">${question.score}</span>
                                 </p>
                             </div>
                         </div>
 
                         <div class="row comment-row">
-                            <c:forEach var="comment" items="${post.comments}">
+                            <c:forEach var="comment" items="${question.questionCommentsByQuestionId}">
                                 <hr class="hr-5px "/>
                                 <p class="text-left margin-bottom-0px padding-left-15px gi-08x">
                                     <c:out value="${comment.content}"/> - <a
-                                        href="${pageContext.request.contextPath}/account?username=${comment.user.username}">${comment.user.username}</a>
+                                        href="${pageContext.request.contextPath}/account?username=${comment.userByUserId.username}">${comment.userByUserId.username}</a>
                                     at ${comment.creationDate.toLocaleString()}
                                 </p>
                             </c:forEach>
@@ -224,9 +224,9 @@
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <div class="question-buttons" id="${post.questionId}">
+                    <div class="question-buttons" id="${question.questionId}">
                         <sec:authorize access="isAuthenticated()">
-                            <c:if test="${voteType==1}">
+                            <c:if test="${question.voteType==1}">
                                 <p class="margin-bottom-0px buttons-p"><span
                                         class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
                                         aria-hidden="true"></span></p>
@@ -234,7 +234,7 @@
                                         class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
-                            <c:if test="${voteType==-1}">
+                            <c:if test="${question.voteType==-1}">
                                 <p class="margin-bottom-0px buttons-p"><span
                                         class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
@@ -242,7 +242,7 @@
                                         class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
                                         aria-hidden="true"></span></p>
                             </c:if>
-                            <c:if test="${voteType==0}">
+                            <c:if test="${question.voteType==0}">
                                 <p class="margin-bottom-0px buttons-p"><span
                                         class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
@@ -253,12 +253,12 @@
                             <p class="margin-bottom-0px buttons-p"><span
                                     class="gi-1x glyphicon glyphicon-bookmark glyphicon-button text-muted clickable"
                                     aria-hidden="true"></span></p>
-                            <c:if test="${post.user.username!=pageContext.request.userPrincipal.name}">
+                            <c:if test="${question.userByUserId.username!=pageContext.request.userPrincipal.name}">
                                 <p class="margin-bottom-0px buttons-p"><span
                                         class="gi-1x glyphicon glyphicon-exclamation-signglyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
                             </c:if>
-                            <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
+                            <c:if test="${question.userByUserId.username==pageContext.request.userPrincipal.name}">
                                 <p class="margin-bottom-0px buttons-p"><span
                                         class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
                                         aria-hidden="true"></span></p>
@@ -269,7 +269,7 @@
             </div>
 
             <%--edit question--%>
-            <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
+            <c:if test="${question.userByUserId.username==pageContext.request.userPrincipal.name}">
                 <div class="row edit-question hidden">
                     <div class="col-md-11">
                         <form id="edit-post-form" action="${pageContext.request.contextPath}/editPost" method="POST"
@@ -279,7 +279,7 @@
                                 <div class="col-md-12">
                                     <div id="wmd-button-bar"></div>
                                     <textarea id="wmd-input" class="wmd-input form-control vresize"
-                                              name="content" tabindex="-1" required>${post.rawContent}</textarea>
+                                              name="content" tabindex="-1" required>${question.rawContent}</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -296,20 +296,20 @@
                                 </div>
                             </div>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            <input type="hidden" name="title" value="${post.title}"/>
-                            <input type="hidden" name="questionId" value="${post.questionId}"/>
+                            <input type="hidden" name="title" value="${question.title}"/>
+                            <input type="hidden" name="questionId" value="${question.questionId}"/>
                         </form>
                     </div>
                 </div>
             </c:if>
 
-            <c:forEach var="reply" items="${post.reply}">
+            <c:forEach var="reply" items="${question.repliesByQuestionId}">
                 <hr/>
                 <div class="row">
                     <div class="col-md-11">
                         <div class="well pading-top-5px pading-bottom-5px">
                             <c:if test="${reply.enabled==0}">
-                                <p>This reply was marked as violating our comunity guidlines and has been disabled.</p>
+                                <p>This reply was marked as violating our community guidelines and has been disabled.</p>
                             </c:if>
                             <c:if test="${reply.enabled==1}">
                                 <div class="row">
@@ -322,10 +322,10 @@
                                     <div class="col-md-6 col-md-offset-6">
                                         <p class="text-right-responsive margin-bottom-0px gi-08x">
                                             answered ${reply.creationDate.toLocaleString()} by <a
-                                                href="${pageContext.request.contextPath}/account?username=${reply.user.username}"><img
-                                                src="${reply.user.profileImage}" class="img-circle" height="35"
+                                                href="${pageContext.request.contextPath}/account?username=${reply.userByUserId.username}"><img
+                                                src="${reply.userByUserId.profileImage}" class="img-circle" height="35"
                                                 width="35"
-                                                alt="Avatar"> ${reply.user.username}
+                                                alt="Avatar"> ${reply.userByUserId.username}
                                         </a>
                                         </p>
                                         <p class="text-right-responsive margin-bottom-0px gi-08x">
@@ -339,7 +339,7 @@
                     <div class="col-md-1">
                         <div class="answer-buttons" id="${reply.replyId}">
                             <sec:authorize access="isAuthenticated()">
-                                <c:if test="${reply.replyVoteType==1}">
+                                <c:if test="${reply.voteType==1}">
                                     <p class="margin-bottom-0px buttons-p"><span
                                             class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
                                             aria-hidden="true"></span></p>
@@ -347,7 +347,7 @@
                                             class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
-                                <c:if test="${reply.replyVoteType==-1}">
+                                <c:if test="${reply.voteType==-1}">
                                     <p class="margin-bottom-0px buttons-p"><span
                                             class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
@@ -355,7 +355,7 @@
                                             class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
                                             aria-hidden="true"></span></p>
                                 </c:if>
-                                <c:if test="${reply.replyVoteType==0}">
+                                <c:if test="${reply.voteType==0}">
                                     <p class="margin-bottom-0px buttons-p"><span
                                             class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
@@ -363,7 +363,7 @@
                                             class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
-                                <c:if test="${post.user.username==pageContext.request.userPrincipal.name}">
+                                <c:if test="${question.userByUserId.username==pageContext.request.userPrincipal.name}">
                                     <c:if test="${reply.bestAnswer==1}">
                                         <p class="margin-bottom-0px buttons-p"><span
                                                 class="gi-1x glyphicon glyphicon-star glyphicon-button"
@@ -375,19 +375,19 @@
                                                 aria-hidden="true"></span></p>
                                     </c:if>
                                 </c:if>
-                                <c:if test="${post.user.username!=pageContext.request.userPrincipal.name}">
+                                <c:if test="${question.userByUserId.username!=pageContext.request.userPrincipal.name}">
                                     <c:if test="${reply.bestAnswer==1}">
                                         <p class="margin-bottom-0px buttons-p"><span
                                                 class="gi-1x glyphicon glyphicon-star"
                                                 aria-hidden="true"></span></p>
                                     </c:if>
                                 </c:if>
-                                <c:if test="${reply.user.username!=pageContext.request.userPrincipal.name}">
+                                <c:if test="${reply.userByUserId.username!=pageContext.request.userPrincipal.name}">
                                     <p class="margin-bottom-0px buttons-p"><span
                                             class="gi-1x glyphicon glyphicon-exclamation-sign glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
                                 </c:if>
-                                <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
+                                <c:if test="${reply.userByUserId.username==pageContext.request.userPrincipal.name}">
                                     <p class="margin-bottom-0px buttons-p"><span
                                             class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
                                             aria-hidden="true"></span></p>
@@ -403,7 +403,7 @@
                     </div>
                 </div>
 
-                <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
+                <c:if test="${reply.userByUserId.username==pageContext.request.userPrincipal.name}">
                     <c:set var="hasAnswered" value="true"/>
                     <div class="row edit-answer hidden">
                         <div class="col-md-11">
@@ -439,7 +439,7 @@
             </c:forEach>
 
             <sec:authorize access="isAuthenticated()">
-            <c:if test="${post.user.username!=pageContext.request.userPrincipal.name}">
+            <c:if test="${question.userByUserId.username!=pageContext.request.userPrincipal.name}">
             <c:if test="${hasAnswered=='false'}">
             <hr/>
             <div class="row">
@@ -476,7 +476,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <input type="hidden" name="questionId" value="${post.questionId}"/>
+                        <input type="hidden" name="questionId" value="${question.questionId}"/>
                     </form>
                 </div>
             </div>
@@ -560,9 +560,9 @@
             function voteQuestion(questionId, voteType) {
                 $.ajax({
                     type: "POST",
-                    url: '${pageContext.request.contextPath}/votePost',
+                    url: '${pageContext.request.contextPath}/voteQuestion',
                     data: {
-                        postID: questionId,
+                        questionId: questionId,
                         type: voteType,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },
@@ -626,7 +626,7 @@
 
         $('form').submit(function () {
             $theForm = $(this);
-            $.ajax({
+            $.c({
                 type: $theForm.attr('method'),
                 url: $theForm.attr('action'),
                 data: $theForm.serialize(),

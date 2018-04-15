@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 @Repository
 public class PostRepository extends HibernateRepository implements IRepository {
 

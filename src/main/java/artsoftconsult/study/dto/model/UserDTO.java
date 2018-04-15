@@ -6,6 +6,7 @@ public class UserDTO {
     private Long userId;
     private String username;
     private String password;
+    private String confirmationPassword;
     private String firstName;
     private String lastName;
     private String email;
@@ -38,6 +39,14 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getConfirmationPassword() {
+        return confirmationPassword;
+    }
+
+    public void setConfirmationPassword(String confirmationPassword) {
+        this.confirmationPassword = confirmationPassword;
     }
 
     public String getFirstName() {

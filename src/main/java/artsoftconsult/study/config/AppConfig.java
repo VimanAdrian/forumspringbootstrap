@@ -1,6 +1,7 @@
 package artsoftconsult.study.config;
 
 import org.flywaydb.core.Flyway;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
@@ -121,5 +122,9 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return txManager;
     }
 
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
 
 }

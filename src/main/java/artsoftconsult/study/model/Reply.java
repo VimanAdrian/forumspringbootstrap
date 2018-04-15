@@ -10,12 +10,14 @@ import java.util.Objects;
 public class Reply {
     private Long replyId;
     private String content;
+    private String rawContent;
     private Date creationDate;
     private Long score;
     private Boolean bestAnswer;
     private Long enabled;
     private User userByUserId;
     private Collection<ReplyComment> replyCommentByReplyId;
+    private Integer voteType;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +38,15 @@ public class Reply {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Transient
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     @Basic
@@ -115,4 +126,12 @@ public class Reply {
         this.replyCommentByReplyId = replyCommentByReplyId;
     }
 
+    @Transient
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
+    }
 }

@@ -1,6 +1,8 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.repository.implementation.CategoryRepository;
+import artsoftconsult.study.model.Category;
+import artsoftconsult.study.repository.CategoryRepository;
+import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,11 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Category[] getAllCategories() {
-        return categoryRepository.getAllCategories();
+    public Category[] getAllCategories()  {
+        return Iterables.toArray(categoryRepository.findAll(), Category.class);
     }
 
-    public void save(Integer postGeneratedId, String tagString) {
+    public void save(Long postGeneratedId, String tagString) {
         if (postGeneratedId != -1) {
             for (String tag : tagString.split(",")) {
                 Category categoryFromDb = categoryRepository.findByTitle(tag.toLowerCase());
@@ -29,7 +31,7 @@ public class CategoryService {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    Integer categoryGeneratedId = categoryRepository.save(cat);
+                    Long categoryGeneratedId = categoryRepository.save(cat).getCategoryId();
                     if (categoryGeneratedId != -1) {
                         categoryRepository.saveAssociation(postGeneratedId, categoryGeneratedId);
                     }

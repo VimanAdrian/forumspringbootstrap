@@ -1,5 +1,6 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.UserService;
 import artsoftconsult.study.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;

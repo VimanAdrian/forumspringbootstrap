@@ -74,7 +74,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1">
-                    <form id="new-post-form" action="${pageContext.request.contextPath}/makePost" method="POST"
+                    <form id="new-post-form" action="${pageContext.request.contextPath}/askQuestion" method="POST"
                           class="form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-sm-1" for="post_title">Title:</label>

@@ -1,7 +1,10 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.dto.model.UserDTO;
+import artsoftconsult.study.model.Question;
+import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.CategoryService;
-import artsoftconsult.study.service.PostService;
+import artsoftconsult.study.service.QuestionService;
 import artsoftconsult.study.service.ReplyService;
 import artsoftconsult.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -28,7 +29,7 @@ public class MainController {
     private UserService userService;
 
     @Autowired
-    private PostService postService;
+    private QuestionService questionService;
 
     @Autowired
     private CategoryService categoryService;
@@ -42,15 +43,15 @@ public class MainController {
             modelAndView.addObject("user", user);
             modelAndView.addObject("newAnswers", false);
             modelAndView.addObject("topQuestions", false);
-            List<Post> newAnswers = userService.newAnswers(user);
-            List<Post> topQuestions = userService.topQuestions(user);
+            List<Question> newAnswers = userService.newAnswers(user);
+            List<Question> topQuestions = userService.topQuestions(user);
             if (newAnswers.size() > 0) {
-                Post[] list = newAnswers.toArray(new Post[0]);
+                Question[] list = newAnswers.toArray(new Question[0]);
                 modelAndView.addObject("newAnswers", true);
                 modelAndView.addObject("answerList", list);
             }
             if (topQuestions.size() > 0) {
-                Post[] list2 = topQuestions.toArray(new Post[0]);
+                Question[] list2 = topQuestions.toArray(new Question[0]);
                 modelAndView.addObject("topQuestions", true);
                 modelAndView.addObject("questionList", list2);
             }
@@ -71,167 +72,6 @@ public class MainController {
         model.setViewName("bootstrapUserPage");
         model.addObject("modal", true);
         return addUserInfo(model);
-    }
-
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public ModelAndView goToUpdate(@RequestParam(value = "uploadFailure", required = false) String uploadFailure,
-                                   @RequestParam(value = "uploadSuccess", required = false) String uploadSuccess,
-                                   @RequestParam(value = "updateFailure", required = false) String updateFailure,
-                                   @RequestParam(value = "updateSuccess", required = false) String updateSuccess) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("modalUpdate", true);
-        if (uploadFailure != null) {
-            model.addObject("uploadFailure", "Upload failed!");
-        }
-        if (uploadSuccess != null) {
-            model.addObject("uploadSuccess", "Upload succeeded!");
-        }
-        if (updateFailure != null) {
-            model.addObject("updateFailure", "Update failed!");
-        }
-        if (updateSuccess != null) {
-            model.addObject("updateSuccess", "Update succeeded!");
-        }
-        model.setViewName("bootstrapUserPage");
-        return addUserInfo(model);
-    }
-
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView goToAdminPage() {
-        ModelAndView model = new ModelAndView();
-        model.setViewName("adminIndex");
-        return model;
-    }
-
-    @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
-    public ModelAndView goToAdminUsersPage(@RequestParam(value = "page", required = true) String page,
-                                           @RequestParam(value = "error", required = false) String error,
-                                           @RequestParam(value = "adminSucces", required = false) String adminSucces,
-                                           @RequestParam(value = "disableSucces", required = false) String disableSucces,
-                                           @RequestParam(value = "enableSucces", required = false) String enableSucces) {
-        ModelAndView modelAndView = new ModelAndView();
-        if (error != null) {
-            modelAndView.addObject("error", "Something went wrong...");
-        }
-        if (adminSucces != null) {
-            modelAndView.addObject("adminSucces", "User is now admin!");
-        }
-        if (disableSucces != null) {
-            modelAndView.addObject("disableSucces", "User is now disabled!");
-        }
-        if (enableSucces != null) {
-            modelAndView.addObject("enableSucces", "User is now enabled!");
-        }
-        modelAndView.addObject("userList", userService.getUserList(page));
-        modelAndView.addObject("url", "/admin/users?page=");
-        modelAndView.addObject("nrPagini", userService.getUserListNext());
-        modelAndView.setViewName("deprecated/adminUsers");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/admin/posts", method = RequestMethod.GET)
-    public ModelAndView goToAdminPostsPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("deprecated/postSearchResults");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/post", method = RequestMethod.GET)
-    public ModelAndView goToPost(@RequestParam(value = "error", required = false) String error,
-                                 @RequestParam(value = "postID", required = false) String postID,
-                                 @RequestParam(value = "search", required = false) String search,
-                                 @RequestParam(value = "page", required = false) String page,
-                                 @RequestParam(value = "browse", required = false) String browse,
-                                 @RequestParam(value = "disabled", required = false) String disabled,
-                                 @RequestParam(value = "tag", required = false) String tag,
-                                 @RequestParam(value = "user", required = false) String userID,
-                                 HttpServletRequest request) {
-
-        ModelAndView model = new ModelAndView();
-        if (error != null) {
-            model.addObject("error", "Something went wrong...");
-            model.setViewName("bootstrapQuestionPage");
-            return model;
-        }
-        if (postID != null) {
-            //TODO FIX unauthenticated SHIT!!!
-            Integer nrPagini = replyService.postNrPages(postID, request.isUserInRole("ROLE_ADMIN"));
-            String url = "/post?postID=" + postID + "&page=";
-            User user = new User();
-            user.setAdmin(false);
-            user.setUsername("unauthenticated");
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (!(auth instanceof AnonymousAuthenticationToken)) {
-                user.setAdmin(request.isUserInRole("ROLE_ADMIN"));
-                user.setUsername(request.getUserPrincipal().getName());
-            }
-            Post post = postService.find(postID, user, page);
-            model.addObject("bestReply", replyService.bestReply(postID, user.getUsername()));
-            model.addObject("url", url);
-            model.addObject("nrPagini", nrPagini);
-            model.addObject("post", post);
-            model.addObject("voteType", postService.voteTypesAvailable(Integer.valueOf(postID), userService.find(user.getUsername()).getUserId()));
-            model.setViewName("bootstrapQuestionPage");
-            return addUserInfo(model);
-        }
-        if (search != null) {
-            boolean dis = false;
-            String url = "/post?search";
-            if (disabled != null) {
-                dis = true;
-                url = "/post?disabled=on&search";
-            }
-            Post[] list;
-            Integer nrPagini;
-            if (tag != null) {
-                list = postService.searchByTag(tag, page, dis);
-                nrPagini = postService.searchByTagNext(tag, dis);
-                try {
-                    url = url + "&tag=" + URLEncoder.encode(tag, "UTF-8") + "&page=";
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            } else if (userID != null) {
-                list = postService.searchByUser(userID, page, dis);
-                nrPagini = postService.searchByUserNext(userID, dis);
-                url = url + "&user=" + userID + "&page=";
-            } else if (browse != null) {
-                list = postService.search(page, dis);
-                nrPagini = postService.searchNext(dis);
-                url = url + "&browse&page=";
-            } else {
-                list = postService.search(search, page, dis);
-                nrPagini = postService.searchNext(search, dis);
-                try {
-                    url = url + "=" + URLEncoder.encode(search, "UTF-8") + "&page=";
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-            model.addObject("url", url);
-            model.addObject("nrPagini", nrPagini);
-            model.addObject("searchResults", list);
-            model.setViewName("deprecated/postSearchResults");
-            model.addObject("categoryList", categoryService.getAllCategories());
-            model.addObject("searchParam", search);
-            return model;
-        }
-        model.setViewName("deprecated/index");
-        return model;
-    }
-
-    //for 403 access denied page
-    @RequestMapping(value = "/403", method = RequestMethod.GET)
-    public ModelAndView goToAccesssDenied() {
-        ModelAndView model = new ModelAndView();
-        //check if user is login
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            model.addObject("username", userDetail.getUsername());
-        }
-        model.setViewName("deprecated/403");
-        return model;
     }
 
     @RequestMapping(value = "/newPost", method = RequestMethod.GET)
@@ -267,13 +107,34 @@ public class MainController {
         return model;
     }
 
+    @RequestMapping(value = "/question", method = RequestMethod.GET)
+    public ModelAndView goToPost(@RequestParam(value = "questionId", required = true) Long questionId,
+                                 HttpServletRequest request) {
+        ModelAndView model = new ModelAndView();
+        User user = new User();
+        user.setRole("ROLE_USER");
+        user.setUsername("unauthenticated");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            if (request.isUserInRole("ROLE_ADMIN"))
+                user.setRole("ROLE_ADMIN");
+            user.setUsername(request.getUserPrincipal().getName());
+        }
+        Question question = questionService.find(questionId, user);
+        model.addObject("question", question);
+        model.setViewName("bootstrapQuestionPage");
+        return addUserInfo(model);
+    }
+
+
+    //deprecated
     @RequestMapping(value = "/activate", method = RequestMethod.GET)
     public ModelAndView activateAccount(@RequestParam(value = "token", required = false) String token,
                                         @RequestParam(value = "userId", required = true) String id,
                                         @RequestParam(value = "retryToken", required = false) String retryToken) {
         ModelAndView modelAndView = new ModelAndView();
         if (retryToken == null) {
-            if (userService.useToken(token, Integer.valueOf(id))) {
+            if (userService.useToken(token, Long.valueOf(id))) {
                 modelAndView.setViewName("deprecated/login");
                 modelAndView.addObject("msg", "Account activated successfully");
             } else {
@@ -284,8 +145,8 @@ public class MainController {
         } else {
             modelAndView.setViewName("deprecated/accountActivate");
             modelAndView.addObject("succes", true);
-            User user = new User();
-            user.setUserId(Integer.valueOf(id));
+            UserDTO user = new UserDTO();
+            user.setUserId(Long.valueOf(id));
             try {
                 userService.sendToken(userService.find(user.getUserId()));
             } catch (Exception e) {
@@ -302,7 +163,7 @@ public class MainController {
         modelAndView.setViewName("bootstrapUserPage");
         modelAndView.addObject("userID", id);
         modelAndView.addObject("modal", true);
-        if (userService.usePasswordReset(token, Integer.valueOf(id))) {
+        if (userService.usePasswordReset(token, Long.valueOf(id))) {
             modelAndView.addObject("validToken", 1);
         } else {
             modelAndView.addObject("validToken", 0);
@@ -310,18 +171,25 @@ public class MainController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "forgotPassword", method = RequestMethod.GET)
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ModelAndView goToForgotPassword() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("deprecated/accountForgotPassword");
         return modelAndView;
     }
 
-    @RequestMapping(value = "stack", method = RequestMethod.GET)
-    public ModelAndView stack() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("postSearchResultsStack");
-        return modelAndView;
+    //for 403 access denied page
+    @RequestMapping(value = "/403", method = RequestMethod.GET)
+    public ModelAndView goToAccesssDenied() {
+        ModelAndView model = new ModelAndView();
+        //check if user is login
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            model.addObject("username", userDetail.getUsername());
+        }
+        model.setViewName("deprecated/403");
+        return model;
     }
 
     //customize the error message

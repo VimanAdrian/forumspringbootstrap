@@ -81,9 +81,9 @@
                 toggleButton = $(this).val();
                 $.ajax({
                     type: "POST",
-                    url: '/togglePostStatus',
+                    url: '/toggleQuestionStatus',
                     data: {
-                        postID: localPostId,
+                        questionId: localPostId,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },
                     dataType: "json",

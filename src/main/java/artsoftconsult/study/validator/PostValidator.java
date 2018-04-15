@@ -1,5 +1,6 @@
 package artsoftconsult.study.validator;
 
+import artsoftconsult.study.model.Question;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,7 +10,7 @@ public class PostValidator {
 
     }
 
-    public boolean validatePost(Post post) {
+    public boolean validatePost(Question post) {
         if (post.getContent() == null)
             return false;
         if (post.getTitle() == null)
