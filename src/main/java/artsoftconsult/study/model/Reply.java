@@ -14,8 +14,9 @@ public class Reply {
     private Date creationDate;
     private Long score;
     private Boolean bestAnswer;
-    private Long enabled;
+    private Boolean enabled;
     private User userByUserId;
+    private Question questionByQuestionId;
     private Collection<ReplyComment> replyCommentByReplyId;
     private Integer voteType;
 
@@ -81,11 +82,11 @@ public class Reply {
 
     @Basic
     @Column(name = "enabled")
-    public Long getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Long enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -115,6 +116,16 @@ public class Reply {
 
     public void setUserByUserId(User userByUserId) {
         this.userByUserId = userByUserId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "question_id", referencedColumnName = "question_id", nullable = false)
+    public Question getQuestionByQuestionId() {
+        return questionByQuestionId;
+    }
+
+    public void setQuestionByQuestionId(Question questionByQuestionId) {
+        this.questionByQuestionId = questionByQuestionId;
     }
 
     @OneToMany(mappedBy = "getReplyByReplyId")

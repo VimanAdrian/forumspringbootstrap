@@ -215,7 +215,7 @@
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="${pageContext.request.contextPath}/post?search&browse&page=0">Browse</a></li>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="${pageContext.request.contextPath}/newPost">Ask a question</a></li>
+                    <li><a href="${pageContext.request.contextPath}/newQuestion">Ask a question</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                 <li class="dropdown">

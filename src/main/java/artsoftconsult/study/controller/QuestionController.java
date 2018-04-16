@@ -30,13 +30,10 @@ public class QuestionController {
 
     @RequestMapping(value = "/askQuestion", method = RequestMethod.POST)
     public void makePost(@ModelAttribute("QuestionDTO") QuestionDTO questionDTO, @RequestParam("tags") String tags, HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
+        User user = getCurrentUser();
+        if (user!=null) {
             Question question = new Question();
             modelMapper.map(questionDTO, question);
-
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            User user = userService.find(userDetail.getUsername());
 
             question.setUserByUserId(user);
 
@@ -60,7 +57,7 @@ public class QuestionController {
     @RequestMapping(value = "/voteQuestion", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     boolean makeVote(HttpServletRequest request, HttpServletResponse response, @RequestParam("questionId") Long questionId, @RequestParam("type") String type) {
-        questionService.vote(questionId, userService.find(request.getUserPrincipal().getName()).getUserId(), type);
+        questionService.vote(questionId, getCurrentUser().getUserId(), type);
         return true;
     }
 
@@ -70,21 +67,29 @@ public class QuestionController {
         return questionService.toggleQuestionStatus(questionId);
     }
 
-    @RequestMapping(value = "/editPost", method = RequestMethod.POST)
+    @RequestMapping(value = "/editQuestion", method = RequestMethod.POST)
     public @ResponseBody Boolean makeEdit(@ModelAttribute("QuestionDTO") QuestionDTO questionDTO) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
+        User user = getCurrentUser();
+        if (user!=null) {
             Question question = new Question();
             modelMapper.map(questionDTO, question);
-
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            User user = userService.find(userDetail.getUsername());
 
             question.setUserByUserId(user);
 
             questionService.update(question);
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    private User getCurrentUser() {
+        User user = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            user = userService.find(userDetail.getUsername());
+        }
+        return user;
     }
 
 }

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -74,7 +76,7 @@ public class MainController {
         return addUserInfo(model);
     }
 
-    @RequestMapping(value = "/newPost", method = RequestMethod.GET)
+    @RequestMapping(value = "/newQuestion", method = RequestMethod.GET)
     public ModelAndView goToNewPost() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bootstrapNewQuestion");
@@ -82,7 +84,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.GET)
-    public ModelAndView goToAccount(@RequestParam(value = "username", required = false) String username) {
+    public ModelAndView goToAccount(@RequestParam(value = "username", required = false) String username, HttpServletResponse response) {
         ModelAndView model = new ModelAndView();
         model.setViewName("deprecated/accountPage");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -92,40 +94,38 @@ public class MainController {
                 model.addObject("user", userService.find(userDetail.getUsername()));
                 model.addObject("myAccount", true);
                 return model;
+            } else {
+                try {
+                    response.sendRedirect("/");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            if (username.equals(userDetail.getUsername())) {
+        } else {
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                UserDetails userDetail = (UserDetails) auth.getPrincipal();
+                if (username.equals(userDetail.getUsername())) {
+                    model.addObject("user", userService.find(username));
+                    model.addObject("myAccount", true);
+                    return model;
+                }
+            } else {
                 model.addObject("user", userService.find(username));
-                model.addObject("myAccount", true);
-                return model;
+                model.addObject("myAccount", false);
             }
         }
-        model.addObject("user", userService.find(username));
-        model.addObject("myAccount", false);
         return model;
     }
 
     @RequestMapping(value = "/question", method = RequestMethod.GET)
-    public ModelAndView goToPost(@RequestParam(value = "questionId", required = true) Long questionId,
-                                 HttpServletRequest request) {
+    public ModelAndView goToPost(@RequestParam(value = "questionId", required = true) Long questionId, HttpServletRequest request) {
         ModelAndView model = new ModelAndView();
-        User user = new User();
-        user.setRole("ROLE_USER");
-        user.setUsername("unauthenticated");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            if (request.isUserInRole("ROLE_ADMIN"))
-                user.setRole("ROLE_ADMIN");
-            user.setUsername(request.getUserPrincipal().getName());
-        }
+        User user = getCurrentUser();
         Question question = questionService.find(questionId, user);
         model.addObject("question", question);
         model.setViewName("bootstrapQuestionPage");
         return addUserInfo(model);
     }
-
 
     //deprecated
     @RequestMapping(value = "/activate", method = RequestMethod.GET)

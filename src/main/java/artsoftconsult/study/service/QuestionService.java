@@ -14,7 +14,6 @@ import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.Query;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Date;
@@ -35,7 +34,7 @@ public class QuestionService {
     @Autowired
     private UserRepository userRepository;
 
-    private Question prepareForSave(Question question){
+    private Question prepareForSave(Question question) {
         question.setQuestionId(null);
         question.setCreated(new Date(System.currentTimeMillis()));
         question.setLastActive(new Date(System.currentTimeMillis()));
@@ -68,37 +67,46 @@ public class QuestionService {
 
     public void update(Question question) {
         Question questionFromDb = questionRepository.findByQuestionId(question.getQuestionId());
-        if(question.getUserByUserId().getUsername().equals(questionFromDb.getUserByUserId().getUsername()))
+        if (question.getUserByUserId().getUserId().equals(questionFromDb.getUserByUserId().getUserId()))
             questionRepository.updateTitleAndContent(question.getTitle(), question.getContent(), question.getQuestionId());
     }
 
     public Question find(Long questionId, User user) {
-        replyRepository.markNotNew(questionId, userRepository.findByUsername(user.getUsername()).getUserId());
+        if (user != null) { //not authenticated
+            replyRepository.markNotNew(questionId, user.getUserId());
+        }
         questionRepository.incrementView(questionId);
         Question question = questionRepository.findByQuestionId(questionId);
         Iterable<Reply> replies = question.getRepliesByQuestionId();
         for (Reply re : question.getRepliesByQuestionId()) {
             re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
-            Integer replyVoteType = replyRepository.findVoteType(re.getReplyId(), userRepository.findByUsername(user.getUsername()).getUserId());
-            if(replyVoteType == null)
+            if (user != null) { //not authenticated
+                Integer replyVoteType = replyRepository.findVoteType(re.getReplyId(),user.getUserId());
+                if (replyVoteType == null)
+                    re.setVoteType(0);
+                else if (replyVoteType == -1)
+                    re.setVoteType(1);
+                else
+                    re.setVoteType(-1);
+            } else {
                 re.setVoteType(0);
-            else if(replyVoteType == -1)
-                re.setVoteType(1);
-            else
-                re.setVoteType(-1);
-
+            }
         }
         question.setRepliesByQuestionId(sort(Iterables.toArray(replies, Reply.class)));
         question.setRawContent(question.getContent());
         question.setContent(MyAttributeProvider.commonMark(question.getContent()));
-        Integer questionVoteType = questionRepository.findVoteType(questionId, userRepository.findByUsername(user.getUsername()).getUserId());
-        if(questionVoteType == null)
+        if (user != null) { //not authenticated
+            Integer questionVoteType = questionRepository.findVoteType(questionId, user.getUserId());
+            if (questionVoteType == null)
+                question.setVoteType(0);
+            else if (questionVoteType == -1)
+                question.setVoteType(1);
+            else
+                question.setVoteType(-1);
+        } else {
             question.setVoteType(0);
-        else if(questionVoteType == -1)
-            question.setVoteType(1);
-        else
-            question.setVoteType(-1);
+        }
         return question;
     }
 
@@ -113,7 +121,7 @@ public class QuestionService {
             }
         }
         sortedReplies.sort(Comparator.comparing(Reply::getScore));
-        if(sortedReplies.size()!=replies.length){
+        if (sortedReplies.size() != replies.length) {
             sortedReplies.add(favorite);
         }
         Collections.reverse(sortedReplies);
@@ -122,21 +130,21 @@ public class QuestionService {
 
     public void vote(Long questionId, Long userId, String type) {
         Integer newVote;
-        if(type.equals("UPVOTE")){
-            newVote  = 1;
-        }else{
+        if (type.equals("UPVOTE")) {
+            newVote = 1;
+        } else {
             newVote = -1;
         }
-        Integer oldVote = questionRepository.findVoteType(questionId,userId);
-        if(oldVote == null){
+        Integer oldVote = questionRepository.findVoteType(questionId, userId);
+        if (oldVote == null) {
             oldVote = 0;
         }
-        if(!oldVote.equals(newVote)){
+        if (!oldVote.equals(newVote)) {
             questionRepository.changeVote(questionId, userId, newVote);
-            questionRepository.updateScore(questionId, newVote*2);
-        }else{
+            questionRepository.updateScore(questionId, newVote * 2);
+        } else {
             questionRepository.newVote(questionId, userId, newVote);
-            questionRepository.updateScore(questionId,newVote);
+            questionRepository.updateScore(questionId, newVote);
         }
     }
 

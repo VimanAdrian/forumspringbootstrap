@@ -51,4 +51,14 @@ public class UserController implements Serializable {
         return userService.resetPassword(user);
     }
 
+    private User getCurrentUser() {
+        User user = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            user = userService.find(userDetail.getUsername());
+        }
+        return user;
+    }
+
 }

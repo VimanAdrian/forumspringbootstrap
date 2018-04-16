@@ -272,7 +272,7 @@
             <c:if test="${question.userByUserId.username==pageContext.request.userPrincipal.name}">
                 <div class="row edit-question hidden">
                     <div class="col-md-11">
-                        <form id="edit-post-form" action="${pageContext.request.contextPath}/editPost" method="POST"
+                        <form id="edit-post-form" action="${pageContext.request.contextPath}/editQuestion" method="POST"
                               class="form-horizontal form">
                             <div class="form-group">
                                     <%--TODO responsive this part--%>
@@ -584,7 +584,7 @@
                     type: "POST",
                     url: '${pageContext.request.contextPath}/voteReply',
                     data: {
-                        replyID: answerId,
+                        replyId: answerId,
                         type: voteType,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },
@@ -606,8 +606,8 @@
                     type: "POST",
                     url: '${pageContext.request.contextPath}/favoriteReply',
                     data: {
-                        postID: postID,
-                        replyID: replyID,
+                        questionId: postID,
+                        replyId: replyID,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },
                     dataType: "json",

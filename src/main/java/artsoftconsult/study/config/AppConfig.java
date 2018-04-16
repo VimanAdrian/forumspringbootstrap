@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,11 +28,12 @@ import javax.persistence.EntityManagerFactory;
 
 @EnableWebMvc
 @Configuration
-@EnableTransactionManagement
 @EnableAspectJAutoProxy
 @ComponentScan({"artsoftconsult.*"})
 @Import({SecurityConfig.class})
 @PropertySource("classpath:config.properties")
+@EnableJpaRepositories("artsoftconsult.study.repository")
+@EnableTransactionManagement
 public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Autowired

@@ -5,6 +5,7 @@ import artsoftconsult.study.repository.QuestionRepository;
 import artsoftconsult.study.repository.QuestionRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;

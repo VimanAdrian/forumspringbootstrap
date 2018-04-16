@@ -32,7 +32,7 @@
                 <p>
                     It seems you don't have any question.
                     <br>
-                    You can ask one <a href="${pageContext.request.contextPath}/newPost">here</a>!
+                    You can ask one <a href="${pageContext.request.contextPath}/newQuestion">here</a>!
                 </p>
             </c:if>
         </div>

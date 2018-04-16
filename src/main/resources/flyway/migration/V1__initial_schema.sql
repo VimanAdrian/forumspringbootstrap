@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE users (
   user_id            BIGSERIAL   NOT NULL PRIMARY KEY,
   username           VARCHAR(64) NOT NULL,
   password           VARCHAR(64) NOT NULL,
@@ -22,12 +22,12 @@ CREATE TABLE persistent_logins (
 
 CREATE TABLE activation_tokens (
   token        VARCHAR(30)                    NOT NULL PRIMARY KEY,
-  user_id      BIGINT                         NOT NULL CONSTRAINT activation_tokens_users_user_id_fk REFERENCES user (user_id),
+  user_id      BIGINT                         NOT NULL CONSTRAINT activation_tokens_users_user_id_fk REFERENCES users (user_id),
   creationDate DATE DEFAULT current_timestamp NOT NULL
 );
 
 CREATE TABLE password_tokens (
-  user_id       BIGINT                         NOT NULL CONSTRAINT password_tokens_users_user_id_fk REFERENCES user (user_id),
+  user_id       BIGINT                         NOT NULL CONSTRAINT password_tokens_users_user_id_fk REFERENCES users (user_id),
   token         VARCHAR(30)                    NOT NULL PRIMARY KEY,
   creation_date DATE DEFAULT current_timestamp NOT NULL
 );
@@ -38,9 +38,9 @@ CREATE TABLE categories (
   url         VARCHAR(128) NOT NULL
 );
 
-CREATE TABLE aClass (
+CREATE TABLE class (
   class_id    BIGSERIAL     NOT NULL PRIMARY KEY,
-  owner       BIGINT        NOT NULL CONSTRAINT classes_users_user_id_fk REFERENCES user (user_id),
+  owner       BIGINT        NOT NULL CONSTRAINT classes_users_user_id_fk REFERENCES users (user_id),
   title       VARCHAR(1024) NOT NULL,
   description VARCHAR(4096),
   created     DATE          NOT NULL,
@@ -53,21 +53,21 @@ CREATE TABLE aClass (
 
 CREATE TABLE class_followers (
   class_follow_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id         BIGINT    NOT NULL CONSTRAINT class_followers_users_user_id_fk REFERENCES user (user_id),
+  user_id         BIGINT    NOT NULL CONSTRAINT class_followers_users_user_id_fk REFERENCES users (user_id),
   class_id        BIGINT    NOT NULL
 );
 
 CREATE TABLE class_notifications (
   class_notification_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id               BIGINT    NOT NULL CONSTRAINT class_notifications_users_user_id_fk REFERENCES user (user_id),
-  class_id              BIGINT    NOT NULL CONSTRAINT class_notifications_classes_class_id_fk REFERENCES aClass (class_id),
+  user_id               BIGINT    NOT NULL CONSTRAINT class_notifications_users_user_id_fk REFERENCES users (user_id),
+  class_id              BIGINT    NOT NULL CONSTRAINT class_notifications_classes_class_id_fk REFERENCES class (class_id),
   notification_text     VARCHAR(256)
 );
 
 CREATE TABLE class_rights (
   class_edit_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id       BIGINT    NOT NULL CONSTRAINT class_rights_users_user_id_fk REFERENCES user (user_id),
-  class_id      BIGINT    NOT NULL CONSTRAINT class_rights_classes_class_id_fk REFERENCES aClass (class_id),
+  user_id       BIGINT    NOT NULL CONSTRAINT class_rights_users_user_id_fk REFERENCES users (user_id),
+  class_id      BIGINT    NOT NULL CONSTRAINT class_rights_classes_class_id_fk REFERENCES class (class_id),
   can_view      BOOLEAN,
   can_edit      BOOLEAN,
   can_post      BOOLEAN
@@ -75,7 +75,7 @@ CREATE TABLE class_rights (
 
 CREATE TABLE lecture (
   lecture_id  BIGSERIAL     NOT NULL PRIMARY KEY,
-  class_id    BIGINT        NOT NULL CONSTRAINT lectures_classes_class_id_fk REFERENCES aClass (class_id),
+  class_id    BIGINT        NOT NULL CONSTRAINT lectures_classes_class_id_fk REFERENCES class (class_id),
   title       VARCHAR(1024) NOT NULL,
   description VARCHAR(4096),
   created     DATE          NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE page (
 
 CREATE TABLE question (
   question_id BIGSERIAL     NOT NULL PRIMARY KEY,
-  user_id     BIGINT        NOT NULL CONSTRAINT questions_users_user_id_fk REFERENCES user (user_id),
+  user_id     BIGINT        NOT NULL CONSTRAINT questions_users_user_id_fk REFERENCES users (user_id),
   lecture_id  BIGINT        NOT NULL CONSTRAINT questions_lectures_lecture_id_fk REFERENCES lecture (lecture_id),
   title       VARCHAR(1024) NOT NULL,
   content     VARCHAR(8192) NOT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE question_categories (
 
 CREATE TABLE question_comments (
   question_comment_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id             BIGINT    NOT NULL CONSTRAINT questions_comments_users_user_id_fk REFERENCES user (user_id),
+  user_id             BIGINT    NOT NULL CONSTRAINT questions_comments_users_user_id_fk REFERENCES users (user_id),
   question_id         BIGINT    NOT NULL CONSTRAINT questions_comments_questions_question_id_fk REFERENCES question (question_id),
   creation_date       DATE      NOT NULL,
   content             VARCHAR(8192)
@@ -142,17 +142,17 @@ CREATE TABLE question_comments (
 CREATE TABLE reply (
   reply_id      BIGSERIAL     NOT NULL PRIMARY KEY,
   question_id   BIGINT        NOT NULL CONSTRAINT replies_questions_question_id_fk REFERENCES question (question_id),
-  user_id       BIGINT        NOT NULL CONSTRAINT replies_users_user_id_fk REFERENCES user (user_id),
+  user_id       BIGINT        NOT NULL CONSTRAINT replies_users_user_id_fk REFERENCES users (user_id),
   content       VARCHAR(8192) NOT NULL,
   creation_date DATE          NOT NULL,
   score         BIGINT  DEFAULT '0',
   bestAnswer    BOOLEAN DEFAULT '0',
-  enabled       BIGINT  DEFAULT '1'
+  enabled       BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE replies_comments (
   reply_comment_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id          BIGINT    NOT NULL CONSTRAINT replies_comments_users_user_id_fk REFERENCES user (user_id),
+  user_id          BIGINT    NOT NULL CONSTRAINT replies_comments_users_user_id_fk REFERENCES users (user_id),
   reply_id         BIGINT    NOT NULL CONSTRAINT replies_comments_questions_question_id_fk REFERENCES reply (reply_id),
   creation_date    DATE      NOT NULL,
   content          VARCHAR(8192)
@@ -160,33 +160,33 @@ CREATE TABLE replies_comments (
 
 CREATE TABLE user_followers (
   user_followers_id BIGSERIAL NOT NULL PRIMARY KEY,
-  follower_user_id  BIGINT    NOT NULL CONSTRAINT user_follow_users_user_id_follower_fk REFERENCES user (user_id),
-  followed_user_id  BIGINT    NOT NULL CONSTRAINT user_follow_users_user_id_followed_fk REFERENCES user (user_id)
+  follower_user_id  BIGINT    NOT NULL CONSTRAINT user_follow_users_user_id_follower_fk REFERENCES users (user_id),
+  followed_user_id  BIGINT    NOT NULL CONSTRAINT user_follow_users_user_id_followed_fk REFERENCES users (user_id)
 );
 
 CREATE TABLE user_notifications (
   user_notification_id BIGSERIAL NOT NULL PRIMARY KEY,
-  follower_user_id     BIGINT    NOT NULL CONSTRAINT user_notifications_users_user_id_follower_fk REFERENCES user (user_id),
-  followed_user_id     BIGINT    NOT NULL CONSTRAINT user_notifications_users_user_id_followed_fk REFERENCES user (user_id),
+  follower_user_id     BIGINT    NOT NULL CONSTRAINT user_notifications_users_user_id_follower_fk REFERENCES users (user_id),
+  followed_user_id     BIGINT    NOT NULL CONSTRAINT user_notifications_users_user_id_followed_fk REFERENCES users (user_id),
   notification_text    VARCHAR(256)
 );
 
 CREATE TABLE user_new_replies (
   user_new_reply_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id           BIGINT    NOT NULL CONSTRAINT user_new_replies_users_user_id_fk REFERENCES user (user_id),
+  user_id           BIGINT    NOT NULL CONSTRAINT user_new_replies_users_user_id_fk REFERENCES users (user_id),
   question_id       BIGINT    NOT NULL CONSTRAINT user_new_replies_questions_question_id_fk REFERENCES question (question_id)
 );
 
 CREATE TABLE votes_users_questions (
   vote_user_question_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id               BIGINT    NOT NULL  CONSTRAINT votes_users_questions_users_user_id_fk REFERENCES user (user_id),
+  user_id               BIGINT    NOT NULL  CONSTRAINT votes_users_questions_users_user_id_fk REFERENCES users (user_id),
   question_id           BIGINT    NOT NULL CONSTRAINT votes_users_questions_questions_question_id_fk REFERENCES question (question_id),
   vote_type             BIGINT    NOT NULL
 );
 
 CREATE TABLE votes_users_replies (
   vote_user_reply_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id            BIGINT    NOT NULL CONSTRAINT votes_users_replies_users_user_id_fk REFERENCES user (user_id),
+  user_id            BIGINT    NOT NULL CONSTRAINT votes_users_replies_users_user_id_fk REFERENCES users (user_id),
   reply_id           BIGINT    NOT NULL CONSTRAINT votes_users_replies_replies_reply_id_fk REFERENCES reply (reply_id),
   vote_type          BIGINT    NOT NULL
 );

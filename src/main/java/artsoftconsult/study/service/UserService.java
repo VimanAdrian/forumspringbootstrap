@@ -5,7 +5,7 @@ import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.QuestionRepository;
 import artsoftconsult.study.repository.UserRepository;
-import artsoftconsult.study.repository.implementation.TokenRepository;
+import artsoftconsult.study.repository.TokenRepositoryImpl;
 import artsoftconsult.study.utils.Email;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.UserValidator;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
@@ -37,7 +38,7 @@ public class UserService implements Serializable {
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRepositoryImpl tokenRepositoryImpl;
 
     public UserService() {
     }
@@ -71,12 +72,13 @@ public class UserService implements Serializable {
             User userFromDto = new User();
             modelMapper.map(user, userFromDto);
             userFromDto = prepareForSave(userFromDto);
-            if (userRepository.findByEmail(userFromDto.getEmail()) == null) {
+            if ((userRepository.findByEmail(userFromDto.getEmail()) == null) && (userRepository.findByUsername(userFromDto.getUsername()) == null)) {
                 User savedUser = userRepository.save(userFromDto);
-                sendToken(savedUser);
-                return true;
-            } else {
-                return false;
+                if (savedUser != null)
+                    if (savedUser.getUserId() != null) {
+                        sendToken(savedUser);
+                        return true;
+                    }
             }
         }
         return false;
@@ -93,8 +95,8 @@ public class UserService implements Serializable {
 
     public boolean sendToken(User user) {
         String token = RandomUtils.randomString(30);
-        tokenRepository.deleteToken(user.getUserId());
-        if (tokenRepository.saveToken(user.getUserId(), token)) {
+        tokenRepositoryImpl.deleteToken(user.getUserId());
+        if (tokenRepositoryImpl.saveToken(user.getUserId(), token)) {
             email.sendActivationEmail(user.getEmail(), user.getUsername(), "http://localhost:8080/activate?token=" + token + "&userId=" + user.getUserId());
             return true;
         }
@@ -102,14 +104,14 @@ public class UserService implements Serializable {
     }
 
     public boolean useToken(String token, Long userId) {
-        long found = tokenRepository.findToken(token, userId);
+        long found = tokenRepositoryImpl.findToken(token, userId);
         if (found != 0) {
             long timeCurrent = new java.util.Date().getTime();
             if (timeCurrent - found > 7200000) {
-                tokenRepository.deleteToken(userId);
+                tokenRepositoryImpl.deleteToken(userId);
                 return false;
             } else {
-                tokenRepository.deleteToken(userId);
+                tokenRepositoryImpl.deleteToken(userId);
                 enableUser(userId);
                 return true;
             }
@@ -129,24 +131,26 @@ public class UserService implements Serializable {
 
     public boolean sendPasswordReset(UserDTO userFromDto) {
         User user = userRepository.findByUsername(userFromDto.getUsername());
-        String token = RandomUtils.randomString(30);
-        tokenRepository.deletePasswordReset(user.getUserId());
-        if (tokenRepository.savePasswordReset(user.getUserId(), token)) {
-            email.sendPasswordResetEmail(user.getEmail(), user.getUsername(), "http://localhost:8080/reset?token=" + token + "&userId=" + user.getUserId());
-            return true;
+        if (user != null) {
+            String token = RandomUtils.randomString(30);
+            tokenRepositoryImpl.deletePasswordReset(user.getUserId());
+            if (tokenRepositoryImpl.savePasswordReset(user.getUserId(), token)) {
+                email.sendPasswordResetEmail(user.getEmail(), user.getUsername(), "http://localhost:8080/reset?token=" + token + "&userId=" + user.getUserId());
+                return true;
+            }
         }
         return false;
     }
 
     public boolean usePasswordReset(String token, Long userId) {
-        long found = tokenRepository.findPasswordResetToken(token, userId);
+        long found = tokenRepositoryImpl.findPasswordResetToken(token, userId);
         if (found != 0) {
             long timeCurrent = new java.util.Date().getTime();
             if (timeCurrent - found > 7200000) {
-                tokenRepository.deletePasswordReset(userId);
+                tokenRepositoryImpl.deletePasswordReset(userId);
                 return false;
             } else {
-                tokenRepository.deletePasswordReset(userId);
+                tokenRepositoryImpl.deletePasswordReset(userId);
                 return true;
             }
         }
@@ -170,7 +174,7 @@ public class UserService implements Serializable {
     }
 
     public boolean makeAdmin(User user) {
-        userRepository.updateRoleById("ROLE_ADMIN",user.getUserId());
+        userRepository.updateRoleById("ROLE_ADMIN", user.getUserId());
         return true;
     }
 
@@ -187,7 +191,7 @@ public class UserService implements Serializable {
     }
 
     public Page<User> getUserList(Integer page, Integer size) {
-        return userRepository.findAll(PageRequest.of(page,size));
+        return userRepository.findAll(new PageRequest(page, size));
     }
 
     public void updateProfileImage(String filename, String username) {

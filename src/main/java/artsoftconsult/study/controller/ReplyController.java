@@ -1,7 +1,13 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.dto.model.QuestionDTO;
+import artsoftconsult.study.dto.model.ReplyDTO;
+import artsoftconsult.study.model.Reply;
+import artsoftconsult.study.model.User;
+import artsoftconsult.study.service.QuestionService;
 import artsoftconsult.study.service.ReplyService;
 import artsoftconsult.study.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,77 +18,85 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Controller
 public class ReplyController {
 
     @Autowired
     private ReplyService replyService;
+
     @Autowired
     private UserService userService;
 
-    public ReplyController() {
-    }
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @RequestMapping(value = "/makeReply", method = RequestMethod.POST)
-    public @ResponseBody Boolean makeReply(@ModelAttribute("Reply") Reply reply, @ModelAttribute("Post") Post post) {
-        User user = new User();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!(auth instanceof AnonymousAuthenticationToken)) {
-            UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            user.setUsername(userDetail.getUsername());
+    public @ResponseBody
+    Boolean makeReply(@ModelAttribute("ReplyDTO") ReplyDTO reply, @ModelAttribute("QuestionDTO") QuestionDTO questionDto) {
+        User user = getCurrentUser();
+        if (user != null) {
+            Reply replyFromDto = new Reply();
+            modelMapper.map(reply, replyFromDto);
+            replyFromDto.setUserByUserId(user);
+            replyFromDto.setQuestionByQuestionId(questionService.find(questionDto.getQuestionId(), null));
+            return replyService.save(replyFromDto);
         }
-        reply.setUser(user);
-        reply.setPost(post);
-        return replyService.save(reply);
+        return false;
     }
-
-    //without ajax
-    /*
-    @RequestMapping(value = "/voteReply", method = RequestMethod.POST)
-    public void makeVote(HttpServletRequest request,
-                         HttpServletResponse response,
-                         @RequestParam("postID") String postID,
-                         @RequestParam("page") String page,
-                         @RequestParam("replyID") String replyID,
-                         @RequestParam("type") String type) {
-        replyService.vote(Integer.valueOf(replyID), userService.find(request.getUserPrincipal().getName()).getUserId(), type);
-        try {
-            String redirect = "/post?postID=" + postID + "&page=" + page;
-            response.sendRedirect(redirect);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
     @RequestMapping(value = "/voteReply", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    boolean makeVote(HttpServletRequest request, HttpServletResponse response, @RequestParam("type") String type, @RequestParam("replyID") String replyID) {
-        return replyService.vote(Integer.valueOf(replyID), userService.find(request.getUserPrincipal().getName()).getUserId(), type);
-    }
-
-    @RequestMapping(value = "/favoriteReply", method = RequestMethod.POST)
-    public @ResponseBody
-    Boolean makeFavorite(@RequestParam("postID") String postID, @RequestParam("replyID") String replyID, HttpServletResponse response) {
-        return replyService.favorite(Integer.valueOf(replyID), Integer.valueOf(postID));
+    Boolean makeVote(HttpServletRequest request, HttpServletResponse response, @RequestParam("type") String type, @RequestParam("replyId") Long replyId) {
+        replyService.vote(replyId, getCurrentUser().getUserId(), type);
+        return true;
     }
 
     @RequestMapping(value = "/toggleReplyStatus", method = RequestMethod.POST)
-    public void toggleReplyStatus(@RequestParam("replyID") String replyID, @RequestParam("page") String page, @RequestParam("postID") String postID, HttpServletResponse response) {
-        replyService.toggleStatus(Integer.valueOf(replyID));
-        try {
-            String redirect = "/post?postID=" + postID + "&page=" + page;
-            response.sendRedirect(redirect);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public @ResponseBody
+    Boolean toggleReplyStatus(@RequestParam("replyId") Long replyId, HttpServletResponse response) {
+        replyService.toggleStatus(replyId);
+        return true;
     }
 
-    @RequestMapping(value = "editReply", method = RequestMethod.POST)
-    public @ResponseBody Boolean makeEdit(@ModelAttribute("Reply") Reply reply) {
-        return replyService.update(reply);
+    @RequestMapping(value = "/editReply", method = RequestMethod.POST)
+    public @ResponseBody
+    Boolean makeEdit(@ModelAttribute("ReplyDTO") ReplyDTO replyDTO) {
+        User user = getCurrentUser();
+        if (user != null) {
+            Reply reply = new Reply();
+            modelMapper.map(replyDTO, reply);
+
+            reply.setUserByUserId(user);
+            replyService.update(reply);
+            return true;
+        }
+        return false;
+    }
+
+
+    @RequestMapping(value = "/favoriteReply", method = RequestMethod.POST)
+    public @ResponseBody
+    Boolean makeFavorite(@RequestParam("questionId") Long questionId, @RequestParam("replyId") Long replyId, HttpServletResponse response) {
+        User user = getCurrentUser();
+        if (user != null) {
+            replyService.favorite(replyId, questionId, user.getUserId());
+            return true;
+        }
+        return false;
+    }
+
+    private User getCurrentUser() {
+        User user = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            user = userService.find(userDetail.getUsername());
+        }
+        return user;
     }
 
 }

@@ -9,7 +9,7 @@ public class ReplyDTO {
     private Date creationDate;
     private Long score;
     private Boolean bestAnswer;
-    private Long enabled;
+    private Boolean enabled;
     private UserDTO userByUserId;
     private Collection<RepliesCommentsDTO> repliesCommentsByReplyId;
 
@@ -53,11 +53,11 @@ public class ReplyDTO {
         this.bestAnswer = bestAnswer;
     }
 
-    public Long getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Long enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
