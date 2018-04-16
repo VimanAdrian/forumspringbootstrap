@@ -21,6 +21,7 @@ public class User {
     private String type;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     public Long getUserId() {
         return userId;

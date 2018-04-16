@@ -10,8 +10,8 @@ public class ClassRights {
     private Boolean canView;
     private Boolean canEdit;
     private Boolean canPost;
-    private User userByUserId;
-    private Class classByClassId;
+    private User user;
+    private VirtualClass virtualClass;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,21 +72,21 @@ public class ClassRights {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ManyToOne
     @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
-    public Class getClassByClassId() {
-        return classByClassId;
+    public VirtualClass getVirtualClass() {
+        return virtualClass;
     }
 
-    public void setClassByClassId(Class classByClassId) {
-        this.classByClassId = classByClassId;
+    public void setVirtualClass(VirtualClass virtualClass) {
+        this.virtualClass = virtualClass;
     }
 }

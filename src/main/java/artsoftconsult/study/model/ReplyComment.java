@@ -10,10 +10,11 @@ public class ReplyComment {
     private Long replyCommentId;
     private Date creationDate;
     private String content;
-    private User userByUserId;
-    private Reply replyByReplyId;
+    private User user;
+    private Reply reply;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_comment_id")
     public Long getReplyCommentId() {
         return replyCommentId;
@@ -60,21 +61,21 @@ public class ReplyComment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ManyToOne
     @JoinColumn(name = "reply_id", referencedColumnName = "reply_id", nullable = false)
-    public Reply getReplyByReplyId() {
-        return replyByReplyId;
+    public Reply getReply() {
+        return reply;
     }
 
-    public void setReplyByReplyId(Reply replyByReplyId) {
-        this.replyByReplyId = replyByReplyId;
+    public void setReply(Reply reply) {
+        this.reply = reply;
     }
 }

@@ -17,8 +17,9 @@ public class Lecture {
     private Long score;
     private Long views;
     private Boolean active;
-    private Collection<Chapter> chaptersByLectureId;
-    private Collection<Question> questionsByLectureId;
+    private Chapter chapter;
+    private Collection<Question> questions;
+    private VirtualClass virtualClass;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -132,21 +133,36 @@ public class Lecture {
         return Objects.hash(lectureId, title, description, created, lastActive, visibility, score, views, active);
     }
 
-    @OneToMany(mappedBy = "getLectureByLectureId")
-    public Collection<Chapter> getChaptersByLectureId() {
-        return chaptersByLectureId;
+    @ManyToOne
+    @JoinColumn(name = "chapter_id", referencedColumnName = "chapter_id", nullable = false)
+    public Chapter getChapter() {
+        return chapter;
     }
 
-    public void setChaptersByLectureId(Collection<Chapter> chaptersByLectureId) {
-        this.chaptersByLectureId = chaptersByLectureId;
+    public void setChapter(Chapter chapter) {
+        this.chapter = chapter;
     }
 
-    @OneToMany(mappedBy = "getLectureByLectureId")
-    public Collection<Question> getQuestionsByLectureId() {
-        return questionsByLectureId;
+    @OneToMany(mappedBy = "lecture")
+    public Collection<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestionsByLectureId(Collection<Question> questionsByLectureId) {
-        this.questionsByLectureId = questionsByLectureId;
+    public void setQuestions(Collection<Question> questions) {
+        this.questions = questions;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
+    public VirtualClass getVirtualClass() {
+        return virtualClass;
+    }
+
+    public void setVirtualClass(VirtualClass virtualClass) {
+        this.virtualClass = virtualClass;
+    }
+
+    public void setReply(VirtualClass virtualClass) {
+        this.virtualClass = virtualClass;
     }
 }

@@ -37,7 +37,7 @@ public class ReplyService {
         reply.setCreationDate(new Date(System.currentTimeMillis()));
         reply.setEnabled(true);
         reply.setScore((long) 0);
-        reply.setReplyCommentByReplyId(null);
+        reply.setReplyComment(null);
         return reply;
     }
 
@@ -67,14 +67,14 @@ public class ReplyService {
 
     public void update(Reply reply) {
         Reply reply1FromDb = replyRepository.findByReplyId(reply.getReplyId());
-        if(reply.getUserByUserId().getUserId().equals(reply1FromDb.getUserByUserId().getUserId()))
+        if (reply.getUser().getUserId().equals(reply1FromDb.getUser().getUserId()))
             replyRepository.updateContent(reply.getContent(), reply.getReplyId());
     }
 
     @Transactional
     public void favorite(Long replyId, Long questionId, Long userId) {
         Question questionFromDb = questionRepository.findByQuestionId(questionId);
-        if(questionFromDb.getUserByUserId().getUserId().equals(userId)){
+        if (questionFromDb.getUser().getUserId().equals(userId)) {
             replyRepository.removeFavorite(questionId);
             replyRepository.makeFavorite(replyId);
         }

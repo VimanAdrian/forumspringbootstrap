@@ -41,8 +41,8 @@ public class ReplyController {
         if (user != null) {
             Reply replyFromDto = new Reply();
             modelMapper.map(reply, replyFromDto);
-            replyFromDto.setUserByUserId(user);
-            replyFromDto.setQuestionByQuestionId(questionService.find(questionDto.getQuestionId(), null));
+            replyFromDto.setUser(user);
+            replyFromDto.setQuestion(questionService.find(questionDto.getQuestionId(), null));
             return replyService.save(replyFromDto);
         }
         return false;
@@ -70,7 +70,7 @@ public class ReplyController {
             Reply reply = new Reply();
             modelMapper.map(replyDTO, reply);
 
-            reply.setUserByUserId(user);
+            reply.setUser(user);
             replyService.update(reply);
             return true;
         }

@@ -8,8 +8,8 @@ import java.util.Objects;
 public class UserNotification {
     private Long userNotificationId;
     private String notificationText;
-    private User userByFollowerUserId;
-    private User userByFollowedUserId;
+    private User userFollower;
+    private User userFollowed;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,21 +48,21 @@ public class UserNotification {
 
     @ManyToOne
     @JoinColumn(name = "follower_user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByFollowerUserId() {
-        return userByFollowerUserId;
+    public User getUserFollower() {
+        return userFollower;
     }
 
-    public void setUserByFollowerUserId(User userByFollowerUserId) {
-        this.userByFollowerUserId = userByFollowerUserId;
+    public void setUserFollower(User userFollower) {
+        this.userFollower = userFollower;
     }
 
     @ManyToOne
     @JoinColumn(name = "followed_user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByFollowedUserId() {
-        return userByFollowedUserId;
+    public User getUserFollowed() {
+        return userFollowed;
     }
 
-    public void setUserByFollowedUserId(User userByFollowedUserId) {
-        this.userByFollowedUserId = userByFollowedUserId;
+    public void setUserFollowed(User userFollowed) {
+        this.userFollowed = userFollowed;
     }
 }

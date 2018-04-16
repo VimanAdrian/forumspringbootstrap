@@ -1,19 +1,17 @@
 package artsoftconsult.study.repository;
 
 import artsoftconsult.study.model.Reply;
-import artsoftconsult.study.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long> {
 
     Reply findByReplyId(@Param("replyId")Long replyId);
 
     @Modifying
-    @Query(value = "UPDATE reply SET enabled = NOT enabled WHERE reply_id=:reply_id", nativeQuery = true)
+    @Query(value = "UPDATE reply SET enabled = NOT enabled WHERE reply_id=:replyId", nativeQuery = true)
     void toggleEnabled(@Param("replyId")Long replyId);
 
     @Query(value="SELECT COUNT(*) FROM reply WHERE question_id=:questionId", nativeQuery = true)
@@ -34,7 +32,7 @@ public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long>
     void changeVote(@Param("replyId")Long replyId, @Param("userId")Long userId, @Param("newVote")Integer newVote);
 
     @Modifying
-    @Query(value = "INSERT INTO votes_users_replies(user_id, reply_id, vote_type) VALUES (:userId, :replyId, :voteType)", nativeQuery = true)
+    @Query(value = "INSERT INTO votes_users_replies(user_id, reply_id, vote_type) VALUES (:userId, :replyId, :newVote)", nativeQuery = true)
     void newVote(@Param("replyId")Long replyId, @Param("userId")Long userId, @Param("newVote")Integer newVote);
 
     @Modifying

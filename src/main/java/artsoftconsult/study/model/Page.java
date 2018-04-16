@@ -16,8 +16,10 @@ public class Page {
     private Long score;
     private Long views;
     private Boolean active;
+    private Chapter chapter;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "page_id")
     public Long getPageId() {
         return pageId;
@@ -126,5 +128,15 @@ public class Page {
     @Override
     public int hashCode() {
         return Objects.hash(pageId, title, content, created, lastActive, visibility, score, views, active);
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "chapter_id", referencedColumnName = "chapter_id", nullable = false)
+    public Chapter getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(Chapter chapter) {
+        this.chapter = chapter;
     }
 }

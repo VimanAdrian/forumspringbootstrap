@@ -1,12 +1,10 @@
 package artsoftconsult.study.repository;
 
 import artsoftconsult.study.model.Question;
-import artsoftconsult.study.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Long>, QuestionRepositoryCustom {
 
@@ -24,7 +22,7 @@ public interface QuestionRepository extends PagingAndSortingRepository<Question,
     void changeVote(@Param("questionId")Long questionId, @Param("userId")Long userId, @Param("newVote")Integer newVote);
 
     @Modifying
-    @Query(value = "INSERT INTO votes_users_questions(user_id, question_id, vote_type) VALUES (:userId, :questionId, :voteType)", nativeQuery = true)
+    @Query(value = "INSERT INTO votes_users_questions(user_id, question_id, vote_type) VALUES (:userId, :questionId, :newVote)", nativeQuery = true)
     void newVote(@Param("questionId")Long questionId, @Param("userId")Long userId, @Param("newVote")Integer newVote);
 
     @Modifying

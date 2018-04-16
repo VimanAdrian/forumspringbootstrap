@@ -15,9 +15,9 @@ public class Reply {
     private Long score;
     private Boolean bestAnswer;
     private Boolean enabled;
-    private User userByUserId;
-    private Question questionByQuestionId;
-    private Collection<ReplyComment> replyCommentByReplyId;
+    private User user;
+    private Question question;
+    private Collection<ReplyComment> replyComment;
     private Integer voteType;
 
     @Id
@@ -110,31 +110,31 @@ public class Reply {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "question_id", nullable = false)
-    public Question getQuestionByQuestionId() {
-        return questionByQuestionId;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setQuestionByQuestionId(Question questionByQuestionId) {
-        this.questionByQuestionId = questionByQuestionId;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
-    @OneToMany(mappedBy = "getReplyByReplyId")
-    public Collection<ReplyComment> getReplyCommentByReplyId() {
-        return replyCommentByReplyId;
+    @OneToMany(mappedBy = "reply")
+    public Collection<ReplyComment> getReplyComment() {
+        return replyComment;
     }
 
-    public void setReplyCommentByReplyId(Collection<ReplyComment> replyCommentByReplyId) {
-        this.replyCommentByReplyId = replyCommentByReplyId;
+    public void setReplyComment(Collection<ReplyComment> replyComment) {
+        this.replyComment = replyComment;
     }
 
     @Transient

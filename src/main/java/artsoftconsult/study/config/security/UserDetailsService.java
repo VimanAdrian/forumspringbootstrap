@@ -53,7 +53,7 @@ public class UserDetailsService extends JdbcDaoImpl {
                         boolean enabled = rs.getBoolean("enabled");
                         boolean accountNonExpired = true;
                         boolean credentialsNonExpired = true;
-                        boolean accountNonLocked = rs.getBoolean("accountNonLocked");
+                        boolean accountNonLocked = rs.getBoolean("account_non_locked");
 
                         return new User(username, password, enabled, accountNonExpired, credentialsNonExpired,
                                 accountNonLocked, AuthorityUtils.NO_AUTHORITIES);

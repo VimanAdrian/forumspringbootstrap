@@ -29,15 +29,10 @@ public class QuestionController {
     private ModelMapper modelMapper;
 
     @RequestMapping(value = "/askQuestion", method = RequestMethod.POST)
-    public void makePost(@ModelAttribute("QuestionDTO") QuestionDTO questionDTO, @RequestParam("tags") String tags, HttpServletRequest request, HttpServletResponse response) {
+    public void makePost(@RequestParam("title") String title, @RequestParam("content") String content, @RequestParam("tags") String tags, HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser();
         if (user!=null) {
-            Question question = new Question();
-            modelMapper.map(questionDTO, question);
-
-            question.setUserByUserId(user);
-
-            Long saveResponse = questionService.save(question, tags);
+            Long saveResponse = questionService.save(title, content, tags, user);
             if (saveResponse != -1)
                 try {
                     String redirect = "/post?postID=" + saveResponse + "&page=" + 0;
@@ -74,7 +69,7 @@ public class QuestionController {
             Question question = new Question();
             modelMapper.map(questionDTO, question);
 
-            question.setUserByUserId(user);
+            question.setUser(user);
 
             questionService.update(question);
             return true;

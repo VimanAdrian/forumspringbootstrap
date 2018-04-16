@@ -35,19 +35,19 @@ public class QuestionService {
     private UserRepository userRepository;
 
     private Question prepareForSave(Question question) {
-        question.setQuestionId(null);
         question.setCreated(new Date(System.currentTimeMillis()));
         question.setLastActive(new Date(System.currentTimeMillis()));
         question.setViews((long) 0);
         question.setScore((long) 0);
         question.setActive(true);
-        question.setQuestionCategoriesByQuestionId(null);
-        question.setQuestionCommentsByQuestionId(null);
-        question.setRepliesByQuestionId(null);
         return question;
     }
 
-    public Long save(Question question, String tags) {
+    public Long save(String title, String content, String tags, User user) {
+        Question question = new Question();
+        question.setContent(content);
+        question.setTitle(title);
+        question.setUser(user);
         Question saved = questionRepository.save(prepareForSave(question));
 
         String[] tagsArray = RandomUtils.split(tags);
@@ -67,7 +67,7 @@ public class QuestionService {
 
     public void update(Question question) {
         Question questionFromDb = questionRepository.findByQuestionId(question.getQuestionId());
-        if (question.getUserByUserId().getUserId().equals(questionFromDb.getUserByUserId().getUserId()))
+        if (question.getUser().getUserId().equals(questionFromDb.getUser().getUserId()))
             questionRepository.updateTitleAndContent(question.getTitle(), question.getContent(), question.getQuestionId());
     }
 
@@ -77,8 +77,8 @@ public class QuestionService {
         }
         questionRepository.incrementView(questionId);
         Question question = questionRepository.findByQuestionId(questionId);
-        Iterable<Reply> replies = question.getRepliesByQuestionId();
-        for (Reply re : question.getRepliesByQuestionId()) {
+        Iterable<Reply> replies = question.getReplies();
+        for (Reply re : question.getReplies()) {
             re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
             if (user != null) { //not authenticated
@@ -93,7 +93,7 @@ public class QuestionService {
                 re.setVoteType(0);
             }
         }
-        question.setRepliesByQuestionId(sort(Iterables.toArray(replies, Reply.class)));
+        question.setReplies(sort(Iterables.toArray(replies, Reply.class)));
         question.setRawContent(question.getContent());
         question.setContent(MyAttributeProvider.commonMark(question.getContent()));
         if (user != null) { //not authenticated
@@ -152,5 +152,6 @@ public class QuestionService {
         questionRepository.toggleStatus(questionId);
         return true;
     }
+
 }
 

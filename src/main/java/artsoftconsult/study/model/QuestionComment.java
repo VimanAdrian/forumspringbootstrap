@@ -10,9 +10,11 @@ public class QuestionComment {
     private Long questionCommentId;
     private Date creationDate;
     private String content;
-    private User userByUserId;
+    private Question question;
+    private User user;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_comment_id")
     public Long getQuestionCommentId() {
         return questionCommentId;
@@ -58,12 +60,22 @@ public class QuestionComment {
     }
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    @JoinColumn(name = "question_id", referencedColumnName = "question_id", nullable = false)
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setQuestion(Question questionByQuestionId2) {
+        this.question = questionByQuestionId2;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

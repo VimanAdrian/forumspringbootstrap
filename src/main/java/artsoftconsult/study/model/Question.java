@@ -17,10 +17,11 @@ public class Question {
     private Long views;
     private Long score;
     private Boolean active;
-    private User userByUserId;
-    private Collection<Category> questionCategoriesByQuestionId;
-    private Collection<QuestionComment> questionCommentsByQuestionId;
-    private Collection<Reply> repliesByQuestionId;
+    private User user;
+    private Lecture lecture;
+    private Collection<Category> questionCategories;
+    private Collection<Reply> replies;
+    private Collection<QuestionComment> questionComments;
     private Integer voteType;
 
     public Question(){
@@ -35,6 +36,7 @@ public class Question {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     public Long getQuestionId() {
         return questionId;
@@ -143,42 +145,52 @@ public class Question {
         return Objects.hash(questionId, title, content, created, lastActive, views, score, active);
     }
 
+    @OneToMany(mappedBy = "question")
+    public Collection<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Collection<Reply> replies) {
+        this.replies = replies;
+    }
+
+    @OneToMany(mappedBy = "question")
+    public Collection<QuestionComment> getQuestionComments() {
+        return questionComments;
+    }
+
+    public void setQuestionComments(Collection<QuestionComment> questionComments) {
+        this.questionComments = questionComments;
+    }
+
     @ManyToMany
     @JoinTable(name="question_categories", joinColumns = @JoinColumn(name="question_id", referencedColumnName = "question_id"), inverseJoinColumns = @JoinColumn(name="category_id", referencedColumnName = "category_id"))
-    public Collection<Category> getQuestionCategoriesByQuestionId() {
-        return questionCategoriesByQuestionId;
+    public Collection<Category> getQuestionCategories() {
+        return questionCategories;
     }
 
-    public void setQuestionCategoriesByQuestionId(Collection<Category> questionCategoriesByQuestionId) {
-        this.questionCategoriesByQuestionId = questionCategoriesByQuestionId;
-    }
-
-    @OneToMany(mappedBy = "getQuestionByQuestionId")
-    public Collection<QuestionComment> getQuestionCommentsByQuestionId() {
-        return questionCommentsByQuestionId;
-    }
-
-    public void setQuestionCommentsByQuestionId(Collection<QuestionComment> questionCommentsByQuestionId) {
-        this.questionCommentsByQuestionId = questionCommentsByQuestionId;
+    public void setQuestionCategories(Collection<Category> questionCategories) {
+        this.questionCategories = questionCategories;
     }
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    @OneToMany(mappedBy = "getQuestionByQuestionId")
-    public Collection<Reply> getRepliesByQuestionId() {
-        return repliesByQuestionId;
+    @ManyToOne
+    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id", nullable = false)
+    public Lecture getLecture() {
+        return lecture;
     }
 
-    public void setRepliesByQuestionId(Collection<Reply> repliesByQuestionId) {
-        this.repliesByQuestionId = repliesByQuestionId;
+    public void setLecture(Lecture lecture) {
+        this.lecture = lecture;
     }
 
     @Transient

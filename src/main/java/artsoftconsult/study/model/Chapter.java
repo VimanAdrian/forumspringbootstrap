@@ -17,7 +17,8 @@ public class Chapter {
     private Long score;
     private Long views;
     private Boolean active;
-    private Collection<Page> pagesByChapterId;
+    private Collection<Page> pages;
+    private Collection<Lecture> lectures;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -131,12 +132,21 @@ public class Chapter {
         return Objects.hash(chapterId, title, description, created, lastActive, visibility, score, views, active);
     }
 
-    @OneToMany(mappedBy = "getChapterByChapterId")
-    public Collection<Page> getPagesByChapterId() {
-        return pagesByChapterId;
+    @OneToMany(mappedBy = "chapter")
+    public Collection<Page> getPages() {
+        return pages;
     }
 
-    public void setPagesByChapterId(Collection<Page> pagesByChapterId) {
-        this.pagesByChapterId = pagesByChapterId;
+    public void setPages(Collection<Page> pages) {
+        this.pages = pages;
+    }
+
+    @OneToMany(mappedBy = "chapter")
+    public Collection<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(Collection<Lecture> lectures) {
+        this.lectures = lectures;
     }
 }

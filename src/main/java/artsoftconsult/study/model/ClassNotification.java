@@ -8,8 +8,8 @@ import java.util.Objects;
 public class ClassNotification {
     private Long classNotificationId;
     private String notificationText;
-    private User userByUserId;
-    private Class classByClassId;
+    private User user;
+    private VirtualClass virtualClass;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,9 @@ public class ClassNotification {
         if (o == null || getClass() != o.getClass()) return false;
         ClassNotification that = (ClassNotification) o;
         return Objects.equals(classNotificationId, that.classNotificationId) &&
-                Objects.equals(notificationText, that.notificationText);
+                Objects.equals(notificationText, that.notificationText) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(virtualClass, that.virtualClass);
     }
 
     @Override
@@ -48,21 +50,21 @@ public class ClassNotification {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    public User getUserByUserId() {
-        return userByUserId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ManyToOne
     @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
-    public Class getClassByClassId() {
-        return classByClassId;
+    public VirtualClass getVirtualClass() {
+        return virtualClass;
     }
 
-    public void setClassByClassId(Class classByClassId) {
-        this.classByClassId = classByClassId;
+    public void setVirtualClass(VirtualClass virtualClass) {
+        this.virtualClass = virtualClass;
     }
 }

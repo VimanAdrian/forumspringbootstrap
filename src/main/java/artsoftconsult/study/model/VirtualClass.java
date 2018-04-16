@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="classes")
-public class Class {
+public class VirtualClass {
     private Long classId;
     private String title;
     private String description;
@@ -17,10 +17,11 @@ public class Class {
     private Long score;
     private Long views;
     private Boolean active;
-    private User userByOwner;
-    private Collection<Lecture> lecturesByClassId;
+    private User user;
+    private Collection<Lecture> lectures;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id")
     public Long getClassId() {
         return classId;
@@ -114,16 +115,16 @@ public class Class {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Class aClass = (Class) o;
-        return Objects.equals(classId, aClass.classId) &&
-                Objects.equals(title, aClass.title) &&
-                Objects.equals(description, aClass.description) &&
-                Objects.equals(created, aClass.created) &&
-                Objects.equals(lastActive, aClass.lastActive) &&
-                Objects.equals(visibility, aClass.visibility) &&
-                Objects.equals(score, aClass.score) &&
-                Objects.equals(views, aClass.views) &&
-                Objects.equals(active, aClass.active);
+        VirtualClass aVirtualClass = (VirtualClass) o;
+        return Objects.equals(classId, aVirtualClass.classId) &&
+                Objects.equals(title, aVirtualClass.title) &&
+                Objects.equals(description, aVirtualClass.description) &&
+                Objects.equals(created, aVirtualClass.created) &&
+                Objects.equals(lastActive, aVirtualClass.lastActive) &&
+                Objects.equals(visibility, aVirtualClass.visibility) &&
+                Objects.equals(score, aVirtualClass.score) &&
+                Objects.equals(views, aVirtualClass.views) &&
+                Objects.equals(active, aVirtualClass.active);
     }
 
     @Override
@@ -133,20 +134,20 @@ public class Class {
 
     @ManyToOne
     @JoinColumn(name = "owner", referencedColumnName = "user_id", nullable = false)
-    public User getUserByOwner() {
-        return userByOwner;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserByOwner(User userByOwner) {
-        this.userByOwner = userByOwner;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    @OneToMany(mappedBy = "getClassByClassId")
-    public Collection<Lecture> getLecturesByClassId() {
-        return lecturesByClassId;
+    @OneToMany(mappedBy = "virtualClass")
+    public Collection<Lecture> getLectures() {
+        return lectures;
     }
 
-    public void setLecturesByClassId(Collection<Lecture> lecturesByClassId) {
-        this.lecturesByClassId = lecturesByClassId;
+    public void setLectures(Collection<Lecture> lectures) {
+        this.lectures = lectures;
     }
 }
