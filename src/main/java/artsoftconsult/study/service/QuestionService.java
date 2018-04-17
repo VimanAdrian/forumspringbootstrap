@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -48,21 +45,31 @@ public class QuestionService {
         question.setContent(content);
         question.setTitle(title);
         question.setUser(user);
-        Question saved = questionRepository.save(prepareForSave(question));
-
-        String[] tagsArray = RandomUtils.split(tags);
+        List<Category> categories = new ArrayList<>();
+        String[] tagsArray = tags.split(",");
         for (String tag : tagsArray) {
-            Category cat = new Category();
-            cat.setTitle(tag.toLowerCase());
-            try {
-                cat.setUrl(URLEncoder.encode(cat.getTitle(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+            Category oldCategory = categoryRepository.findByTitle(tag.toLowerCase());
+            if(oldCategory!=null){
+                categories.add(oldCategory);
+            }else{
+                Category newCategory = new Category();
+                newCategory.setTitle(tag.toLowerCase());
+                try {
+                    newCategory.setUrl(URLEncoder.encode(tag.toLowerCase(), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                categories.add(newCategory);
             }
-            Category category = categoryRepository.save(cat);
-            categoryRepository.saveAssociation(saved.getQuestionId(), category.getCategoryId());
         }
-        return saved.getQuestionId();
+        Iterable<Category> categoryIterable = categoryRepository.save(categories);
+        Collection<Category> categoryCollection = new ArrayList<>();
+        for (Category category:categoryIterable) {
+            categoryCollection.add(category);
+        }
+        question.setQuestionCategories(categoryCollection);
+        Question savedQuestion = questionRepository.saveAndFlush(prepareForSave(question));
+        return savedQuestion.getQuestionId();
     }
 
     public void update(Question question) {
@@ -82,7 +89,7 @@ public class QuestionService {
             re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
             if (user != null) { //not authenticated
-                Integer replyVoteType = replyRepository.findVoteType(re.getReplyId(),user.getUserId());
+                Integer replyVoteType = replyRepository.findVoteType(re.getReplyId(), user.getUserId());
                 if (replyVoteType == null)
                     re.setVoteType(0);
                 else if (replyVoteType == -1)

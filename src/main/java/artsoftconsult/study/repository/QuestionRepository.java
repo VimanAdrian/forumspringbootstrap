@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Long>, QuestionRepositoryCustom {
 
+    Question saveAndFlush(Question question);
+
     Question findByQuestionId(@Param("questionId")Long questionId);
 
     @Modifying
-    @Query(value = "UPDATE question SET views = views + 1 WHERE question_id = :questionId", nativeQuery = true)
+    @Query(value = "UPDATE questions SET views = views + 1 WHERE question_id = :questionId", nativeQuery = true)
     void incrementView(@Param("questionId")Long questionId);
 
     @Query(value = "SELECT vote_type FROM votes_users_questions WHERE question_id =:questionId AND user_id = :userId", nativeQuery = true)
@@ -26,14 +28,14 @@ public interface QuestionRepository extends PagingAndSortingRepository<Question,
     void newVote(@Param("questionId")Long questionId, @Param("userId")Long userId, @Param("newVote")Integer newVote);
 
     @Modifying
-    @Query(value = "UPDATE question SET score = score + :newVote WHERE question_id=:questionId", nativeQuery = true)
+    @Query(value = "UPDATE questions SET score = score + :newVote WHERE question_id=:questionId", nativeQuery = true)
     void updateScore(@Param("questionId")Long questionId, @Param("newVote")Integer newVote);
 
     @Modifying
-    @Query(value = "UPDATE question SET active = NOT active WHERE question_id=:questionId", nativeQuery = true)
+    @Query(value = "UPDATE questions SET active = NOT active WHERE question_id=:questionId", nativeQuery = true)
     void toggleStatus(@Param("questionId")Long questionId);
 
     @Modifying
-    @Query(value="UPDATE question SET title = :title, content=:content WHERE question_id=:questionId", nativeQuery = true)
+    @Query(value="UPDATE questions SET title = :title, content=:content WHERE question_id=:questionId", nativeQuery = true)
     void updateTitleAndContent(@Param("title")String title, @Param("content")String content, @Param("questionId")Long questionId);
 }

@@ -62,11 +62,11 @@ public class Question {
         return content;
     }
 
-    @Transient
     public void setContent(String content) {
         this.content = content;
     }
 
+    @Transient
     public String getRawContent() {
         return rawContent;
     }
@@ -184,7 +184,7 @@ public class Question {
     }
 
     @ManyToOne
-    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id", nullable = false)
+    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id", nullable = true)
     public Lecture getLecture() {
         return lecture;
     }
@@ -200,5 +200,26 @@ public class Question {
 
     public void setVoteType(Integer voteType) {
         this.voteType = voteType;
+    }
+
+    @Override
+    public String toString() {
+        return "toStringQuestion{" +
+                "questionId=" + questionId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", rawContent='" + rawContent + '\'' +
+                ", created=" + created +
+                ", lastActive=" + lastActive +
+                ", views=" + views +
+                ", score=" + score +
+                ", active=" + active +
+                ", user=" + user +
+                ", lecture=" + lecture +
+                ", questionCategories=" + questionCategories +
+                ", replies=" + replies +
+                ", questionComments=" + questionComments +
+                ", voteType=" + voteType +
+                '}';
     }
 }

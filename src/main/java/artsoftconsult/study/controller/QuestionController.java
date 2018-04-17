@@ -35,14 +35,14 @@ public class QuestionController {
             Long saveResponse = questionService.save(title, content, tags, user);
             if (saveResponse != -1)
                 try {
-                    String redirect = "/post?postID=" + saveResponse + "&page=" + 0;
+                    String redirect = "/question?questionId=" + saveResponse;
                     response.sendRedirect(redirect);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             else
                 try {
-                    response.sendRedirect("post?error");
+                    response.sendRedirect("question?error");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

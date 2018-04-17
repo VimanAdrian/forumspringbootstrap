@@ -7,7 +7,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> {
+
+    Category saveAndFlush(Category category);
 
     Category findByTitle(@Param("title")String title);
 

@@ -32,14 +32,14 @@
 
     <script>
         $(document).ready(function () {
-            localPostId = "${post.questionId}";
+            localPostId = "${question.questionId}";
             $(document).on("click", ".voteButton", function () {
                 localVoteType = $(this).val();
                 $.ajax({
                     type: "POST",
                     url: '/votePost',
                     data: {
-                        postID: localPostId,
+                        questionId: localPostId,
                         type: localVoteType,
                         "${_csrf.parameterName}": "${_csrf.token}"
                     },

@@ -4,22 +4,22 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "class_notifications")
-public class ClassNotification {
-    private Long classNotificationId;
+@Table(name = "virtual_class_notifications")
+public class VirtualClassNotification {
+    private Long virtualClassNotificationId;
     private String notificationText;
     private User user;
     private VirtualClass virtualClass;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "class_notification_id")
-    public Long getClassNotificationId() {
-        return classNotificationId;
+    @Column(name = "virtual_class_notification_id")
+    public Long getVirtualClassNotificationId() {
+        return virtualClassNotificationId;
     }
 
-    public void setClassNotificationId(Long classNotificationId) {
-        this.classNotificationId = classNotificationId;
+    public void setVirtualClassNotificationId(Long virtualClassNotificationId) {
+        this.virtualClassNotificationId = virtualClassNotificationId;
     }
 
     @Basic
@@ -36,8 +36,8 @@ public class ClassNotification {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClassNotification that = (ClassNotification) o;
-        return Objects.equals(classNotificationId, that.classNotificationId) &&
+        VirtualClassNotification that = (VirtualClassNotification) o;
+        return Objects.equals(virtualClassNotificationId, that.virtualClassNotificationId) &&
                 Objects.equals(notificationText, that.notificationText) &&
                 Objects.equals(user, that.user) &&
                 Objects.equals(virtualClass, that.virtualClass);
@@ -45,7 +45,7 @@ public class ClassNotification {
 
     @Override
     public int hashCode() {
-        return Objects.hash(classNotificationId, notificationText);
+        return Objects.hash(virtualClassNotificationId, notificationText);
     }
 
     @ManyToOne
@@ -59,7 +59,7 @@ public class ClassNotification {
     }
 
     @ManyToOne
-    @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
+    @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id", nullable = false)
     public VirtualClass getVirtualClass() {
         return virtualClass;
     }

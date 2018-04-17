@@ -25,7 +25,7 @@ public class QuestionRepositoryImpl implements QuestionRepositoryCustom {
         List<Long> questionIds = new ArrayList<>(jdbcTemplate.query("SELECT question_id FROM user_new_replies WHERE user_id = ?", new Object[]{userId},
                 (rs, rowNum) -> (rs.getLong("question_id"))));
         if (questionIds.size() > 1)
-            return new ArrayList<>(jdbcTemplate.query("SELECT question_id, title, views, score FROM question WHERE question_id = ?", questionIds.toArray(new Object[0]),
+            return new ArrayList<>(jdbcTemplate.query("SELECT question_id, title, views, score FROM questions WHERE question_id = ?", questionIds.toArray(new Object[0]),
                     (rs, rowNum) -> new Question(rs.getLong("question_id"), rs.getString("title"), rs.getLong("views"), rs.getLong("score"))));
         else
             return new ArrayList<Question>();
@@ -33,7 +33,7 @@ public class QuestionRepositoryImpl implements QuestionRepositoryCustom {
 
     @Override
     public List<Question> topQuestion(Long userId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM question WHERE user_id=? ORDER BY score DESC LIMIT 5", new Object[]{userId},
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM questions WHERE user_id=? ORDER BY score DESC LIMIT 5", new Object[]{userId},
                 (rs, rowNum) -> new Question(rs.getLong("question_id"), rs.getString("title"), rs.getLong("views"), rs.getLong("score"))));
     }
 }

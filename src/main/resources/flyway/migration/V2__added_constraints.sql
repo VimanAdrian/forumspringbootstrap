@@ -14,5 +14,5 @@ ALTER TABLE categories ADD CONSTRAINT unique_index_categories_title UNIQUE (titl
 
 ALTER TABLE categories ADD CONSTRAINT unique_index_categories_url UNIQUE (url);
 
-ALTER TABLE class_rights ADD CONSTRAINT unique_index_class_rights_user_id UNIQUE (user_id);
+ALTER TABLE virtual_class_rights ADD CONSTRAINT unique_index_class_rights_user_id UNIQUE (user_id);
 

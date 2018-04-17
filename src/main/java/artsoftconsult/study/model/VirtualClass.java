@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name="classes")
+@Table(name="virtual_classes")
 public class VirtualClass {
-    private Long classId;
+    private Long virtualClassId;
     private String title;
     private String description;
     private Date created;
@@ -22,13 +22,13 @@ public class VirtualClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "class_id")
-    public Long getClassId() {
-        return classId;
+    @Column(name = "virtual_class_id")
+    public Long getVirtualClassId() {
+        return virtualClassId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setVirtualClassId(Long virtualClassId) {
+        this.virtualClassId = virtualClassId;
     }
 
     @Basic
@@ -116,7 +116,7 @@ public class VirtualClass {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VirtualClass aVirtualClass = (VirtualClass) o;
-        return Objects.equals(classId, aVirtualClass.classId) &&
+        return Objects.equals(virtualClassId, aVirtualClass.virtualClassId) &&
                 Objects.equals(title, aVirtualClass.title) &&
                 Objects.equals(description, aVirtualClass.description) &&
                 Objects.equals(created, aVirtualClass.created) &&
@@ -129,7 +129,7 @@ public class VirtualClass {
 
     @Override
     public int hashCode() {
-        return Objects.hash(classId, title, description, created, lastActive, visibility, score, views, active);
+        return Objects.hash(virtualClassId, title, description, created, lastActive, visibility, score, views, active);
     }
 
     @ManyToOne

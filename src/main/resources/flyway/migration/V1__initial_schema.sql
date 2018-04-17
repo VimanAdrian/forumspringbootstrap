@@ -38,57 +38,57 @@ CREATE TABLE categories (
   url         VARCHAR(128) NOT NULL
 );
 
-CREATE TABLE class (
-  class_id    BIGSERIAL     NOT NULL PRIMARY KEY,
-  owner       BIGINT        NOT NULL CONSTRAINT classes_users_user_id_fk REFERENCES users (user_id),
-  title       VARCHAR(1024) NOT NULL,
-  description VARCHAR(4096),
-  created     DATE          NOT NULL,
-  last_active DATE          NOT NULL,
-  visibility  VARCHAR(64)   NOT NULL,
-  score       BIGINT  DEFAULT '0',
-  views       BIGINT  DEFAULT '0',
-  active      BOOLEAN DEFAULT '1'
+CREATE TABLE virtual_classes (
+  virtual_class_id BIGSERIAL     NOT NULL PRIMARY KEY,
+  owner            BIGINT        NOT NULL CONSTRAINT virtual_classes_users_user_id_fk REFERENCES users (user_id),
+  title            VARCHAR(1024) NOT NULL,
+  description      VARCHAR(4096),
+  created          DATE          NOT NULL,
+  last_active      DATE          NOT NULL,
+  visibility       VARCHAR(64)   NOT NULL,
+  score            BIGINT  DEFAULT '0',
+  views            BIGINT  DEFAULT '0',
+  active           BOOLEAN DEFAULT '1'
 );
 
-CREATE TABLE class_followers (
-  class_follow_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id         BIGINT    NOT NULL CONSTRAINT class_followers_users_user_id_fk REFERENCES users (user_id),
-  class_id        BIGINT    NOT NULL
+CREATE TABLE virtual_class_followers (
+  virtual_class_follow_id BIGSERIAL NOT NULL PRIMARY KEY,
+  user_id                 BIGINT    NOT NULL CONSTRAINT virtual_class_followers_users_user_id_fk REFERENCES users (user_id),
+  virtual_class_id        BIGINT    NOT NULL    NOT NULL CONSTRAINT virtual_class_followers_virtual_classes_virtual_class_id_fk REFERENCES virtual_classes (virtual_class_id)
 );
 
-CREATE TABLE class_notifications (
-  class_notification_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id               BIGINT    NOT NULL CONSTRAINT class_notifications_users_user_id_fk REFERENCES users (user_id),
-  class_id              BIGINT    NOT NULL CONSTRAINT class_notifications_classes_class_id_fk REFERENCES class (class_id),
-  notification_text     VARCHAR(256)
+CREATE TABLE virtual_class_notifications (
+  virtual_class_notification_id BIGSERIAL NOT NULL PRIMARY KEY,
+  user_id                       BIGINT    NOT NULL CONSTRAINT virtual_class_notifications_users_user_id_fk REFERENCES users (user_id),
+  virtual_class_id              BIGINT    NOT NULL CONSTRAINT virtual_class_notifications_virtual_classes_virtual_class_id_fk REFERENCES virtual_classes (virtual_class_id),
+  notification_text             VARCHAR(256)
 );
 
-CREATE TABLE class_rights (
-  class_edit_id BIGSERIAL NOT NULL PRIMARY KEY,
-  user_id       BIGINT    NOT NULL CONSTRAINT class_rights_users_user_id_fk REFERENCES users (user_id),
-  class_id      BIGINT    NOT NULL CONSTRAINT class_rights_classes_class_id_fk REFERENCES class (class_id),
-  can_view      BOOLEAN,
-  can_edit      BOOLEAN,
-  can_post      BOOLEAN
+CREATE TABLE virtual_class_rights (
+  virtual_class_rights_id BIGSERIAL NOT NULL PRIMARY KEY,
+  user_id                 BIGINT    NOT NULL CONSTRAINT virtual_class_rights_users_user_id_fk REFERENCES users (user_id),
+  virtual_class_id        BIGINT    NOT NULL CONSTRAINT virtual_class_rights_virtual_classes_virtual_class_id_fk REFERENCES virtual_classes (virtual_class_id),
+  can_view                BOOLEAN,
+  can_edit                BOOLEAN,
+  can_post                BOOLEAN
 );
 
-CREATE TABLE lecture (
-  lecture_id  BIGSERIAL     NOT NULL PRIMARY KEY,
-  class_id    BIGINT        NOT NULL CONSTRAINT lectures_classes_class_id_fk REFERENCES class (class_id),
-  title       VARCHAR(1024) NOT NULL,
-  description VARCHAR(4096),
-  created     DATE          NOT NULL,
-  last_active DATE          NOT NULL,
-  visibility  VARCHAR(64)   NOT NULL,
-  score       BIGINT  DEFAULT '0',
-  views       BIGINT  DEFAULT '0',
-  active      BOOLEAN DEFAULT '1'
+CREATE TABLE lectures (
+  lecture_id       BIGSERIAL     NOT NULL PRIMARY KEY,
+  virtual_class_id BIGINT        NOT NULL CONSTRAINT lectures__virtual_classes_virtual_class_id_fk REFERENCES virtual_classes (virtual_class_id),
+  title            VARCHAR(1024) NOT NULL,
+  description      VARCHAR(4096),
+  created          DATE          NOT NULL,
+  last_active      DATE          NOT NULL,
+  visibility       VARCHAR(64)   NOT NULL,
+  score            BIGINT  DEFAULT '0',
+  views            BIGINT  DEFAULT '0',
+  active           BOOLEAN DEFAULT '1'
 );
 
-CREATE TABLE chapter (
+CREATE TABLE chapters (
   chapter_id  BIGSERIAL     NOT NULL PRIMARY KEY,
-  lecture_id  BIGINT        NOT NULL CONSTRAINT chapters_lectures_lecture_id_fk REFERENCES lecture (lecture_id),
+  lecture_id  BIGINT        NOT NULL CONSTRAINT chapters_lectures_lecture_id_fk REFERENCES lectures (lecture_id),
   title       VARCHAR(1024) NOT NULL,
   description VARCHAR(4096),
   created     DATE          NOT NULL,
@@ -99,9 +99,9 @@ CREATE TABLE chapter (
   active      BOOLEAN DEFAULT '1'
 );
 
-CREATE TABLE page (
+CREATE TABLE pages (
   page_id     BIGSERIAL     NOT NULL PRIMARY KEY,
-  chapter_id  BIGINT        NOT NULL CONSTRAINT pages_chapters_lecture_id_fk REFERENCES chapter (chapter_id),
+  chapter_id  BIGINT        NOT NULL CONSTRAINT pages_chapters_lecture_id_fk REFERENCES chapters (chapter_id),
   title       VARCHAR(1024) NOT NULL,
   content     VARCHAR(8192),
   created     DATE          NOT NULL,
@@ -112,10 +112,10 @@ CREATE TABLE page (
   active      BOOLEAN DEFAULT '1'
 );
 
-CREATE TABLE question (
+CREATE TABLE questions (
   question_id BIGSERIAL     NOT NULL PRIMARY KEY,
   user_id     BIGINT        NOT NULL CONSTRAINT questions_users_user_id_fk REFERENCES users (user_id),
-  lecture_id  BIGINT        NOT NULL CONSTRAINT questions_lectures_lecture_id_fk REFERENCES lecture (lecture_id),
+  lecture_id  BIGINT        NOT NULL CONSTRAINT questions_lectures_lecture_id_fk REFERENCES lectures (lecture_id),
   title       VARCHAR(1024) NOT NULL,
   content     VARCHAR(8192) NOT NULL,
   created     DATE          NOT NULL,
@@ -127,21 +127,21 @@ CREATE TABLE question (
 
 CREATE TABLE question_categories (
   question_categories_id BIGSERIAL NOT NULL PRIMARY KEY,
-  question_id            BIGINT    NOT NULL CONSTRAINT question_categories_questions_question_id_fk REFERENCES question (question_id),
+  question_id            BIGINT    NOT NULL CONSTRAINT question_categories_questions_question_id_fk REFERENCES questions (question_id),
   category_id            BIGINT    NOT NULL CONSTRAINT question_categories_categories_categoryId_fk REFERENCES categories (category_id)
 );
 
 CREATE TABLE question_comments (
   question_comment_id BIGSERIAL NOT NULL PRIMARY KEY,
   user_id             BIGINT    NOT NULL CONSTRAINT questions_comments_users_user_id_fk REFERENCES users (user_id),
-  question_id         BIGINT    NOT NULL CONSTRAINT questions_comments_questions_question_id_fk REFERENCES question (question_id),
+  question_id         BIGINT    NOT NULL CONSTRAINT questions_comments_questions_question_id_fk REFERENCES questions (question_id),
   creation_date       DATE      NOT NULL,
   content             VARCHAR(8192)
 );
 
-CREATE TABLE reply (
+CREATE TABLE replies (
   reply_id      BIGSERIAL     NOT NULL PRIMARY KEY,
-  question_id   BIGINT        NOT NULL CONSTRAINT replies_questions_question_id_fk REFERENCES question (question_id),
+  question_id   BIGINT        NOT NULL CONSTRAINT replies_questions_question_id_fk REFERENCES questions (question_id),
   user_id       BIGINT        NOT NULL CONSTRAINT replies_users_user_id_fk REFERENCES users (user_id),
   content       VARCHAR(8192) NOT NULL,
   creation_date DATE          NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE reply (
 CREATE TABLE replies_comments (
   reply_comment_id BIGSERIAL NOT NULL PRIMARY KEY,
   user_id          BIGINT    NOT NULL CONSTRAINT replies_comments_users_user_id_fk REFERENCES users (user_id),
-  reply_id         BIGINT    NOT NULL CONSTRAINT replies_comments_questions_question_id_fk REFERENCES reply (reply_id),
+  reply_id         BIGINT    NOT NULL CONSTRAINT replies_comments_questions_question_id_fk REFERENCES replies (reply_id),
   creation_date    DATE      NOT NULL,
   content          VARCHAR(8192)
 );
@@ -174,20 +174,20 @@ CREATE TABLE user_notifications (
 CREATE TABLE user_new_replies (
   user_new_reply_id BIGSERIAL NOT NULL PRIMARY KEY,
   user_id           BIGINT    NOT NULL CONSTRAINT user_new_replies_users_user_id_fk REFERENCES users (user_id),
-  question_id       BIGINT    NOT NULL CONSTRAINT user_new_replies_questions_question_id_fk REFERENCES question (question_id)
+  question_id       BIGINT    NOT NULL CONSTRAINT user_new_replies_questions_question_id_fk REFERENCES questions (question_id)
 );
 
 CREATE TABLE votes_users_questions (
   vote_user_question_id BIGSERIAL NOT NULL PRIMARY KEY,
   user_id               BIGINT    NOT NULL  CONSTRAINT votes_users_questions_users_user_id_fk REFERENCES users (user_id),
-  question_id           BIGINT    NOT NULL CONSTRAINT votes_users_questions_questions_question_id_fk REFERENCES question (question_id),
+  question_id           BIGINT    NOT NULL CONSTRAINT votes_users_questions_questions_question_id_fk REFERENCES questions (question_id),
   vote_type             BIGINT    NOT NULL
 );
 
 CREATE TABLE votes_users_replies (
   vote_user_reply_id BIGSERIAL NOT NULL PRIMARY KEY,
   user_id            BIGINT    NOT NULL CONSTRAINT votes_users_replies_users_user_id_fk REFERENCES users (user_id),
-  reply_id           BIGINT    NOT NULL CONSTRAINT votes_users_replies_replies_reply_id_fk REFERENCES reply (reply_id),
+  reply_id           BIGINT    NOT NULL CONSTRAINT votes_users_replies_replies_reply_id_fk REFERENCES replies (reply_id),
   vote_type          BIGINT    NOT NULL
 );
 

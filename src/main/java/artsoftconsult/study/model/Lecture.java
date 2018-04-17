@@ -153,7 +153,7 @@ public class Lecture {
     }
 
     @ManyToOne
-    @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
+    @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id", nullable = false)
     public VirtualClass getVirtualClass() {
         return virtualClass;
     }

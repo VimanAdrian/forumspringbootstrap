@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "class_rights")
-public class ClassRights {
-    private Long classEditId;
+@Table(name = "virtual_class_rights")
+public class VirtualClassRights {
+    private Long virtualClassRightsId;
     private Boolean canView;
     private Boolean canEdit;
     private Boolean canPost;
@@ -15,13 +15,13 @@ public class ClassRights {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "class_edit_id")
-    public Long getClassEditId() {
-        return classEditId;
+    @Column(name = "virtual_class_rights_id")
+    public Long getVirtualClassRightsId() {
+        return virtualClassRightsId;
     }
 
-    public void setClassEditId(Long classEditId) {
-        this.classEditId = classEditId;
+    public void setVirtualClassRightsId(Long virtualClassRightsId) {
+        this.virtualClassRightsId = virtualClassRightsId;
     }
 
     @Basic
@@ -58,8 +58,8 @@ public class ClassRights {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClassRights that = (ClassRights) o;
-        return Objects.equals(classEditId, that.classEditId) &&
+        VirtualClassRights that = (VirtualClassRights) o;
+        return Objects.equals(virtualClassRightsId, that.virtualClassRightsId) &&
                 Objects.equals(canView, that.canView) &&
                 Objects.equals(canEdit, that.canEdit) &&
                 Objects.equals(canPost, that.canPost);
@@ -67,7 +67,7 @@ public class ClassRights {
 
     @Override
     public int hashCode() {
-        return Objects.hash(classEditId, canView, canEdit, canPost);
+        return Objects.hash(virtualClassRightsId, canView, canEdit, canPost);
     }
 
     @ManyToOne
@@ -81,7 +81,7 @@ public class ClassRights {
     }
 
     @ManyToOne
-    @JoinColumn(name = "class_id", referencedColumnName = "class_id", nullable = false)
+    @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id", nullable = false)
     public VirtualClass getVirtualClass() {
         return virtualClass;
     }
