@@ -13,7 +13,8 @@ public class ChapterDTO {
     private Long score;
     private Long views;
     private Boolean active;
-    private Collection<PageDTO> pagesByChapterId;
+    private Collection<PageDTO> pages;
+    private Collection<LectureDTO> lectures;
 
     public Long getChapterId() {
         return chapterId;
@@ -87,11 +88,19 @@ public class ChapterDTO {
         this.active = active;
     }
 
-    public Collection<PageDTO> getPagesByChapterId() {
-        return pagesByChapterId;
+    public Collection<PageDTO> getPages() {
+        return pages;
     }
 
-    public void setPagesByChapterId(Collection<PageDTO> pagesByChapterId) {
-        this.pagesByChapterId = pagesByChapterId;
+    public void setPages(Collection<PageDTO> pages) {
+        this.pages = pages;
+    }
+
+    public Collection<LectureDTO> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(Collection<LectureDTO> lectures) {
+        this.lectures = lectures;
     }
 }

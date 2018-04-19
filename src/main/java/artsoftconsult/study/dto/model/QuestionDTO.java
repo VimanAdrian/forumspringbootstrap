@@ -7,15 +7,18 @@ public class QuestionDTO {
     private Long questionId;
     private String title;
     private String content;
+    private String rawContent;
     private Date created;
     private Date lastActive;
     private Long views;
     private Long score;
     private Boolean active;
-    private UserDTO userByUserId;
-    private Collection<CategoryDTO> questionCategoriesByQuestionId;
-    private Collection<QuestionCommentDTO> questionCommentsByQuestionId;
-    private Collection<ReplyDTO> repliesByQuestionId;
+    private UserDTO user;
+    private LectureDTO lecture;
+    private Collection<CategoryDTO> questionCategories;
+    private Collection<ReplyDTO> replies;
+    private Collection<QuestionCommentDTO> questionComments;
+    private Integer voteType;
 
     public Long getQuestionId() {
         return questionId;
@@ -39,6 +42,14 @@ public class QuestionDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     public Date getCreated() {
@@ -81,35 +92,51 @@ public class QuestionDTO {
         this.active = active;
     }
 
-    public UserDTO getUserByUserId() {
-        return userByUserId;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserByUserId(UserDTO userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
-    public Collection<CategoryDTO> getQuestionCategoriesByQuestionId() {
-        return questionCategoriesByQuestionId;
+    public LectureDTO getLecture() {
+        return lecture;
     }
 
-    public void setQuestionCategoriesByQuestionId(Collection<CategoryDTO> questionCategoriesByQuestionId) {
-        this.questionCategoriesByQuestionId = questionCategoriesByQuestionId;
+    public void setLecture(LectureDTO lecture) {
+        this.lecture = lecture;
     }
 
-    public Collection<QuestionCommentDTO> getQuestionCommentsByQuestionId() {
-        return questionCommentsByQuestionId;
+    public Collection<CategoryDTO> getQuestionCategories() {
+        return questionCategories;
     }
 
-    public void setQuestionCommentsByQuestionId(Collection<QuestionCommentDTO> questionCommentsByQuestionId) {
-        this.questionCommentsByQuestionId = questionCommentsByQuestionId;
+    public void setQuestionCategories(Collection<CategoryDTO> questionCategories) {
+        this.questionCategories = questionCategories;
     }
 
-    public Collection<ReplyDTO> getRepliesByQuestionId() {
-        return repliesByQuestionId;
+    public Collection<ReplyDTO> getReplies() {
+        return replies;
     }
 
-    public void setRepliesByQuestionId(Collection<ReplyDTO> repliesByQuestionId) {
-        this.repliesByQuestionId = repliesByQuestionId;
+    public void setReplies(Collection<ReplyDTO> replies) {
+        this.replies = replies;
+    }
+
+    public Collection<QuestionCommentDTO> getQuestionComments() {
+        return questionComments;
+    }
+
+    public void setQuestionComments(Collection<QuestionCommentDTO> questionComments) {
+        this.questionComments = questionComments;
+    }
+
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
     }
 }

@@ -10,6 +10,6 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom {
 
     @Override
     public void markNotNew(Long questionId, Long userId) {
-        jdbcTemplate.update("DELETE FROM user_new_replies WHERE question_id = ? and user_id = ?", questionId, userId);
+        jdbcTemplate.update("DELETE FROM user_new_replies WHERE question_id = ? AND user_id = ?", questionId, userId);
     }
 }

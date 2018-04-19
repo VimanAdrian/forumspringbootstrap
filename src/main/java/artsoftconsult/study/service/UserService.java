@@ -4,8 +4,8 @@ import artsoftconsult.study.dto.model.UserDTO;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.QuestionRepository;
-import artsoftconsult.study.repository.UserRepository;
 import artsoftconsult.study.repository.TokenRepositoryImpl;
+import artsoftconsult.study.repository.UserRepository;
 import artsoftconsult.study.utils.Email;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.UserValidator;
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
@@ -73,7 +72,7 @@ public class UserService implements Serializable {
             modelMapper.map(user, userFromDto);
             userFromDto = prepareForSave(userFromDto);
             if ((userRepository.findByEmail(userFromDto.getEmail()) == null) && (userRepository.findByUsername(userFromDto.getUsername()) == null)) {
-                User savedUser = userRepository.save(userFromDto);
+                User savedUser = userRepository.saveAndFlush(userFromDto);
                 if (savedUser != null)
                     if (savedUser.getUserId() != null) {
                         sendToken(savedUser);

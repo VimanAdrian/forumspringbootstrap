@@ -1,7 +1,6 @@
 package artsoftconsult.study.validator;
 
 import artsoftconsult.study.dto.model.UserDTO;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +16,7 @@ public class UserValidator {
     }
 
     private boolean validateUserPasswordMatching(UserDTO user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.matches(user.getConfirmationPassword(), user.getPassword());
+        return user.getConfirmationPassword().equals(user.getPassword());
     }
 
     /*

@@ -6,12 +6,15 @@ import java.util.Collection;
 public class ReplyDTO {
     private Long replyId;
     private String content;
+    private String rawContent;
     private Date creationDate;
     private Long score;
     private Boolean bestAnswer;
     private Boolean enabled;
-    private UserDTO userByUserId;
-    private Collection<RepliesCommentsDTO> repliesCommentsByReplyId;
+    private UserDTO user;
+    private QuestionDTO question;
+    private Collection<ReplyCommentDTO> replyComment;
+    private Integer voteType;
 
     public Long getReplyId() {
         return replyId;
@@ -27,6 +30,14 @@ public class ReplyDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     public Date getCreationDate() {
@@ -61,19 +72,35 @@ public class ReplyDTO {
         this.enabled = enabled;
     }
 
-    public UserDTO getUserByUserId() {
-        return userByUserId;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserByUserId(UserDTO userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
-    public Collection<RepliesCommentsDTO> getRepliesCommentsByReplyId() {
-        return repliesCommentsByReplyId;
+    public QuestionDTO getQuestion() {
+        return question;
     }
 
-    public void setRepliesCommentsByReplyId(Collection<RepliesCommentsDTO> repliesCommentsByReplyId) {
-        this.repliesCommentsByReplyId = repliesCommentsByReplyId;
+    public void setQuestion(QuestionDTO question) {
+        this.question = question;
+    }
+
+    public Collection<ReplyCommentDTO> getReplyComment() {
+        return replyComment;
+    }
+
+    public void setReplyComment(Collection<ReplyCommentDTO> replyComment) {
+        this.replyComment = replyComment;
+    }
+
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
     }
 }

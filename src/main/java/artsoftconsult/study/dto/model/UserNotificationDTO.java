@@ -3,8 +3,8 @@ package artsoftconsult.study.dto.model;
 public class UserNotificationDTO {
     private Long userNotificationId;
     private String notificationText;
-    private UserDTO userByFollowerUserId;
-    private UserDTO userByFollowedUserId;
+    private UserDTO userFollower;
+    private UserDTO userFollowed;
 
     public Long getUserNotificationId() {
         return userNotificationId;
@@ -22,19 +22,19 @@ public class UserNotificationDTO {
         this.notificationText = notificationText;
     }
 
-    public UserDTO getUserByFollowerUserId() {
-        return userByFollowerUserId;
+    public UserDTO getUserFollower() {
+        return userFollower;
     }
 
-    public void setUserByFollowerUserId(UserDTO userByFollowerUserId) {
-        this.userByFollowerUserId = userByFollowerUserId;
+    public void setUserFollower(UserDTO userFollower) {
+        this.userFollower = userFollower;
     }
 
-    public UserDTO getUserByFollowedUserId() {
-        return userByFollowedUserId;
+    public UserDTO getUserFollowed() {
+        return userFollowed;
     }
 
-    public void setUserByFollowedUserId(UserDTO userByFollowedUserId) {
-        this.userByFollowedUserId = userByFollowedUserId;
+    public void setUserFollowed(UserDTO userFollowed) {
+        this.userFollowed = userFollowed;
     }
 }

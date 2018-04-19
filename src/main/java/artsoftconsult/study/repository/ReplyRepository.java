@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long> ,ReplyRepositoryCustom{
+public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long> {
 
     Reply findByReplyId(@Param("replyId")Long replyId);
 
@@ -20,9 +20,9 @@ public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long>
     @Query(value="SELECT COUNT(*) FROM replies WHERE question_id=:questionId AND enabled=TRUE", nativeQuery = true)
     Integer findCountWithoutDisabled(@Param("questionId")Long questionId);
 
-    //@Modifying
-    //@Query(value = "DELETE FROM user_new_replies WHERE question_id = :questionId and user_id = :userId" , nativeQuery = true)
-    //void markNotNew(@Param("questionId")Long questionId, @Param("userId")Long userId);
+    @Modifying
+    @Query(value = "DELETE FROM user_new_replies WHERE question_id = :questionId and user_id = :userId", nativeQuery = true)
+    void markNotNew(@Param("questionId") Long questionId, @Param("userId") Long userId);
 
     @Query(value = "SELECT vote_type FROM votes_users_replies WHERE reply_id = :replyId AND user_id = :userId", nativeQuery = true)
     Integer findVoteType(@Param("replyId")Long replyId, @Param("userId")Long userId);

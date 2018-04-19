@@ -1,18 +1,18 @@
 package artsoftconsult.study.service;
 
+import artsoftconsult.study.dto.model.QuestionDTO;
+import artsoftconsult.study.dto.model.ReplyDTO;
 import artsoftconsult.study.model.Category;
 import artsoftconsult.study.model.Question;
-import artsoftconsult.study.model.Reply;
 import artsoftconsult.study.model.User;
-import artsoftconsult.study.repository.CategoryRepository;
-import artsoftconsult.study.repository.QuestionRepository;
-import artsoftconsult.study.repository.ReplyRepository;
-import artsoftconsult.study.repository.UserRepository;
+import artsoftconsult.study.repository.*;
 import artsoftconsult.study.utils.MyAttributeProvider;
-import artsoftconsult.study.utils.RandomUtils;
 import com.google.common.collect.Iterables;
+import org.hibernate.Hibernate;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -30,6 +30,10 @@ public class QuestionService {
     private CategoryRepository categoryRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private QuestionCommentRepository questionCommentRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     private Question prepareForSave(Question question) {
         question.setCreated(new Date(System.currentTimeMillis()));
@@ -72,20 +76,30 @@ public class QuestionService {
         return savedQuestion.getQuestionId();
     }
 
+    @Transactional
     public void update(Question question) {
         Question questionFromDb = questionRepository.findByQuestionId(question.getQuestionId());
         if (question.getUser().getUserId().equals(questionFromDb.getUser().getUserId()))
             questionRepository.updateTitleAndContent(question.getTitle(), question.getContent(), question.getQuestionId());
     }
 
-    public Question find(Long questionId, User user) {
+    @Transactional
+    public QuestionDTO find(Long questionId, User user) {
         if (user != null) { //not authenticated
             replyRepository.markNotNew(questionId, user.getUserId());
         }
         questionRepository.incrementView(questionId);
         Question question = questionRepository.findByQuestionId(questionId);
-        Iterable<Reply> replies = question.getReplies();
-        for (Reply re : question.getReplies()) {
+        Hibernate.initialize(question.getQuestionCategories());
+        Hibernate.initialize(question.getQuestionComments());
+        Hibernate.initialize(question.getReplies());
+        Hibernate.initialize(question.getUser());
+
+        QuestionDTO questionDTO = new QuestionDTO();
+        modelMapper.map(question, questionDTO);
+
+        Iterable<ReplyDTO> replies = questionDTO.getReplies();
+        for (ReplyDTO re : questionDTO.getReplies()) {
             re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
             if (user != null) { //not authenticated
@@ -93,41 +107,45 @@ public class QuestionService {
                 if (replyVoteType == null)
                     re.setVoteType(0);
                 else if (replyVoteType == -1)
-                    re.setVoteType(1);
-                else
                     re.setVoteType(-1);
+                else
+                    re.setVoteType(1);
             } else {
                 re.setVoteType(0);
             }
         }
-        question.setReplies(sort(Iterables.toArray(replies, Reply.class)));
-        question.setRawContent(question.getContent());
-        question.setContent(MyAttributeProvider.commonMark(question.getContent()));
+        questionDTO.setReplies(sort(Iterables.toArray(replies, ReplyDTO.class)));
+        questionDTO.setRawContent(questionDTO.getContent());
+        questionDTO.setContent(MyAttributeProvider.commonMark(questionDTO.getContent()));
         if (user != null) { //not authenticated
             Integer questionVoteType = questionRepository.findVoteType(questionId, user.getUserId());
             if (questionVoteType == null)
-                question.setVoteType(0);
-            else if (questionVoteType == -1)
-                question.setVoteType(1);
+                questionDTO.setVoteType(0);
+            else if (questionVoteType.equals(-1))
+                questionDTO.setVoteType(-1);
             else
-                question.setVoteType(-1);
+                questionDTO.setVoteType(1);
         } else {
-            question.setVoteType(0);
+            questionDTO.setVoteType(0);
         }
-        return question;
+        return questionDTO;
     }
 
-    private List<Reply> sort(Reply[] replies) {
-        Reply favorite = null;
-        List<Reply> sortedReplies = new ArrayList<>();
-        for (Reply reply : replies) {
+    public Question find(Long questionId) {
+        return questionRepository.findByQuestionId(questionId);
+    }
+
+    private List<ReplyDTO> sort(ReplyDTO[] replies) {
+        ReplyDTO favorite = null;
+        List<ReplyDTO> sortedReplies = new ArrayList<>();
+        for (ReplyDTO reply : replies) {
             if (reply.getBestAnswer()) {
                 favorite = reply;
             } else {
                 sortedReplies.add(reply);
             }
         }
-        sortedReplies.sort(Comparator.comparing(Reply::getScore));
+        sortedReplies.sort(Comparator.comparing(ReplyDTO::getScore));
         if (sortedReplies.size() != replies.length) {
             sortedReplies.add(favorite);
         }
@@ -135,9 +153,10 @@ public class QuestionService {
         return sortedReplies;
     }
 
+    @Transactional
     public void vote(Long questionId, Long userId, String type) {
         Integer newVote;
-        if (type.equals("UPVOTE")) {
+        if (type.equals("Upvote")) {
             newVote = 1;
         } else {
             newVote = -1;
@@ -146,7 +165,8 @@ public class QuestionService {
         if (oldVote == null) {
             oldVote = 0;
         }
-        if (!oldVote.equals(newVote)) {
+        if (oldVote.equals(newVote)) {
+        } else if (!oldVote.equals(0)) {
             questionRepository.changeVote(questionId, userId, newVote);
             questionRepository.updateScore(questionId, newVote * 2);
         } else {
@@ -155,6 +175,7 @@ public class QuestionService {
         }
     }
 
+    @Transactional
     public boolean toggleQuestionStatus(Long questionId) {
         questionRepository.toggleStatus(questionId);
         return true;

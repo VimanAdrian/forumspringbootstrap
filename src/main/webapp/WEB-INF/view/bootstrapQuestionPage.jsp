@@ -210,14 +210,15 @@
                             <c:forEach var="comment" items="${question.questionComments}">
                                 <hr class="hr-5px "/>
                                 <p class="text-left margin-bottom-0px padding-left-15px gi-08x">
-                                    <c:out value="${comment.content}"/> - <a
-                                        href="${pageContext.request.contextPath}/account?username=${comment.user.username}">${comment.user.username}</a>
+                                    <c:out value="${comment.content}"/> &nbsp&nbsp by
+                                    <a href="${pageContext.request.contextPath}/account?username=${comment.user.username}">${comment.user.username}</a>
                                     at ${comment.creationDate.toLocaleString()}
                                 </p>
                             </c:forEach>
                             <sec:authorize access="isAuthenticated()">
                                 <hr class="hr-5px "/>
-                                <input type="text" placeholder="Post a comment." class="comment-input">
+                                <input type="text" placeholder="Post a comment."
+                                       class="comment-input question-comment-input">
                             </sec:authorize>
                         </div>
 
@@ -308,10 +309,11 @@
                 <div class="row">
                     <div class="col-md-11">
                         <div class="well pading-top-5px pading-bottom-5px">
-                            <c:if test="${reply.enabled==0}">
-                                <p>This reply was marked as violating our community guidelines and has been disabled.</p>
+                            <c:if test="${reply.enabled==false}">
+                                <p>This reply was marked as violating our community guidelines and has been
+                                    disabled.</p>
                             </c:if>
-                            <c:if test="${reply.enabled==1}">
+                            <c:if test="${reply.enabled==true}">
                                 <div class="row">
                                     <div class="text-left col-md-12">
                                             ${reply.content}
@@ -364,19 +366,19 @@
                                             aria-hidden="true"></span></p>
                                 </c:if>
                                 <c:if test="${question.user.username==pageContext.request.userPrincipal.name}">
-                                    <c:if test="${reply.bestAnswer==1}">
+                                    <c:if test="${reply.bestAnswer==true}">
                                         <p class="margin-bottom-0px buttons-p"><span
                                                 class="gi-1x glyphicon glyphicon-star glyphicon-button"
                                                 aria-hidden="true"></span></p>
                                     </c:if>
-                                    <c:if test="${reply.bestAnswer==0}">
+                                    <c:if test="${reply.bestAnswer==false}">
                                         <p class="margin-bottom-0px buttons-p"><span
                                                 class="gi-1x glyphicon glyphicon-star glyphicon-button  text-muted clickable"
                                                 aria-hidden="true"></span></p>
                                     </c:if>
                                 </c:if>
                                 <c:if test="${question.user.username!=pageContext.request.userPrincipal.name}">
-                                    <c:if test="${reply.bestAnswer==1}">
+                                    <c:if test="${reply.bestAnswer==true}">
                                         <p class="margin-bottom-0px buttons-p"><span
                                                 class="gi-1x glyphicon glyphicon-star"
                                                 aria-hidden="true"></span></p>
@@ -394,7 +396,7 @@
                                 </c:if>
                             </sec:authorize>
                             <sec:authorize access="isAnonymous()">
-                                <c:if test="${reply.bestAnswer==1}">
+                                <c:if test="${reply.bestAnswer==true}">
                                     <p class="margin-bottom-0px buttons-p"><span class="gi-1x glyphicon glyphicon-star"
                                                                                  aria-hidden="true"></span></p>
                                 </c:if>
@@ -624,9 +626,9 @@
             }
         });
 
-        $('form').submit(function () {
+        $('.form').submit(function () {
             $theForm = $(this);
-            $.c({
+            $.ajax({
                 type: $theForm.attr('method'),
                 url: $theForm.attr('action'),
                 data: $theForm.serialize(),
@@ -639,6 +641,39 @@
             });
             return false;
         });
+
+        $('.comment-input').on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                $theInput = $(this);
+                if ($theInput.hasClass("question-comment-input")) {
+                    postComment('${pageContext.request.contextPath}/makeQuestionComment', $theInput.val(), '${question.questionId}');
+                } else if ($theInput.hasClass("reply-comment-input")) {
+                    postComment('${pageContext.request.contextPath}/makeReplyComment', $theInput.value);
+                }
+            }
+        });
+
+        function postComment(url, content, parentId) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    parentId: parentId,
+                    content: content,
+                    "${_csrf.parameterName}": "${_csrf.token}"
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                beforeSend: function (jqXHR, settings) {
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        }
 
     </script>
 </sec:authorize>

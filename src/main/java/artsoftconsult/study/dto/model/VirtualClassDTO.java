@@ -3,8 +3,8 @@ package artsoftconsult.study.dto.model;
 import java.sql.Date;
 import java.util.Collection;
 
-public class ClassDTO {
-    private Long classId;
+public class VirtualClassDTO {
+    private Long virtualClassId;
     private String title;
     private String description;
     private Date created;
@@ -13,15 +13,15 @@ public class ClassDTO {
     private Long score;
     private Long views;
     private Boolean active;
-    private UserDTO userByOwner;
-    private Collection<LectureDTO> lecturesByClassId;
+    private UserDTO user;
+    private Collection<LectureDTO> lectures;
 
-    public Long getClassId() {
-        return classId;
+    public Long getVirtualClassId() {
+        return virtualClassId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setVirtualClassId(Long virtualClassId) {
+        this.virtualClassId = virtualClassId;
     }
 
     public String getTitle() {
@@ -88,19 +88,19 @@ public class ClassDTO {
         this.active = active;
     }
 
-    public UserDTO getUserByOwner() {
-        return userByOwner;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserByOwner(UserDTO userByOwner) {
-        this.userByOwner = userByOwner;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
-    public Collection<LectureDTO> getLecturesByClassId() {
-        return lecturesByClassId;
+    public Collection<LectureDTO> getLectures() {
+        return lectures;
     }
 
-    public void setLecturesByClassId(Collection<LectureDTO> lecturesByClassId) {
-        this.lecturesByClassId = lecturesByClassId;
+    public void setLectures(Collection<LectureDTO> lectures) {
+        this.lectures = lectures;
     }
 }

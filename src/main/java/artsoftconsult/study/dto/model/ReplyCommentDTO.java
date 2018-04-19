@@ -3,12 +3,12 @@ package artsoftconsult.study.dto.model;
 import java.sql.Date;
 
 
-public class RepliesCommentsDTO {
+public class ReplyCommentDTO {
     private Long replyCommentId;
     private Date creationDate;
     private String content;
-    private UserDTO userByUserId;
-    private ReplyDTO replyByReplyId;
+    private UserDTO user;
+    private ReplyDTO reply;
 
     public Long getReplyCommentId() {
         return replyCommentId;
@@ -34,19 +34,19 @@ public class RepliesCommentsDTO {
         this.content = content;
     }
 
-    public UserDTO getUserByUserId() {
-        return userByUserId;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserByUserId(UserDTO userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
-    public ReplyDTO getReplyByReplyId() {
-        return replyByReplyId;
+    public ReplyDTO getReply() {
+        return reply;
     }
 
-    public void setReplyByReplyId(ReplyDTO replyByReplyId) {
-        this.replyByReplyId = replyByReplyId;
+    public void setReply(ReplyDTO reply) {
+        this.reply = reply;
     }
 }

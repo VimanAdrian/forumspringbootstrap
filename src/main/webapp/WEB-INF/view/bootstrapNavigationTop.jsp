@@ -209,7 +209,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"></a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/"></a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-left">
@@ -331,7 +331,7 @@
                 </form>
                 <!-- End | Lost Password Form -->
                 <!-- Begin | Register Form -->
-                <form id="register-form" style="display:none;" action="${pageContext.request.contextPath}/reset"
+                <form id="register-form" style="display:none;" action="${pageContext.request.contextPath}/register"
                       method="POST">
                     <div class="modal-body">
                         <div id="div-register-msg">
@@ -344,7 +344,7 @@
                                placeholder="E-Mail" required>
                         <input id="register_password" class="form-control" type="password" name="password"
                                placeholder="Password" required>
-                        <input id="register_password2" class="form-control" type="password" name="password2"
+                        <input id="register_password2" class="form-control" type="password" name="confirmationPassword"
                                placeholder="Password" required>
                         <input id="register_firstName" class="form-control" type="text" name="firstName"
                                placeholder="First name">
@@ -513,21 +513,17 @@
 
     <sec:authorize access="isAuthenticated()">
     $("#logoutButton").click(function () {
-        $("#logoutForm").submit();
-        $('#logoutForm').submit(function () {
-            $theForm = $(this);
-            $.ajax({
-                type: $theForm.attr('method'),
-                url: $theForm.attr('action'),
-                data: $theForm.serialize(),
-                success: function (data) {
-                    location.reload(true);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log(errorThrown);
-                }
-            });
-            return false;
+        $theForm = $("#logoutForm");
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                location.reload(true);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+            }
         });
     });
     </sec:authorize>

@@ -1,5 +1,6 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.dto.model.QuestionDTO;
 import artsoftconsult.study.dto.model.UserDTO;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
@@ -121,7 +122,7 @@ public class MainController {
     public ModelAndView goToPost(@RequestParam(value = "questionId", required = true) Long questionId, HttpServletRequest request) {
         ModelAndView model = new ModelAndView();
         User user = getCurrentUser();
-        Question question = questionService.find(questionId, user);
+        QuestionDTO question = questionService.find(questionId, user);
         model.addObject("question", question);
         model.setViewName("bootstrapQuestionPage");
         return addUserInfo(model);

@@ -26,7 +26,9 @@ public class ReplyService {
             return replyRepository.findCountWithoutDisabled(questionId);
     }
 
-    public Boolean save(Reply reply) {
+    public Boolean save(Reply reply, Long questionId) {
+        Question question = questionRepository.findByQuestionId(questionId);
+        reply.setQuestion(question);
         Reply saved = replyRepository.save(prepareForSave(reply));
         return (saved != null);
     }
@@ -41,9 +43,10 @@ public class ReplyService {
         return reply;
     }
 
+    @Transactional
     public void vote(Long replyId, Long userId, String type) {
         Integer newVote;
-        if (type.equals("UPVOTE")) {
+        if (type.equals("Upvote")) {
             newVote = 1;
         } else {
             newVote = -1;
@@ -52,7 +55,8 @@ public class ReplyService {
         if (oldVote == null) {
             oldVote = 0;
         }
-        if (!oldVote.equals(newVote)) {
+        if (oldVote.equals(newVote)) {
+        } else if (!oldVote.equals(0)) {
             replyRepository.changeVote(replyId, userId, newVote);
             replyRepository.updateScore(replyId, newVote * 2);
         } else {
@@ -61,10 +65,13 @@ public class ReplyService {
         }
     }
 
+    @Transactional
     public void toggleStatus(Long replyId) {
         replyRepository.toggleEnabled(replyId);
     }
 
+
+    @Transactional
     public void update(Reply reply) {
         Reply reply1FromDb = replyRepository.findByReplyId(reply.getReplyId());
         if (reply.getUser().getUserId().equals(reply1FromDb.getUser().getUserId()))

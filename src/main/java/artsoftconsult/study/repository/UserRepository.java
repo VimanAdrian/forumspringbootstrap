@@ -7,7 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Repository
@@ -20,6 +19,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     User findByUsername(String username);
 
     User findByUserId(Long userId);
+
+    User saveAndFlush(User user);
 
     @Modifying
     @Query(value = "UPDATE users SET password=:password WHERE user_id=:userId", nativeQuery = true)
@@ -40,6 +41,5 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE users SET account_non_locked = FALSE WHERE user_id=:userId", nativeQuery = true)
     User block(@Param("userId")Long userId);
-
 
 }

@@ -1,7 +1,5 @@
 package artsoftconsult.study.controller;
 
-import artsoftconsult.study.dto.model.QuestionDTO;
-import artsoftconsult.study.dto.model.ReplyDTO;
 import artsoftconsult.study.model.Reply;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.service.QuestionService;
@@ -14,7 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,14 +37,13 @@ public class ReplyController {
 
     @RequestMapping(value = "/makeReply", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean makeReply(@ModelAttribute("ReplyDTO") ReplyDTO reply, @ModelAttribute("QuestionDTO") QuestionDTO questionDto) {
+    Boolean makeReply(@RequestParam("content") String content, @RequestParam("questionId") Long questionId) {
         User user = getCurrentUser();
         if (user != null) {
-            Reply replyFromDto = new Reply();
-            modelMapper.map(reply, replyFromDto);
-            replyFromDto.setUser(user);
-            replyFromDto.setQuestion(questionService.find(questionDto.getQuestionId(), null));
-            return replyService.save(replyFromDto);
+            Reply reply = new Reply();
+            reply.setUser(user);
+            reply.setContent(content);
+            return replyService.save(reply, questionId);
         }
         return false;
     }
@@ -64,13 +64,13 @@ public class ReplyController {
 
     @RequestMapping(value = "/editReply", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean makeEdit(@ModelAttribute("ReplyDTO") ReplyDTO replyDTO) {
+    Boolean makeEdit(@RequestParam("content") String content, @RequestParam("replyId") Long replyId) {
         User user = getCurrentUser();
         if (user != null) {
             Reply reply = new Reply();
-            modelMapper.map(replyDTO, reply);
-
             reply.setUser(user);
+            reply.setContent(content);
+            reply.setReplyId(replyId);
             replyService.update(reply);
             return true;
         }

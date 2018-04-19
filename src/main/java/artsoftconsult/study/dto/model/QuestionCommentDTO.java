@@ -7,7 +7,8 @@ public class QuestionCommentDTO {
     private Long questionCommentId;
     private Date creationDate;
     private String content;
-    private UserDTO userByUserId;
+    private QuestionDTO question;
+    private UserDTO user;
 
     public Long getQuestionCommentId() {
         return questionCommentId;
@@ -33,11 +34,19 @@ public class QuestionCommentDTO {
         this.content = content;
     }
 
-    public UserDTO getUserByUserId() {
-        return userByUserId;
+    public QuestionDTO getQuestion() {
+        return question;
     }
 
-    public void setUserByUserId(UserDTO userByUserId) {
-        this.userByUserId = userByUserId;
+    public void setQuestion(QuestionDTO question) {
+        this.question = question;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 }
