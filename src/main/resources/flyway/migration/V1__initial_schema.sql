@@ -86,22 +86,9 @@ CREATE TABLE lectures (
   active           BOOLEAN DEFAULT '1'
 );
 
-CREATE TABLE chapters (
-  chapter_id  BIGSERIAL     NOT NULL PRIMARY KEY,
-  lecture_id  BIGINT        NOT NULL CONSTRAINT chapters_lectures_lecture_id_fk REFERENCES lectures (lecture_id),
-  title       VARCHAR(1024) NOT NULL,
-  description VARCHAR(4096),
-  created     DATE          NOT NULL,
-  last_active DATE          NOT NULL,
-  visibility  VARCHAR(64)   NOT NULL,
-  score       BIGINT  DEFAULT '0',
-  views       BIGINT  DEFAULT '0',
-  active      BOOLEAN DEFAULT '1'
-);
-
 CREATE TABLE pages (
   page_id     BIGSERIAL     NOT NULL PRIMARY KEY,
-  chapter_id  BIGINT        NOT NULL CONSTRAINT pages_chapters_lecture_id_fk REFERENCES chapters (chapter_id),
+  lecture_id  BIGINT        NOT NULL CONSTRAINT pages_lectures_lecture_id_fk REFERENCES lectures (lecture_id),
   title       VARCHAR(1024) NOT NULL,
   content     VARCHAR(8192),
   created     DATE          NOT NULL,

@@ -13,7 +13,6 @@ public class LectureDTO {
     private Long score;
     private Long views;
     private Boolean active;
-    private ChapterDTO chapter;
     private Collection<QuestionDTO> questions;
     private VirtualClassDTO virtualClass;
 
@@ -87,14 +86,6 @@ public class LectureDTO {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public ChapterDTO getChapter() {
-        return chapter;
-    }
-
-    public void setChapter(ChapterDTO chapter) {
-        this.chapter = chapter;
     }
 
     public Collection<QuestionDTO> getQuestions() {

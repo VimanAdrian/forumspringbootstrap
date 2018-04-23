@@ -19,6 +19,7 @@ public class VirtualClass {
     private Boolean active;
     private User user;
     private Collection<Lecture> lectures;
+    private Collection<Category> virtualClassCategories;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -150,4 +151,15 @@ public class VirtualClass {
     public void setLectures(Collection<Lecture> lectures) {
         this.lectures = lectures;
     }
+
+    @ManyToMany
+    @JoinTable(name = "virtual_class_categories", joinColumns = @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
+    public Collection<Category> getQuestionCategories() {
+        return virtualClassCategories;
+    }
+
+    public void setQuestionCategories(Collection<Category> questionCategories) {
+        this.virtualClassCategories = questionCategories;
+    }
+
 }

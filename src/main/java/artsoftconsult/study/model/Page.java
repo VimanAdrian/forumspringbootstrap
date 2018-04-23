@@ -16,7 +16,7 @@ public class Page {
     private Long score;
     private Long views;
     private Boolean active;
-    private Chapter chapter;
+    private Lecture lecture;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -131,12 +131,12 @@ public class Page {
     }
 
     @ManyToOne
-    @JoinColumn(name = "chapter_id", referencedColumnName = "chapter_id", nullable = false)
-    public Chapter getChapter() {
-        return chapter;
+    @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id", nullable = false)
+    public Lecture getLecture() {
+        return lecture;
     }
 
-    public void setChapter(Chapter chapter) {
-        this.chapter = chapter;
+    public void setLecture(Lecture lecture) {
+        this.lecture = lecture;
     }
 }

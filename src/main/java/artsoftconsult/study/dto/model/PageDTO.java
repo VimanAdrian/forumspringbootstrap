@@ -12,7 +12,7 @@ public class PageDTO {
     private Long score;
     private Long views;
     private Boolean active;
-    private ChapterDTO chapter;
+    private LectureDTO chapter;
 
     public Long getPageId() {
         return pageId;
@@ -86,11 +86,11 @@ public class PageDTO {
         this.active = active;
     }
 
-    public ChapterDTO getChapter() {
+    public LectureDTO getChapter() {
         return chapter;
     }
 
-    public void setChapter(ChapterDTO chapter) {
+    public void setChapter(LectureDTO chapter) {
         this.chapter = chapter;
     }
 }

@@ -5,8 +5,8 @@ ALTER TABLE categories
 ALTER TABLE users
   alter column user_id SET DEFAULT nextval('users_user_id_seq');
 
-ALTER TABLE chapters
-  alter column chapter_id SET DEFAULT nextval('chapters_chapter_id_seq');
+ALTER TABLE lectures
+  alter column lecture_id SET DEFAULT nextval('lectures_lecture_id_seq');
 
 ALTER TABLE virtual_classes
   alter column virtual_class_id SET DEFAULT nextval('virtual_classes_virtual_class_id_seq');
@@ -19,9 +19,6 @@ ALTER TABLE virtual_class_notifications
 
 ALTER TABLE virtual_class_rights
   alter column virtual_class_rights_id SET DEFAULT nextval('virtual_class_rights_virtual_class_rights_id_seq');
-
-ALTER TABLE lectures
-  alter column lecture_id SET DEFAULT nextval('lectures_lecture_id_seq');
 
 ALTER TABLE pages
   alter column page_id SET DEFAULT nextval('pages_page_id_seq');

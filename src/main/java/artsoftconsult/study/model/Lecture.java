@@ -17,8 +17,8 @@ public class Lecture {
     private Long score;
     private Long views;
     private Boolean active;
-    private Chapter chapter;
     private Collection<Question> questions;
+    private Collection<Page> pages;
     private VirtualClass virtualClass;
 
     @Id
@@ -133,16 +133,6 @@ public class Lecture {
         return Objects.hash(lectureId, title, description, created, lastActive, visibility, score, views, active);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "chapter_id", referencedColumnName = "chapter_id", nullable = false)
-    public Chapter getChapter() {
-        return chapter;
-    }
-
-    public void setChapter(Chapter chapter) {
-        this.chapter = chapter;
-    }
-
     @OneToMany(mappedBy = "lecture")
     public Collection<Question> getQuestions() {
         return questions;
@@ -150,6 +140,15 @@ public class Lecture {
 
     public void setQuestions(Collection<Question> questions) {
         this.questions = questions;
+    }
+
+    @OneToMany(mappedBy = "lecture")
+    public Collection<Page> getPages() {
+        return pages;
+    }
+
+    public void setPages(Collection<Page> pages) {
+        this.pages = pages;
     }
 
     @ManyToOne
@@ -162,7 +161,4 @@ public class Lecture {
         this.virtualClass = virtualClass;
     }
 
-    public void setReply(VirtualClass virtualClass) {
-        this.virtualClass = virtualClass;
-    }
 }

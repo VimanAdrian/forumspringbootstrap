@@ -84,6 +84,13 @@ public class MainController {
         return addUserInfo(modelAndView);
     }
 
+    @RequestMapping(value = "/newClass", method = RequestMethod.GET)
+    public ModelAndView goToNewClass() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("bootstrapNewClass");
+        return addUserInfo(modelAndView);
+    }
+
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public ModelAndView goToAccount(@RequestParam(value = "username", required = false) String username, HttpServletResponse response) {
         ModelAndView model = new ModelAndView();
