@@ -135,6 +135,13 @@ public class MainController {
         return addUserInfo(model);
     }
 
+    @RequestMapping(value = "class", method = RequestMethod.GET)
+    public ModelAndView goToClass(@RequestParam(value = "classId", required = true) Long classId) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("bootstrapUserPage");
+        return addUserInfo(modelAndView);
+    }
+
     //deprecated
     @RequestMapping(value = "/activate", method = RequestMethod.GET)
     public ModelAndView activateAccount(@RequestParam(value = "token", required = false) String token,

@@ -55,6 +55,10 @@
             float: right;
         }
 
+        .li-padding-bottom {
+            padding-bottom: 7px;
+        }
+
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -78,7 +82,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1">
-                    <form id="new-post-form" action="${pageContext.request.contextPath}/makeClass" method="POST"
+                    <form id="new-class-form" action="${pageContext.request.contextPath}/newClass" method="POST"
                           class="form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-sm-1" for="post_title">Title:</label>
@@ -375,13 +379,18 @@
                             <label class="control-label col-sm-1" for="lectures">Lectures:</label>
                             <div class="col-sm-11">
                                 <ul id="lectures" style="list-style-type: none;">
-                                    <li><input class="form-control" type="text" name="title"
-                                               placeholder="Lecture title"/></li>
+                                    <li class="li-padding-bottom"><input class="form-control" type="text" name="title"
+                                                                         placeholder="Lecture title"/></li>
                                 </ul>
-                                <input type="button" class="btn btn-info align-right" value="Add lecture"/>
+                                <div class="btn-toolbar align-right">
+                                    <button type="button" id="removeLecture" class="btn btn-danger btn-sm"><span
+                                            class="glyphicon glyphicon-minus"></span></button>
+                                    <button type="button" id="addLecture" class="btn btn-success btn-sm"><span
+                                            class="glyphicon glyphicon-plus"></span></button>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group align-right">
                             <div class="col-sm-offset-1 col-sm-1">
                                 <input type="submit" class="btn btn-primary" value="Save class"/>
                             </div>
@@ -481,6 +490,34 @@
         valuesSeparator: ',',
         // debug mode
         debug: true
+    });
+</script>
+<script>
+    $("#addLecture").click(function () {
+        $("#lectures li:last").after('<li class=" li-padding-bottom"><input class="form-control" type="text" name="title" placeholder="Lecture title"/></li>');
+    });
+    $("#removeLecture").click(function () {
+        if ($('ul#lectures li').length > 1)
+            $("#lectures li:last-child").remove()
+    });
+</script>
+<script>
+    $('#new-class-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                window.location = "${pageContext.request.contextPath}/class?classId=" + data;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+            },
+            beforeSend: function (jqXHR, settings) {
+            }
+        });
+        return false;
     });
 </script>
 <jsp:include page="bootstrapNavigationBottom.jsp"/>

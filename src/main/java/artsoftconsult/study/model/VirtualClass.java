@@ -154,12 +154,12 @@ public class VirtualClass {
 
     @ManyToMany
     @JoinTable(name = "virtual_class_categories", joinColumns = @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
-    public Collection<Category> getQuestionCategories() {
+    public Collection<Category> getVirtualClassCategories() {
         return virtualClassCategories;
     }
 
-    public void setQuestionCategories(Collection<Category> questionCategories) {
-        this.virtualClassCategories = questionCategories;
+    public void setVirtualClassCategories(Collection<Category> virtualClassCategories) {
+        this.virtualClassCategories = virtualClassCategories;
     }
 
 }

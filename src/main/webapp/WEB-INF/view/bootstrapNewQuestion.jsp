@@ -51,6 +51,10 @@
             min-height: 200px;
         }
 
+        .align-right {
+            float: right;
+        }
+
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -363,7 +367,7 @@
                                 </datalist>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group align-right">
                             <div class="col-sm-offset-1 col-sm-1">
                                 <input type="submit" class="btn btn-primary" value="Ask"/>
                             </div>

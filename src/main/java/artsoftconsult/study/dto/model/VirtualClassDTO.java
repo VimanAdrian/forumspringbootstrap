@@ -15,6 +15,7 @@ public class VirtualClassDTO {
     private Boolean active;
     private UserDTO user;
     private Collection<LectureDTO> lectures;
+    private Collection<CategoryDTO> virtualClassCategories;
 
     public Long getVirtualClassId() {
         return virtualClassId;
@@ -102,5 +103,13 @@ public class VirtualClassDTO {
 
     public void setLectures(Collection<LectureDTO> lectures) {
         this.lectures = lectures;
+    }
+
+    public Collection<CategoryDTO> getVirtualClassCategories() {
+        return virtualClassCategories;
+    }
+
+    public void setVirtualClassCategories(Collection<CategoryDTO> virtualClassCategories) {
+        this.virtualClassCategories = virtualClassCategories;
     }
 }
