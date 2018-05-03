@@ -86,4 +86,9 @@ public class ReplyService {
             replyRepository.makeFavorite(replyId);
         }
     }
+
+    @Transactional
+    public Reply find(Long replyId) {
+        return replyRepository.findOne(replyId);
+    }
 }

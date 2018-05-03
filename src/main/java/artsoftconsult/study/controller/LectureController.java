@@ -1,10 +1,9 @@
 package artsoftconsult.study.controller;
 
-import artsoftconsult.study.dto.model.VirtualClassDTO;
+import artsoftconsult.study.dto.model.PageDTO;
 import artsoftconsult.study.model.User;
-import artsoftconsult.study.model.VirtualClass;
+import artsoftconsult.study.service.LectureService;
 import artsoftconsult.study.service.UserService;
-import artsoftconsult.study.service.VirtualClassService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -18,16 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class ClassController {
+public class LectureController {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private VirtualClassService virtualClassService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private LectureService lectureService;
 
     private User getCurrentUser() {
         User user = null;
@@ -39,32 +38,22 @@ public class ClassController {
         return user;
     }
 
-    @RequestMapping(value = "/newClass", method = RequestMethod.POST)
+    @RequestMapping(value = "/newLecture", method = RequestMethod.POST)
     public @ResponseBody
     Long
-    newClass(@RequestParam("title") String[] title, @RequestParam("content") String content, @RequestParam("tags") String tags, HttpServletRequest request, HttpServletResponse response) {
+    newLecture(@RequestParam("lectureTitle") String title,
+               @RequestParam("lectureDescription") String description,
+               @RequestParam("classId") Long classId,
+               @RequestParam("visibility") String visibility,
+               @RequestParam("active") Boolean active,
+               @ModelAttribute("PageDTTO") PageDTO[] pageDTOS,
+               HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser();
         if (user != null) {
-            Long saveResponse = virtualClassService.save(title, content, tags, user);
+            Long saveResponse = lectureService.save(title, description, classId, visibility, active, pageDTOS, user);
             return saveResponse;
         }
         return -1l;
     }
 
-    @RequestMapping(value = "/editClass", method = RequestMethod.POST)
-    public @ResponseBody
-    Boolean
-    editClass(@ModelAttribute("VirtualClassDTO") VirtualClassDTO classDTO) {
-        User user = getCurrentUser();
-        if (user != null) {
-            VirtualClass virtualClass = new VirtualClass();
-            modelMapper.map(classDTO, virtualClass);
-
-            virtualClass.setUser(user);
-
-            virtualClassService.update(virtualClass);
-            return true;
-        }
-        return false;
-    }
 }

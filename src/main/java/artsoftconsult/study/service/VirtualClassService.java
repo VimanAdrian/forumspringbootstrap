@@ -1,12 +1,14 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.model.Category;
-import artsoftconsult.study.model.Lecture;
-import artsoftconsult.study.model.User;
-import artsoftconsult.study.model.VirtualClass;
+import artsoftconsult.study.dto.model.VirtualClassDTO;
+import artsoftconsult.study.model.*;
 import artsoftconsult.study.repository.CategoryRepository;
 import artsoftconsult.study.repository.LectureRepository;
 import artsoftconsult.study.repository.VirtualClassRepository;
+import artsoftconsult.study.repository.VirtualClassRightsRepository;
+import artsoftconsult.study.utils.MyAttributeProvider;
+import org.hibernate.Hibernate;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +32,13 @@ public class VirtualClassService {
     @Autowired
     private LectureRepository lectureRepository;
 
-    private VirtualClass prepareForSave(VirtualClass virtualClass) {
+    @Autowired
+    private VirtualClassRightsRepository virtualClassRightsRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    private VirtualClass prepareForSave(VirtualClass virtualClass) {
         virtualClass.setActive(true);
         virtualClass.setCreated(new Date(System.currentTimeMillis()));
         virtualClass.setLastActive(new Date(System.currentTimeMillis()));
@@ -42,7 +49,6 @@ public class VirtualClassService {
     }
 
     private Lecture prepareForSave(Lecture lecture) {
-
         lecture.setActive(true);
         lecture.setCreated(new Date(System.currentTimeMillis()));
         lecture.setLastActive(new Date(System.currentTimeMillis()));
@@ -98,5 +104,53 @@ public class VirtualClassService {
             return saved.getVirtualClassId();
         } else
             return -1l;
+    }
+
+    private VirtualClass prepareForUpdate(VirtualClass classFromDb, VirtualClass classFromFront) {
+        classFromFront.setViews(classFromDb.getViews());
+        classFromFront.setScore(classFromDb.getScore());
+        classFromFront.setLastActive(classFromDb.getLastActive());
+        classFromFront.setCreated(classFromDb.getCreated());
+        return classFromFront;
+    }
+
+    @Transactional
+    public void update(VirtualClass virtualClass) {
+        VirtualClass classFromDB = virtualClassRepository.findByVirtualClassId(virtualClass.getVirtualClassId());
+        if (virtualClass.getUser().getUserId().equals(classFromDB.getUser().getUserId())) {
+            virtualClassRepository.save(prepareForUpdate(classFromDB, virtualClass));
+        } else {
+            VirtualClassRights classRights = virtualClassRightsRepository.findByUserIdAndClassId(virtualClass.getVirtualClassId(), virtualClass.getUser().getUserId());
+            if (classRights != null) {
+                if (classRights.getCanEdit()) {
+                    virtualClassRepository.save(prepareForUpdate(classFromDB, virtualClass));
+                }
+            }
+        }
+    }
+
+    @Transactional
+    public VirtualClassDTO find(Long classId, User user) {
+        virtualClassRepository.incrementView(classId);
+        VirtualClass virtualClass = virtualClassRepository.findByVirtualClassId(classId);
+        Hibernate.initialize(virtualClass.getLectures());
+        Hibernate.initialize(virtualClass.getVirtualClassCategories());
+        Hibernate.initialize(virtualClass.getUser());
+
+        VirtualClassDTO virtualClassDTO = new VirtualClassDTO();
+        modelMapper.map(virtualClass, virtualClassDTO);
+        virtualClassDTO.setRawDescription(virtualClassDTO.getDescription());
+        virtualClassDTO.setDescription(MyAttributeProvider.commonMark(virtualClassDTO.getDescription()));
+        if (user != null) { //authenticated
+            Integer voteType = virtualClassRepository.findVoteType(classId, user.getUserId());
+            if (voteType == null)
+                virtualClassDTO.setVoteType(0);
+            else if (voteType.equals(-1))
+                virtualClassDTO.setVoteType(-1);
+            else
+                virtualClassDTO.setVoteType(1);
+        } else
+            virtualClassDTO.setVoteType(0);
+        return virtualClassDTO;
     }
 }

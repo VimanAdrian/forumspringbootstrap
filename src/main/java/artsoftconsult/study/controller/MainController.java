@@ -2,12 +2,10 @@ package artsoftconsult.study.controller;
 
 import artsoftconsult.study.dto.model.QuestionDTO;
 import artsoftconsult.study.dto.model.UserDTO;
+import artsoftconsult.study.dto.model.VirtualClassDTO;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
-import artsoftconsult.study.service.CategoryService;
-import artsoftconsult.study.service.QuestionService;
-import artsoftconsult.study.service.ReplyService;
-import artsoftconsult.study.service.UserService;
+import artsoftconsult.study.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -39,6 +37,9 @@ public class MainController {
 
     @Autowired
     private ReplyService replyService;
+
+    @Autowired
+    private VirtualClassService virtualClassService;
 
     private ModelAndView addUserInfo(ModelAndView modelAndView) {
         User user = getCurrentUser();
@@ -135,10 +136,13 @@ public class MainController {
         return addUserInfo(model);
     }
 
-    @RequestMapping(value = "class", method = RequestMethod.GET)
+    @RequestMapping(value = "/class", method = RequestMethod.GET)
     public ModelAndView goToClass(@RequestParam(value = "classId", required = true) Long classId) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("bootstrapUserPage");
+        User user = getCurrentUser();
+        VirtualClassDTO virtualClassDTO = virtualClassService.find(classId, user);
+        modelAndView.addObject("virtualClass", virtualClassDTO);
+        modelAndView.setViewName("bootstrapClassPage");
         return addUserInfo(modelAndView);
     }
 

@@ -7,6 +7,7 @@ public class VirtualClassDTO {
     private Long virtualClassId;
     private String title;
     private String description;
+    private String rawDescription;
     private Date created;
     private Date lastActive;
     private String visibility;
@@ -16,6 +17,7 @@ public class VirtualClassDTO {
     private UserDTO user;
     private Collection<LectureDTO> lectures;
     private Collection<CategoryDTO> virtualClassCategories;
+    private Integer voteType;
 
     public Long getVirtualClassId() {
         return virtualClassId;
@@ -39,6 +41,14 @@ public class VirtualClassDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRawDescription() {
+        return rawDescription;
+    }
+
+    public void setRawDescription(String rawDescription) {
+        this.rawDescription = rawDescription;
     }
 
     public Date getCreated() {
@@ -111,5 +121,13 @@ public class VirtualClassDTO {
 
     public void setVirtualClassCategories(Collection<CategoryDTO> virtualClassCategories) {
         this.virtualClassCategories = virtualClassCategories;
+    }
+
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
     }
 }

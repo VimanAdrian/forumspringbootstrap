@@ -117,7 +117,7 @@ public class QuestionService {
         questionDTO.setReplies(sort(Iterables.toArray(replies, ReplyDTO.class)));
         questionDTO.setRawContent(questionDTO.getContent());
         questionDTO.setContent(MyAttributeProvider.commonMark(questionDTO.getContent()));
-        if (user != null) { //not authenticated
+        if (user != null) { //authenticated
             Integer questionVoteType = questionRepository.findVoteType(questionId, user.getUserId());
             if (questionVoteType == null)
                 questionDTO.setVoteType(0);
