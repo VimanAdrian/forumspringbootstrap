@@ -37,7 +37,7 @@ public class SearchService {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         if (searchedBy != null) {
             Page<Question> questionPage = questionRepository.findByQuestionCategoriesAndDeletedFalse(pageable, searchedBy);
-            Hibernate.initialize(questionPage);
+            questionPage.getContent().forEach(question -> Hibernate.initialize(question.getQuestionCategories()));
             return questionPage;
         } else return new PageImpl<Question>(new ArrayList<>(), pageable, 0);
     }
@@ -48,7 +48,7 @@ public class SearchService {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         if (searchedBy != null) {
             Page<VirtualClass> virtualClassPage = virtualClassRepository.findByVirtualClassCategoriesAndDeletedFalse(pageable, searchedBy);
-            Hibernate.initialize(virtualClassPage);
+            virtualClassPage.getContent().forEach(virtualClass -> Hibernate.initialize(virtualClass.getVirtualClassCategories()));
             return virtualClassPage;
         } else return new PageImpl<VirtualClass>(new ArrayList<>(), pageable, 0);
     }
@@ -57,24 +57,27 @@ public class SearchService {
         return null;
     }
 
+    @Transactional
     public Page<Question> searchQuestionByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         Page<Question> questionPage = questionRepository.findByTitleContainingOrContentContainingAndDeletedFalse(pageable, search, search);
-        Hibernate.initialize(questionPage);
+        questionPage.getContent().forEach(question -> Hibernate.initialize(question.getQuestionCategories()));
         return questionPage;
     }
 
+    @Transactional
     public Page<VirtualClass> searchVirtualClassByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
-        Page<VirtualClass> questionPage = virtualClassRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
-        Hibernate.initialize(questionPage);
-        return questionPage;
+        Page<VirtualClass> virtualClassPage = virtualClassRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
+        virtualClassPage.getContent().forEach(virtualClass -> Hibernate.initialize(virtualClass.getVirtualClassCategories()));
+        return virtualClassPage;
     }
 
+    @Transactional
     public Page<Lecture> searchLectureByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
-        Page<Lecture> questionPage = lectureRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
-        Hibernate.initialize(questionPage);
-        return questionPage;
+        Page<Lecture> lecturePage = lectureRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
+        Hibernate.initialize(lecturePage.getContent());
+        return lecturePage;
     }
 }

@@ -239,6 +239,8 @@
                   </span>
                 </div>
                 <input type="hidden" name="page" value="0">
+                <input type="hidden" name="size" value="20">
+                <input type="hidden" name="searchFor" value="question" id="formSearchFor">
             </form>
             <script>
                 $("#searchButton").click(function () {
