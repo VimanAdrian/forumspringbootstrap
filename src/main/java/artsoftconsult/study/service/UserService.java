@@ -51,6 +51,7 @@ public class UserService implements Serializable {
         user.setProfileImage("/profileImage/generic.png");
         user.setAccountNonLocked(true);
         user.setType("NORMAL");
+        user.setDeleted(false);
         return user;
     }
 

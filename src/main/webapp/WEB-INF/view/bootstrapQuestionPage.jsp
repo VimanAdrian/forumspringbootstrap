@@ -29,6 +29,9 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/tomorrow.css"/>
     <script src="${pageContext.request.contextPath}/resources/javascript/jquery.flexdatalist.js"></script>
     <link href="${pageContext.request.contextPath}/resources/css/jquery.flexdatalist.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
+              integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9"
+              crossorigin="anonymous">
     <style>
         .wmd-button > span {
             background-image: url('http://cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
@@ -138,6 +141,7 @@
         }
 
         .buttons-p {
+            display: inline-block;
         }
 
         @media screen and (max-width: 992px) {
@@ -150,6 +154,22 @@
             .gi-1x {
                 font-size: 2em !important;
             }
+        }
+
+        .interaction-button {
+            width: 51px;
+        }
+
+        .align-right {
+            float: right;
+        }
+
+        .align-left {
+            float: left;
+        }
+
+        .delete-confirmation-modal {
+            width: 320px;
         }
 
     </style>
@@ -184,7 +204,7 @@
                             <div class="col-md-6">
                                 <p class="text-left-responsive">
                                     <c:forEach var="tag" items="${question.questionCategories}">
-                                        <a href="${pageContext.request.contextPath}/post?search&tag=${tag.url}&page=0"><span
+                                        <a href="${pageContext.request.contextPath}/tag?tag=${tag.url}&page=0&searchingFor=question"><span
                                                 class="label label-default">${tag.title}</span></a>
                                     </c:forEach>
                                 </p>
@@ -194,8 +214,7 @@
                                     asked ${question.created.toLocaleString()} by <a
                                         href="${pageContext.request.contextPath}/account?username=${question.user.username}"><img
                                         src="${question.user.profileImage}" class="img-circle" height="35" width="35"
-                                        alt="Avatar"> ${question.user.username}
-                                </a>
+                                        alt="Avatar"> ${question.user.username}</a>
                                 </p>
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
                                     views ${question.views}
@@ -228,41 +247,62 @@
                     <div class="question-buttons" id="${question.questionId}">
                         <sec:authorize access="isAuthenticated()">
                             <c:if test="${question.voteType==1}">
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
-                                        aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="upvoteButton" class="btn btn-info interaction-button disabled">
+                                        <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                    </button>
+                                </p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="downvoteButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                    </button>
+                                </p>
                             </c:if>
                             <c:if test="${question.voteType==-1}">
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
-                                        aria-hidden="true"></span></p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="upvoteButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                    </button>
+                                </p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="downvoteButton" class="btn btn-info interaction-button disabled">
+                                        <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                    </button>
+                                </p>
                             </c:if>
                             <c:if test="${question.voteType==0}">
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="upvoteButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                    </button>
+                                </p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="downvoteButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                    </button>
+                                </p>
                             </c:if>
-                            <p class="margin-bottom-0px buttons-p"><span
-                                    class="gi-1x glyphicon glyphicon-bookmark glyphicon-button text-muted clickable"
-                                    aria-hidden="true"></span></p>
+                            <jsp:include page="shareThisMenu.jsp"/>
                             <c:if test="${question.user.username!=pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-exclamation-signglyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="bookmarkButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-bookmark fa-inverse"></i>
+                                    </button>
+                                </p>
+                            </c:if>
+                            <c:if test="${question.user.username!=pageContext.request.userPrincipal.name}">
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="reportButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-exclamation-circle fa-inverse"></i>
+                                    </button>
+                                </p>
                             </c:if>
                             <c:if test="${question.user.username==pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px buttons-p"><span
-                                        class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
-                                        aria-hidden="true"></span></p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button id="editButton" class="btn btn-info interaction-button">
+                                        <i class="fas fa-edit fa-inverse"></i>
+                                    </button>
+                                </p>
                             </c:if>
                         </sec:authorize>
                     </div>
@@ -271,10 +311,17 @@
 
             <%--edit question--%>
             <c:if test="${question.user.username==pageContext.request.userPrincipal.name}">
-                <div class="row edit-question hidden">
+                <div class="row edit-question" style="display: none">
                     <div class="col-md-11">
                         <form id="edit-post-form" action="${pageContext.request.contextPath}/editQuestion" method="POST"
                               class="form-horizontal form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-1" for="post_title">Title:</label>
+                                <div class="col-sm-11">
+                                    <input id="post_title" class="form-control " type="text"
+                                           name="title" value="${question.title}" required>
+                                </div>
+                            </div>
                             <div class="form-group">
                                     <%--TODO responsive this part--%>
                                 <div class="col-md-12">
@@ -284,44 +331,75 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-1">
-                                    <input type="submit" class="btn btn-primary" value="Update"/>
+                                <label class="control-label col-sm-1" for="tags">Tags:</label>
+                                <div class="col-sm-11">
+                                    <input type="text" id="tags" data-role="tagsinput"
+                                           class="form-control flexdatalist"
+                                           name="tags" multiple='multiple' list="taglist""/>
+                                        <%--TODO change this--%>
+                                    <datalist id="taglist">
+                                        <jsp:include page="tagList.jsp"/>
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="submit" class="btn btn-primary align-left" value="Update question"/>
+                                    <p class="margin-bottom-0px buttons-p align-right">
+                                        <button type="button" id="deleteQuestionButton"
+                                                class="btn btn-danger interaction-button">
+                                            <i class="fas fa-trash-alt fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <p>You can see a live preview of how your question will look. </p>
                                     <hr/>
-                                    <div id="wmd-preview" class="wmd-preview well"></div>
+                                    <div id="wmd-preview" tabindex="-1" class="wmd-preview well"></div>
                                     <hr/>
                                 </div>
                             </div>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            <input type="hidden" name="title" value="${question.title}"/>
                             <input type="hidden" name="questionId" value="${question.questionId}"/>
                         </form>
                     </div>
                 </div>
             </c:if>
 
+            <c:set var="replyId" value="${null}"/>
             <c:forEach var="reply" items="${question.replies}">
                 <hr/>
                 <div class="row">
                     <div class="col-md-11">
                         <div class="well pading-top-5px pading-bottom-5px">
-                            <c:if test="${reply.enabled==false}">
-                                <p>This reply was marked as violating our community guidelines and has been
-                                    disabled.</p>
-                            </c:if>
                             <c:if test="${reply.enabled==true}">
                                 <div class="row">
                                     <div class="text-left col-md-12">
+                                        <c:if test="${reply.enabled==false}">
+                                            This reply was marked as violating our community guidelines and has been disabled.
+                                        </c:if>
+                                        <c:if test="${reply.enabled==true}">
                                             ${reply.content}
+                                        </c:if>
                                     </div>
                                 </div>
                                 <hr class="hr-5px"/>
                                 <div class="row">
-                                    <div class="col-md-6 col-md-offset-6">
+                                    <div class="col-md-6">
+                                        <c:if test="${reply.bestAnswer==true}">
+                                            <p class="best-answer-p text-right-responsive margin-bottom-0px gi-08x">
+                                                This reply was marked as being the best answer given.
+                                            </p>
+                                        </c:if>
+                                        <c:if test="${reply.bestAnswer==true}">
+                                            <p class="best-answer-p text-right-responsive margin-bottom-0px gi-08x hidden">
+                                                This reply was marked as being the best answer given.
+                                            </p>
+                                        </c:if>
+                                    </div>
+                                    <div class="col-md-6">
                                         <p class="text-right-responsive margin-bottom-0px gi-08x">
                                             answered ${reply.creationDate.toLocaleString()} by <a
                                                 href="${pageContext.request.contextPath}/account?username=${reply.user.username}"><img
@@ -342,63 +420,71 @@
                         <div class="answer-buttons" id="${reply.replyId}">
                             <sec:authorize access="isAuthenticated()">
                                 <c:if test="${reply.voteType==1}">
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button"
-                                            aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="upvoteButton" class="btn btn-info interaction-button disabled">
+                                            <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                        </button>
+                                    </p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="downvoteButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </c:if>
                                 <c:if test="${reply.voteType==-1}">
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button"
-                                            aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="upvoteButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                        </button>
+                                    </p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="downvoteButton" class="btn btn-info interaction-button disabled">
+                                            <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </c:if>
                                 <c:if test="${reply.voteType==0}">
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-top gi-2x glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-triangle-bottom gi-2x glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="upvoteButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-arrow-alt-circle-up fa-inverse"></i>
+                                        </button>
+                                    </p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="downvoteButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-arrow-alt-circle-down fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </c:if>
                                 <c:if test="${question.user.username==pageContext.request.userPrincipal.name}">
                                     <c:if test="${reply.bestAnswer==true}">
-                                        <p class="margin-bottom-0px buttons-p"><span
-                                                class="gi-1x glyphicon glyphicon-star glyphicon-button"
-                                                aria-hidden="true"></span></p>
+                                        <p class="margin-bottom-0px buttons-p">
+                                            <button id="favoriteButton"
+                                                    class="btn btn-info interaction-button disabled">
+                                                <i class="fas fa-star fa-inverse"></i>
+                                            </button>
+                                        </p>
                                     </c:if>
                                     <c:if test="${reply.bestAnswer==false}">
-                                        <p class="margin-bottom-0px buttons-p"><span
-                                                class="gi-1x glyphicon glyphicon-star glyphicon-button  text-muted clickable"
-                                                aria-hidden="true"></span></p>
-                                    </c:if>
-                                </c:if>
-                                <c:if test="${question.user.username!=pageContext.request.userPrincipal.name}">
-                                    <c:if test="${reply.bestAnswer==true}">
-                                        <p class="margin-bottom-0px buttons-p"><span
-                                                class="gi-1x glyphicon glyphicon-star"
-                                                aria-hidden="true"></span></p>
+                                        <p class="margin-bottom-0px buttons-p">
+                                            <button id="favoriteButton" class="btn btn-info interaction-button">
+                                                <i class="fas fa-star fa-inverse"></i>
+                                            </button>
+                                        </p>
                                     </c:if>
                                 </c:if>
                                 <c:if test="${reply.user.username!=pageContext.request.userPrincipal.name}">
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-exclamation-sign glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="reportButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-exclamation-circle fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </c:if>
                                 <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
-                                    <p class="margin-bottom-0px buttons-p"><span
-                                            class="gi-1x glyphicon glyphicon-edit glyphicon-button text-muted clickable"
-                                            aria-hidden="true"></span></p>
-                                </c:if>
-                            </sec:authorize>
-                            <sec:authorize access="isAnonymous()">
-                                <c:if test="${reply.bestAnswer==true}">
-                                    <p class="margin-bottom-0px buttons-p"><span class="gi-1x glyphicon glyphicon-star"
-                                                                                 aria-hidden="true"></span></p>
+                                    <p class="margin-bottom-0px buttons-p">
+                                        <button id="editButton" class="btn btn-info interaction-button">
+                                            <i class="fas fa-edit fa-inverse"></i>
+                                        </button>
+                                    </p>
                                 </c:if>
                             </sec:authorize>
                         </div>
@@ -407,7 +493,7 @@
 
                 <c:if test="${reply.user.username==pageContext.request.userPrincipal.name}">
                     <c:set var="hasAnswered" value="true"/>
-                    <div class="row edit-answer hidden">
+                    <div class="row edit-answer" style="display: none;">
                         <div class="col-md-11">
                             <form id="edit-answer-form" action="${pageContext.request.contextPath}/editReply"
                                   method="POST" class="form-horizontal form">
@@ -420,15 +506,22 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-md-1">
-                                        <input type="submit" class="btn btn-primary" value="Update"/>
+                                    <div class="col-md-12">
+                                        <input type="submit" class="btn btn-primary align-left" value="Update answer"/>
+                                        <p class="margin-bottom-0px buttons-p align-right">
+                                            <button type="button" id="deleteAnswerButton"
+                                                    class="btn btn-danger interaction-button">
+                                                <i class="fas fa-trash-alt fa-inverse"></i>
+                                            </button>
+                                        </p>
                                     </div>
+                                    <c:set var="replyId" value="${reply.replyId}"/>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <p>You can see a live preview of how your answer will look. </p>
                                         <hr/>
-                                        <div id="wmd-preview" class="wmd-preview well"></div>
+                                        <div id="wmd-preview" tabindex="-1" class="wmd-preview well"></div>
                                         <hr/>
                                     </div>
                                 </div>
@@ -467,13 +560,14 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-1">
-                                <input type="submit" class="btn btn-primary" value="Answer"/>
+                                <input type="submit" class="btn btn-primary" value="Create answer"/>
                             </div>
                         </div>
                         <div class="form-group">
+                            <p>You can see a live preview of how your answer will look. </p>
                             <div class="col-md-12">
                                 <hr/>
-                                <div id="wmd-preview" class="wmd-preview"></div>
+                                <div id="wmd-preview" tabindex="-1" class="wmd-preview"></div>
                                 <hr/>
                             </div>
                         </div>
@@ -490,6 +584,58 @@
     </div>
 </div>
 <jsp:include page="bootstrapNavigationBottom.jsp"/>
+<c:if test="${question.user.username==pageContext.request.userPrincipal.name}">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteQuestionLabel" aria-hidden="true"
+         id="confirmDeleteQuestion">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content delete-confirmation-modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmDeleteQuestionLabel">Are you sure you want to delete this
+                        question?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This action cannot be reversed. Once you delete a question, it's gone forever.</p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="modal-btn-delete-question">Yes, delete it.
+                        </button>
+                        <button type="button" class=" btn btn-primary" data-dismiss="modal" aria-label="Close">No,
+                            keep it.
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
+<c:if test="${replyId!=null}">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteAnswerLabel"
+         aria-hidden="true"
+         id="confirmDeleteAnswer">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content delete-confirmation-modal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmDeleteAnswerLabel">Are you sure you want to delete this
+                        answer?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>This action cannot be reversed. Once you delete an answer, it's gone forever.</p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="modal-btn-delete-answer">Yes, delete
+                            it.
+                        </button>
+                        <button type="button" class=" btn btn-primary" data-dismiss="modal" aria-label="Close">No,
+                            keep it.
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
 </body>
 <sec:authorize access="isAuthenticated()">
     <script>
@@ -499,61 +645,69 @@
             editor.run();
         });
     </script>
-</sec:authorize>
-<sec:authorize access="isAuthenticated()">
     <script>
         $(document).ready(function () {
-            $(".glyphicon-button").click(function () {
+            $(".interaction-button").click(function () {
                 var clicked = $(this);
-                if (clicked.hasClass("clickable")) {
+                if (!clicked.hasClass("disabled")) {
                     var pParent = clicked.parent();
                     var dParent = pParent.parent();
                     if (dParent.hasClass("question-buttons")) {
-                        if (clicked.hasClass("glyphicon-triangle-top")) {
+                        if (clicked.children().hasClass("fa-arrow-alt-circle-up")) {
                             voteQuestion(dParent.attr('id'), "Upvote");
-                            $(".question-buttons p .glyphicon-triangle-top").removeClass("text-muted clickable");
-                            $(".question-buttons p .glyphicon-triangle-bottom").addClass("text-muted clickable");
-                            $(".question-score").html(parseInt($(".question-score").html()) + 1);
+                            if ($(".question-buttons p #downvoteButton").hasClass("disabled"))
+                                $(".question-score").html(parseInt($(".question-score").html()) + 2);
+                            else
+                                $(".question-score").html(parseInt($(".question-score").html()) + 1);
+                            $(".question-buttons p #upvoteButton").addClass("disabled");
+                            $(".question-buttons p #downvoteButton").removeClass("disabled");
                         }
-                        if (clicked.hasClass("glyphicon-triangle-bottom")) {
+                        if (clicked.children().hasClass("fa-arrow-alt-circle-down")) {
                             voteQuestion(dParent.attr('id'), "Downvote");
-                            $(".question-buttons p .glyphicon-triangle-bottom").removeClass("text-muted clickable");
-                            $(".question-buttons p .glyphicon-triangle-top").addClass("text-muted clickable");
-                            $(".question-score").html(parseInt($(".question-score").html()) - 1);
+                            if ($(".question-buttons p #upvoteButton").hasClass("disabled"))
+                                $(".question-score").html(parseInt($(".question-score").html()) - 2);
+                            else
+                                $(".question-score").html(parseInt($(".question-score").html()) - 1);
+                            $(".question-buttons p #upvoteButton").removeClass("disabled");
+                            $(".question-buttons p #downvoteButton").addClass("disabled");
                         }
-                        if (clicked.hasClass("glyphicon-bookmark")) {
+                        if (clicked.children().hasClass("fa-bookmark")) {
                         }
-                        if (clicked.hasClass("glyphicon-exclamation-sign")) {
+                        if (clicked.children().hasClass("fa-exclamation-circle")) {
                         }
-                        if (clicked.hasClass("glyphicon-edit")) {
-                            clicked.toggleClass("text-muted");
-                            $(".edit-question").toggleClass("hidden");
-                            $("#wmd-input").focus();
+                        if (clicked.children().hasClass("fa-edit")) {
+                            $(".edit-question").slideToggle("fast", function () {
+                                $("#wmd-preview").focus();
+                            });
                         }
                     } else if (dParent.hasClass("answer-buttons")) {
-                        if (clicked.hasClass("glyphicon-triangle-top")) {
+                        if (clicked.children().hasClass("fa-arrow-alt-circle-up")) {
                             voteAnswer(dParent.attr('id'), "Upvote");
-                            dParent.find(".glyphicon-triangle-top").removeClass("text-muted clickable");
-                            dParent.find(".glyphicon-triangle-bottom").addClass("text-muted clickable");
-                            dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) + 1);
+                            if (dParent.find("#downvoteButton").hasClass("disabled"))
+                                dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) + 2);
+                            else
+                                dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) + 1);
+                            dParent.find("#downvoteButton").removeClass("disabled");
+                            dParent.find("#upvoteButton").addClass("disabled");
                         }
-                        if (clicked.hasClass("glyphicon-triangle-bottom")) {
+                        if (clicked.children().hasClass("fa-arrow-alt-circle-down")) {
                             voteAnswer(dParent.attr('id'), "Downvote");
-                            dParent.find(".glyphicon-triangle-bottom").removeClass("text-muted clickable");
-                            dParent.find(".glyphicon-triangle-top").addClass("text-muted clickable");
-                            dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) - 1);
+                            if (dParent.find("#upvoteButton").hasClass("disabled"))
+                                dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) - 2);
+                            else
+                                dParent.parent().parent().find(".answer-score").html(parseInt(dParent.parent().parent().find(".answer-score").html()) - 1);
+                            dParent.find("#downvoteButton").addClass("disabled");
+                            dParent.find("#upvoteButton").removeClass("disabled");
                         }
-                        if (clicked.hasClass("glyphicon-star")) {
+                        if (clicked.children().hasClass("fa-star")) {
                             bestAnswer($(".question-buttons").attr('id'), dParent.attr('id'));
-                            $(".glyphicon-star").addClass("text-muted clickable");
-                            dParent.find(".glyphicon-star").removeClass("text-muted clickable");
                         }
-                        if (clicked.hasClass("glyphicon-exclamation-sign")) {
+                        if (clicked.children().hasClass("fa-exclamation-circle")) {
                         }
-                        if (clicked.hasClass("glyphicon-edit")) {
-                            clicked.toggleClass("text-muted");
-                            $(".edit-answer").toggleClass("hidden");
-                            $("#wmd-input").focus();
+                        if (clicked.children().hasClass("fa-edit")) {
+                            $(".edit-answer").slideToggle("fast", function () {
+                                $("#wmd-preview").focus();
+                            });
                         }
                     }
                 }
@@ -614,6 +768,7 @@
                     },
                     dataType: "json",
                     success: function (data, textStatus, jqXHR) {
+                        location.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(errorThrown);
@@ -675,6 +830,145 @@
             });
         }
 
+    </script>
+    <script>
+
+        <c:if test="${replyId != null}">
+        $("#deleteAnswerButton").click(function () {
+            $("#confirmDeleteAnswer").modal("show");
+        });
+
+        $("#modal-btn-delete-answer").click(function () {
+            $.ajax({
+                type: "POST",
+                url: '${pageContext.request.contextPath}/deleteReply',
+                data: {
+                    replyId: ${replyId},
+                    "${_csrf.parameterName}": "${_csrf.token}"
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                beforeSend: function (jqXHR, settings) {
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        });
+        </c:if>
+
+        $("#deleteQuestionButton").click(function () {
+            $("#confirmDeleteQuestion").modal("show");
+        });
+
+        $("#modal-btn-delete-question").click(function () {
+            $.ajax({
+                type: "POST",
+                url: '${pageContext.request.contextPath}/deleteQuestion',
+                data: {
+                    questionId: ${question.questionId},
+                    "${_csrf.parameterName}": "${_csrf.token}"
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    window.location = "${pageContext.request.contextPath}/";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                beforeSend: function (jqXHR, settings) {
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        });
+
+    </script>
+    <script>
+        $('#tags').flexdatalist({
+            // URL to remote data source.
+            url: null,
+            // Data source.
+            // Array of objects or a URL to JSON string/file.
+            data: [],
+            // Additional parameters on AJAX requests.
+            params: {},
+            // Input relatives. Accepts field(s) selector(s) or an jQuery instance of the fields.
+            // The relatives values will be sent with each remove server request.
+            relatives: null,
+            // If set to true the flexdatalist field will be disabled until all the relatives are filled.
+            chainedRelatives: false,
+            // Enable cache
+            cache: true,
+            // cache life time
+            cacheLifetime: 60,
+            // Search if there are n or greater characters.
+            minLength: 2,
+            // Group results by property value.
+            groupBy: false,
+            // Selection from search results is required.
+            selectionRequired: false,
+            //  Focus first result.
+            focusFirstResult: false,
+            // The text that will be visible to the user.
+            // You can use {property_name} to be replaced with property value.
+            textProperty: null,
+            // The property name that when selected its value will be sent with the form.
+            // If you wanna send properties from selected item, set this option to *
+            valueProperty: null,
+            // Name of properties values that will appear with the search result.
+            visibleProperties: [],
+            // Name of property (or properties) where it will search.
+            searchIn: ['label'],
+            // Name of property that holds path to image to be added as icon.
+            iconProperty: 'thumb',
+            // By default, Flexdatalist's search matches starting at the beginning of a word.
+            // Setting this option to true allows matches starting from anywhere within a word.
+            // This is especially useful for options that include a lot of special characters or phrases in ()s and []s.
+            searchContain: false,
+            searchEqual: false,
+            searchDisabled: false,
+            searchDelay: 200,
+            // search by word
+            searchByWord: false,
+            // This allows you to normalize the strings being compared before comparison.
+            normalizeString: function (string) {
+                return string.toLowerCase();
+            },
+            // Accept multiple values
+            multiple: $(this).attr('multiple'),
+            // max results
+            maxShownResults: 10,
+            // Text that will show when no results are found. If empty string, it won't show message.
+            noResultsText: 'No results found for "{keyword}"',
+            // Toggle values on tap/click
+            toggleSelected: false,
+            // allows duplicate values
+            allowDuplicateValues: false,
+            // post or get
+            requestType: 'post',
+            // Flexdatalist expects the data from server to be in the main response object or responseObject.results but you can change the name of property that holds the results.
+            resultsProperty: 'results',
+            // By default, flexdatalist sends the keyword in request parameter with name keyword.
+            keywordParamName: 'keyword',
+            // Limit the number of values in a multiple input.
+            limitOfValues: 0,
+            //  Delimiter used in multiple values.
+            valuesSeparator: ',',
+            // debug mode
+            debug: true
+        });
+        <c:set var="tags" value="["/>
+        <c:forEach var="tag" items="${question.questionCategories}" varStatus="i">
+        <c:set var="tags" value="${tags}'${tag.title}',"/>
+        </c:forEach>
+        <c:set var="tags" value="${tags.substring(0,tags.length()-1)}]"/>
+        var tgs = ${tags};
+        $("#tags").val(tgs);
     </script>
 </sec:authorize>
 </html>

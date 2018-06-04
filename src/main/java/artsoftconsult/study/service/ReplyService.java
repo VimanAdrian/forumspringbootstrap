@@ -20,7 +20,7 @@ public class ReplyService {
     private QuestionRepository questionRepository;
 
     public Integer findCount(Long questionId, boolean role_admin) {
-        if(role_admin)
+        if (role_admin)
             return replyRepository.findCount(questionId);
         else
             return replyRepository.findCountWithoutDisabled(questionId);
@@ -40,6 +40,7 @@ public class ReplyService {
         reply.setEnabled(true);
         reply.setScore((long) 0);
         reply.setReplyComment(null);
+        reply.setDeleted(false);
         return reply;
     }
 
@@ -66,14 +67,8 @@ public class ReplyService {
     }
 
     @Transactional
-    public void toggleStatus(Long replyId) {
-        replyRepository.toggleEnabled(replyId);
-    }
-
-
-    @Transactional
     public void update(Reply reply) {
-        Reply reply1FromDb = replyRepository.findByReplyId(reply.getReplyId());
+        Reply reply1FromDb = replyRepository.findByReplyIdAndDeletedFalse(reply.getReplyId());
         if (reply.getUser().getUserId().equals(reply1FromDb.getUser().getUserId()))
             replyRepository.updateContent(reply.getContent(), reply.getReplyId());
     }
@@ -90,5 +85,13 @@ public class ReplyService {
     @Transactional
     public Reply find(Long replyId) {
         return replyRepository.findOne(replyId);
+    }
+
+    @Transactional
+    public void delete(Long replyId, Long userId) {
+        Reply reply = replyRepository.findByReplyId(replyId);
+        if (reply.getUser().getUserId().equals(userId)) {
+            replyRepository.delete(replyId);
+        }
     }
 }

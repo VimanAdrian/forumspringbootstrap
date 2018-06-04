@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long> {
+public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long>, ReplyRepositoryCustom {
 
-    Reply findByReplyId(@Param("replyId")Long replyId);
+    Reply findByReplyIdAndDeletedFalse(@Param("replyId") Long replyId);
 
     @Modifying
     @Query(value = "UPDATE replies SET enabled = NOT enabled WHERE reply_id=:replyId", nativeQuery = true)
@@ -50,4 +50,6 @@ public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long>
     @Modifying
     @Query(value = "UPDATE replies SET bestanswer = TRUE WHERE reply_id = :replyId", nativeQuery = true)
     void makeFavorite(@Param("replyId")Long replyId);
+
+    Reply findByReplyId(Long replyId);
 }

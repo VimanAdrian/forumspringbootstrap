@@ -19,6 +19,17 @@ public class Reply {
     private Question question;
     private Collection<ReplyComment> replyComment;
     private Integer voteType;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ package artsoftconsult.study.service;
 import artsoftconsult.study.dto.model.QuestionDTO;
 import artsoftconsult.study.dto.model.ReplyDTO;
 import artsoftconsult.study.model.Category;
+import artsoftconsult.study.model.Lecture;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
 import artsoftconsult.study.repository.*;
@@ -29,6 +30,8 @@ public class QuestionService {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
+    private LectureRepository lectureRepository;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private QuestionCommentRepository questionCommentRepository;
@@ -41,10 +44,11 @@ public class QuestionService {
         question.setViews((long) 0);
         question.setScore((long) 0);
         question.setActive(true);
+        question.setDeleted(false);
         return question;
     }
 
-    public Long save(String title, String content, String tags, User user) {
+    public Long save(String title, String content, String tags, User user, Long lectureId) {
         Question question = new Question();
         question.setContent(content);
         question.setTitle(title);
@@ -53,9 +57,9 @@ public class QuestionService {
         String[] tagsArray = tags.split(",");
         for (String tag : tagsArray) {
             Category oldCategory = categoryRepository.findByTitle(tag.toLowerCase());
-            if(oldCategory!=null){
+            if (oldCategory != null) {
                 categories.add(oldCategory);
-            }else{
+            } else {
                 Category newCategory = new Category();
                 newCategory.setTitle(tag.toLowerCase());
                 try {
@@ -68,19 +72,58 @@ public class QuestionService {
         }
         Iterable<Category> categoryIterable = categoryRepository.save(categories);
         Collection<Category> categoryCollection = new ArrayList<>();
-        for (Category category:categoryIterable) {
+        for (Category category : categoryIterable) {
             categoryCollection.add(category);
         }
         question.setQuestionCategories(categoryCollection);
+
+        if (lectureId != null) {
+            Lecture lecture = lectureRepository.findByLectureId(lectureId);
+            if (lecture != null) {
+                question.setLecture(lecture);
+            }
+        }
+
         Question savedQuestion = questionRepository.saveAndFlush(prepareForSave(question));
         return savedQuestion.getQuestionId();
     }
 
+    private Question prepareForUpdate(Question questionFromDB, Question questionFromFE) {
+        questionFromDB.setTitle(questionFromFE.getTitle());
+        questionFromDB.setContent(questionFromFE.getContent());
+        return questionFromDB;
+    }
+
     @Transactional
-    public void update(Question question) {
-        Question questionFromDb = questionRepository.findByQuestionId(question.getQuestionId());
-        if (question.getUser().getUserId().equals(questionFromDb.getUser().getUserId()))
-            questionRepository.updateTitleAndContent(question.getTitle(), question.getContent(), question.getQuestionId());
+    public void update(Question question, String tags) {
+        Question questionFromDb = questionRepository.findByQuestionIdAndDeletedFalse(question.getQuestionId());
+        if (question.getUser().getUserId().equals(questionFromDb.getUser().getUserId())) {
+            List<Category> categories = new ArrayList<>();
+            List<Category> newCategories = new ArrayList<>();
+            for (String tag : tags.split(",")) {
+                Category oldCategory = categoryRepository.findByTitle(tag.toLowerCase());
+                if (oldCategory != null) {
+                    if (!categories.contains(oldCategory))
+                        categories.add(oldCategory);
+                } else {
+                    Category newCategory = new Category();
+                    newCategory.setTitle(tag.toLowerCase());
+                    try {
+                        newCategory.setUrl(URLEncoder.encode(tag.toLowerCase(), "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    if (!categories.contains(newCategory)) {
+                        categories.add(newCategory);
+                        newCategories.add(newCategory);
+                    }
+                }
+            }
+            categoryRepository.save(newCategories);
+            questionFromDb.getQuestionCategories().clear();
+            questionFromDb.getQuestionCategories().addAll(categories);
+            questionRepository.save(prepareForUpdate(questionFromDb, question));
+        }
     }
 
     @Transactional
@@ -89,7 +132,7 @@ public class QuestionService {
             replyRepository.markNotNew(questionId, user.getUserId());
         }
         questionRepository.incrementView(questionId);
-        Question question = questionRepository.findByQuestionId(questionId);
+        Question question = questionRepository.findByQuestionIdAndDeletedFalse(questionId);
         Hibernate.initialize(question.getQuestionCategories());
         Hibernate.initialize(question.getQuestionComments());
         Hibernate.initialize(question.getReplies());
@@ -99,6 +142,7 @@ public class QuestionService {
         modelMapper.map(question, questionDTO);
 
         Iterable<ReplyDTO> replies = questionDTO.getReplies();
+        Iterable<ReplyDTO> notDeletedReplies = new ArrayList<>();
         for (ReplyDTO re : questionDTO.getReplies()) {
             re.setRawContent(re.getContent());
             re.setContent(MyAttributeProvider.commonMark(re.getContent()));
@@ -113,8 +157,11 @@ public class QuestionService {
             } else {
                 re.setVoteType(0);
             }
+            if (!re.getDeleted()) {
+                ((ArrayList<ReplyDTO>) notDeletedReplies).add(re);
+            }
         }
-        questionDTO.setReplies(sort(Iterables.toArray(replies, ReplyDTO.class)));
+        questionDTO.setReplies(sort(Iterables.toArray(notDeletedReplies, ReplyDTO.class)));
         questionDTO.setRawContent(questionDTO.getContent());
         questionDTO.setContent(MyAttributeProvider.commonMark(questionDTO.getContent()));
         if (user != null) { //authenticated
@@ -132,7 +179,7 @@ public class QuestionService {
     }
 
     public Question find(Long questionId) {
-        return questionRepository.findByQuestionId(questionId);
+        return questionRepository.findByQuestionIdAndDeletedFalse(questionId);
     }
 
     private List<ReplyDTO> sort(ReplyDTO[] replies) {
@@ -181,5 +228,13 @@ public class QuestionService {
         return true;
     }
 
+    @Transactional
+    public boolean delete(Long questionId, Long userId) {
+        Question question = questionRepository.findByQuestionId(questionId);
+        if (question.getUser().getUserId().equals(userId)) {
+            questionRepository.logicalDelete(questionId);
+        }
+        return true;
+    }
 }
 

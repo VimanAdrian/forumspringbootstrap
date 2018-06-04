@@ -51,10 +51,10 @@
 //                    if (cat == null) {
 //                        Integer categoryID = categoryRepository.save(category);
 //                        if (categoryID != -1) {
-//                            categoryRepository.saveAssociation(postID, categoryID);
+//                            categoryRepository.saveAssociationForQuestion(postID, categoryID);
 //                        }
 //                    } else {
-//                        categoryRepository.saveAssociation(postID, cat.getCategoryId());
+//                        categoryRepository.saveAssociationForQuestion(postID, cat.getCategoryId());
 //                    }
 //                }
 //                return postID;

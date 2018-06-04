@@ -29,10 +29,14 @@ public class QuestionController {
     private ModelMapper modelMapper;
 
     @RequestMapping(value = "/askQuestion", method = RequestMethod.POST)
-    public void makePost(@RequestParam("title") String title, @RequestParam("content") String content, @RequestParam("tags") String tags, HttpServletRequest request, HttpServletResponse response) {
+    public void makePost(@RequestParam("title") String title,
+                         @RequestParam("content") String content,
+                         @RequestParam("tags") String tags,
+                         @RequestParam(value = "lectureId", required = false) Long lectureId,
+                         HttpServletRequest request, HttpServletResponse response) {
         User user = getCurrentUser();
         if (user!=null) {
-            Long saveResponse = questionService.save(title, content, tags, user);
+            Long saveResponse = questionService.save(title, content, tags, user, lectureId);
             if (saveResponse != -1)
                 try {
                     String redirect = "/question?questionId=" + saveResponse;
@@ -56,22 +60,22 @@ public class QuestionController {
         return true;
     }
 
-    @RequestMapping(value = "/toggleQuestionStatus", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteQuestion", method = RequestMethod.POST)
     public @ResponseBody
     boolean makeDelete(HttpServletRequest request, HttpServletResponse response, @RequestParam("questionId") Long questionId) {
-        return questionService.toggleQuestionStatus(questionId);
+        return questionService.delete(questionId, getCurrentUser().getUserId());
     }
 
     @RequestMapping(value = "/editQuestion", method = RequestMethod.POST)
-    public @ResponseBody Boolean makeEdit(@ModelAttribute("QuestionDTO") QuestionDTO questionDTO) {
+    public @ResponseBody
+    Boolean makeEdit(@ModelAttribute("QuestionDTO") QuestionDTO questionDTO,
+                     @RequestParam("tags") String tags) {
         User user = getCurrentUser();
         if (user!=null) {
             Question question = new Question();
             modelMapper.map(questionDTO, question);
-
             question.setUser(user);
-
-            questionService.update(question);
+            questionService.update(question, tags);
             return true;
         }
         return false;

@@ -1,12 +1,16 @@
 package artsoftconsult.study.controller;
 
+import artsoftconsult.study.dto.model.LectureDTO;
 import artsoftconsult.study.dto.model.QuestionDTO;
 import artsoftconsult.study.dto.model.UserDTO;
 import artsoftconsult.study.dto.model.VirtualClassDTO;
+import artsoftconsult.study.model.Lecture;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
+import artsoftconsult.study.model.VirtualClass;
 import artsoftconsult.study.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+
 
 @Controller
 public class MainController {
@@ -40,6 +45,12 @@ public class MainController {
 
     @Autowired
     private VirtualClassService virtualClassService;
+
+    @Autowired
+    private LectureService lectureService;
+
+    @Autowired
+    private SearchService searchService;
 
     private ModelAndView addUserInfo(ModelAndView modelAndView) {
         User user = getCurrentUser();
@@ -146,6 +157,18 @@ public class MainController {
         return addUserInfo(modelAndView);
     }
 
+    @RequestMapping(value = "/lecture", method = RequestMethod.GET)
+    public ModelAndView goToLecture(@RequestParam(value = "lectureId", required = true) Long lectureId,
+                                    @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        ModelAndView modelAndView = new ModelAndView();
+        User user = getCurrentUser();
+        LectureDTO lectureDTO = lectureService.find(lectureId, user);
+        modelAndView.addObject("lecture", lectureDTO);
+        modelAndView.addObject("page", page);
+        modelAndView.setViewName("bootstrapLecturePage");
+        return addUserInfo(modelAndView);
+    }
+
     //deprecated
     @RequestMapping(value = "/activate", method = RequestMethod.GET)
     public ModelAndView activateAccount(@RequestParam(value = "token", required = false) String token,
@@ -211,11 +234,85 @@ public class MainController {
         return model;
     }
 
+    @RequestMapping(value = "/tag", method = RequestMethod.GET)
+    public ModelAndView searchByTag(@RequestParam(value = "tag") String tag,
+                                    @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                    @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+                                    @RequestParam(value = "searchingFor", required = false, defaultValue = "question") String searchingFor) {
+        ModelAndView modelAndView = new ModelAndView();
+        Page<Question> questionPage = null;
+        Page<VirtualClass> virtualClassPage = null;
+        switch (searchingFor) {
+            case "question":
+                questionPage = searchService.searchQuestionByTag(tag, page, size);
+                if (questionPage != null) modelAndView.addObject("questionPage", questionPage);
+                break;
+            case "virtualClass":
+                virtualClassPage = searchService.searchVirtualClassByTag(tag, page, size);
+                if (virtualClassPage != null) modelAndView.addObject("virtualClassPage", virtualClassPage);
+                break;
+            default:
+                questionPage = searchService.searchQuestionByTag(tag, page, size);
+                if (questionPage != null) modelAndView.addObject("questionPage", questionPage);
+                searchingFor = "question";
+                break;
+        }
+        modelAndView.addObject("searchingFor", searchingFor);
+        modelAndView.addObject("tag", tag);
+        modelAndView.addObject("showQuestion", true);
+        modelAndView.addObject("showVirtualClass", true);
+        modelAndView.addObject("showLecture", false);
+        modelAndView.addObject("questionUrl", "/tag?tag=" + tag + "&searchingFor=question&size=" + size + "&page=");
+        modelAndView.addObject("virtualClassUrl", "/tag?tag=" + tag + "&searchingFor=virtualClass&size=" + size + "&page=");
+        modelAndView.addObject("lectureUrl", "/tag?tag=" + tag + "&searchingFor=lecture&size=" + size + "&page=");
+        modelAndView.setViewName("bootstrapSearchResults");
+        return addUserInfo(modelAndView);
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ModelAndView searchByFreeText(@RequestParam(value = "search") String search,
+                                         @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                         @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+                                         @RequestParam(value = "searchingFor", required = false, defaultValue = "question") String searchingFor) {
+        ModelAndView modelAndView = new ModelAndView();
+        Page<Question> questionPage = null;
+        Page<VirtualClass> virtualClassPage = null;
+        Page<Lecture> lecturePage = null;
+        switch (searchingFor) {
+            case "question":
+                questionPage = searchService.searchQuestionByFreeText(search, page, size);
+                if (questionPage != null) modelAndView.addObject("questionPage", questionPage);
+                break;
+            case "virtualClass":
+                virtualClassPage = searchService.searchVirtualClassByFreeText(search, page, size);
+                if (virtualClassPage != null) modelAndView.addObject("virtualClassPage", virtualClassPage);
+                break;
+            case "lecture":
+                lecturePage = searchService.searchLectureByFreeText(search, page, size);
+                if (lecturePage != null) modelAndView.addObject("lecturePage", lecturePage);
+                break;
+            default:
+                questionPage = searchService.searchQuestionByFreeText(search, page, size);
+                if (questionPage != null) modelAndView.addObject("questionPage", questionPage);
+                searchingFor = "question";
+                break;
+        }
+        modelAndView.addObject("searchingFor", searchingFor);
+        modelAndView.addObject("search", search);
+        modelAndView.addObject("showQuestion", true);
+        modelAndView.addObject("showVirtualClass", true);
+        modelAndView.addObject("showLecture", true);
+        modelAndView.addObject("questionUrl", "/search?search=" + search + "&searchingFor=question&size=" + size + "&page=");
+        modelAndView.addObject("virtualClassUrl", "/search?search=" + search + "&searchingFor=virtualClass&size=" + size + "&page=");
+        modelAndView.addObject("lectureUrl", "/search?search=" + search + "&searchingFor=lecture&size=" + size + "&page=");
+        modelAndView.addObject("fakeLecture", new Lecture());
+        modelAndView.setViewName("bootstrapSearchResults");
+        return addUserInfo(modelAndView);
+    }
+
     //customize the error message
     private String getErrorMessage(HttpServletRequest request, String key) {
-
         Exception exception = (Exception) request.getSession().getAttribute(key);
-
         String error = "";
         if (exception instanceof BadCredentialsException) {
             error = "Invalid username and password!";
@@ -226,7 +323,6 @@ public class MainController {
         } else {
             error = "Something went wrong with the login process...";
         }
-
         return error;
     }
 

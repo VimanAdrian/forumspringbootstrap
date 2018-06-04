@@ -115,7 +115,7 @@
             </c:if>
         </div>
         <div class="page">
-            <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
+            <mytaglib:pagination url="${url}" nbrOfPages="${nrPagini}"/>
         </div>
         <div id="userTableBox">
             <table id="userTable">
@@ -191,7 +191,7 @@
             </table>
         </div>
         <div class="page">
-            <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
+            <mytaglib:pagination url="${url}" nbrOfPages="${nrPagini}"/>
         </div>
     </sec:authorize>
 </div>

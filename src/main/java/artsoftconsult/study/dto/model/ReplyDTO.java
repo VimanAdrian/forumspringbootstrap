@@ -15,6 +15,15 @@ public class ReplyDTO {
     private QuestionDTO question;
     private Collection<ReplyCommentDTO> replyComment;
     private Integer voteType;
+    private Boolean deleted;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getReplyId() {
         return replyId;

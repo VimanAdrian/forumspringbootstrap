@@ -10,6 +10,7 @@ public class Category {
     private Long categoryId;
     private String title;
     private String url;
+    private Collection<VirtualClass> categoryVirtualClasses;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

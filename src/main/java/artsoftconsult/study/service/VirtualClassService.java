@@ -45,6 +45,7 @@ public class VirtualClassService {
         virtualClass.setScore(0l);
         virtualClass.setViews(0l);
         virtualClass.setVisibility("public");
+        virtualClass.setDeleted(false);
         return virtualClass;
     }
 
@@ -55,7 +56,28 @@ public class VirtualClassService {
         lecture.setScore(0l);
         lecture.setViews(0l);
         lecture.setVisibility("public");
+        lecture.setDeleted(false);
+        if (lecture.getDescription() == null) {
+            lecture.setDescription("");
+        }
         return lecture;
+    }
+
+    @Transactional
+    public Long save(String[] title, Long virtualClassId, User user) {
+        VirtualClass virtualClass = virtualClassRepository.findByVirtualClassIdAndDeletedFalse(virtualClassId);
+        if (user.getUserId().equals(virtualClass.getUser().getUserId())) {
+            Collection<Lecture> lectures = new ArrayList<>();
+            for (int i = 0; i < title.length; i++) {
+                Lecture lecture = new Lecture();
+                lecture.setTitle(title[i]);
+                lecture.setVirtualClass(virtualClass);
+                if (lecture.getTitle().length() > 0)
+                    lectures.add(prepareForSave(lecture));
+            }
+            lectureRepository.save(lectures);
+        }
+        return virtualClassId;
     }
 
     @Transactional
@@ -96,7 +118,8 @@ public class VirtualClassService {
             Lecture lecture = new Lecture();
             lecture.setTitle(title[i]);
             lecture.setVirtualClass(saved);
-            lectures.add(prepareForSave(lecture));
+            if (lecture.getTitle().length() > 0)
+                lectures.add(prepareForSave(lecture));
         }
         lectureRepository.save(lectures);
 
@@ -107,17 +130,39 @@ public class VirtualClassService {
     }
 
     private VirtualClass prepareForUpdate(VirtualClass classFromDb, VirtualClass classFromFront) {
-        classFromFront.setViews(classFromDb.getViews());
-        classFromFront.setScore(classFromDb.getScore());
-        classFromFront.setLastActive(classFromDb.getLastActive());
-        classFromFront.setCreated(classFromDb.getCreated());
-        return classFromFront;
+        classFromDb.setDescription(classFromFront.getDescription());
+        classFromDb.setTitle(classFromFront.getTitle());
+        return classFromDb;
     }
 
     @Transactional
-    public void update(VirtualClass virtualClass) {
-        VirtualClass classFromDB = virtualClassRepository.findByVirtualClassId(virtualClass.getVirtualClassId());
+    public void update(VirtualClass virtualClass, String tags) {
+        VirtualClass classFromDB = virtualClassRepository.findByVirtualClassIdAndDeletedFalse(virtualClass.getVirtualClassId());
         if (virtualClass.getUser().getUserId().equals(classFromDB.getUser().getUserId())) {
+            List<Category> categories = new ArrayList<>();
+            List<Category> newCategories = new ArrayList<>();
+            for (String tag : tags.split(",")) {
+                Category oldCategory = categoryRepository.findByTitle(tag.toLowerCase());
+                if (oldCategory != null) {
+                    if (!categories.contains(oldCategory))
+                        categories.add(oldCategory);
+                } else {
+                    Category newCategory = new Category();
+                    newCategory.setTitle(tag.toLowerCase());
+                    try {
+                        newCategory.setUrl(URLEncoder.encode(tag.toLowerCase(), "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    if (!categories.contains(newCategory)) {
+                        categories.add(newCategory);
+                        newCategories.add(newCategory);
+                    }
+                }
+            }
+            categoryRepository.save(newCategories);
+            classFromDB.getVirtualClassCategories().clear();
+            classFromDB.getVirtualClassCategories().addAll(categories);
             virtualClassRepository.save(prepareForUpdate(classFromDB, virtualClass));
         } else {
             VirtualClassRights classRights = virtualClassRightsRepository.findByUserIdAndClassId(virtualClass.getVirtualClassId(), virtualClass.getUser().getUserId());
@@ -132,7 +177,7 @@ public class VirtualClassService {
     @Transactional
     public VirtualClassDTO find(Long classId, User user) {
         virtualClassRepository.incrementView(classId);
-        VirtualClass virtualClass = virtualClassRepository.findByVirtualClassId(classId);
+        VirtualClass virtualClass = virtualClassRepository.findByVirtualClassIdAndDeletedFalse(classId);
         Hibernate.initialize(virtualClass.getLectures());
         Hibernate.initialize(virtualClass.getVirtualClassCategories());
         Hibernate.initialize(virtualClass.getUser());
@@ -153,4 +198,6 @@ public class VirtualClassService {
             virtualClassDTO.setVoteType(0);
         return virtualClassDTO;
     }
+
+
 }

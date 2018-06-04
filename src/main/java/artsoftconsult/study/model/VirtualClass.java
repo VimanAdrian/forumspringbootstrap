@@ -20,6 +20,17 @@ public class VirtualClass {
     private User user;
     private Collection<Lecture> lectures;
     private Collection<Category> virtualClassCategories;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,7 +163,7 @@ public class VirtualClass {
         this.lectures = lectures;
     }
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "virtual_class_categories", joinColumns = @JoinColumn(name = "virtual_class_id", referencedColumnName = "virtual_class_id"), inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
     public Collection<Category> getVirtualClassCategories() {
         return virtualClassCategories;

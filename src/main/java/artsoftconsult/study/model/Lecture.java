@@ -20,6 +20,17 @@ public class Lecture {
     private Collection<Question> questions;
     private Collection<Page> pages;
     private VirtualClass virtualClass;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

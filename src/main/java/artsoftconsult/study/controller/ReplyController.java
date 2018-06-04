@@ -55,10 +55,10 @@ public class ReplyController {
         return true;
     }
 
-    @RequestMapping(value = "/toggleReplyStatus", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteReply", method = RequestMethod.POST)
     public @ResponseBody
     Boolean toggleReplyStatus(@RequestParam("replyId") Long replyId, HttpServletResponse response) {
-        replyService.toggleStatus(replyId);
+        replyService.delete(replyId, getCurrentUser().getUserId());
         return true;
     }
 

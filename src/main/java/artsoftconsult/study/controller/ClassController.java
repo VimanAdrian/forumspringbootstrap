@@ -51,20 +51,29 @@ public class ClassController {
         return -1l;
     }
 
+    @RequestMapping(value = "/editClassAddLectures", method = RequestMethod.POST)
+    public @ResponseBody
+    Long editClass(@RequestParam("title") String[] title, @RequestParam("virtualClassId") Long virtualClassId) {
+        User user = getCurrentUser();
+        if (user != null) {
+            Long saveResponse = virtualClassService.save(title, virtualClassId, user);
+            return saveResponse;
+        }
+        return -1l;
+    }
+
     @RequestMapping(value = "/editClass", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean
-    editClass(@ModelAttribute("VirtualClassDTO") VirtualClassDTO classDTO) {
+    Boolean editClass(@ModelAttribute("VirtualClassDTO") VirtualClassDTO classDTO, @RequestParam("tags") String tags) {
         User user = getCurrentUser();
         if (user != null) {
             VirtualClass virtualClass = new VirtualClass();
             modelMapper.map(classDTO, virtualClass);
-
             virtualClass.setUser(user);
-
-            virtualClassService.update(virtualClass);
+            virtualClassService.update(virtualClass, tags);
             return true;
         }
         return false;
     }
+
 }

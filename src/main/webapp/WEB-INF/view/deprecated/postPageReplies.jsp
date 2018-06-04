@@ -322,6 +322,6 @@
         });
     });
 </script>
-<mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
+<mytaglib:pagination url="${url}" nbrOfPages="${nrPagini}"/>
 </body>
 </html>

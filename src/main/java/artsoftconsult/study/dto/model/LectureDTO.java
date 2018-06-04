@@ -7,6 +7,7 @@ public class LectureDTO {
     private Long lectureId;
     private String title;
     private String description;
+    private String rawDescription;
     private Date created;
     private Date lastActive;
     private String visibility;
@@ -14,7 +15,18 @@ public class LectureDTO {
     private Long views;
     private Boolean active;
     private Collection<QuestionDTO> questions;
+    private Collection<PageDTO> pages;
     private VirtualClassDTO virtualClass;
+    private Integer voteType;
+    private Boolean deleted;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getLectureId() {
         return lectureId;
@@ -38,6 +50,14 @@ public class LectureDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRawDescription() {
+        return rawDescription;
+    }
+
+    public void setRawDescription(String rawDescription) {
+        this.rawDescription = rawDescription;
     }
 
     public Date getCreated() {
@@ -102,5 +122,21 @@ public class LectureDTO {
 
     public void setVirtualClass(VirtualClassDTO virtualClass) {
         this.virtualClass = virtualClass;
+    }
+
+    public Collection<PageDTO> getPages() {
+        return pages;
+    }
+
+    public void setPages(Collection<PageDTO> pages) {
+        this.pages = pages;
+    }
+
+    public Integer getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(Integer voteType) {
+        this.voteType = voteType;
     }
 }

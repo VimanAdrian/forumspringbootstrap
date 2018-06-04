@@ -186,7 +186,7 @@
 <body>
 <br/>
 <div class="page">
-    <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
+    <mytaglib:pagination url="${url}" nbrOfPages="${nrPagini}"/>
 </div>
 <div id="stack">
     <p>stackoverflow result: <a href="" id="stackLink"></a></p>
@@ -250,7 +250,7 @@
     </div>
 </div>
 <div class="page">
-    <mytaglib:pagination url="${url}" nrPagini="${nrPagini}"/>
+    <mytaglib:pagination url="${url}" nbrOfPages="${nrPagini}"/>
 </div>
 <div id="categories">
     <table>

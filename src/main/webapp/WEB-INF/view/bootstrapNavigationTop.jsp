@@ -229,7 +229,7 @@
                     </sec:authorize>
             </ul>
             <form class="navbar-form navbar-right" id="searchForm" role="search"
-                  action="${pageContext.request.contextPath}/question" method="GET">
+                  action="${pageContext.request.contextPath}/search" method="GET">
                 <div class="form-group input-group">
                     <input type="text" class="form-control" name="search" placeholder="Search..">
                     <span class="input-group-btn">

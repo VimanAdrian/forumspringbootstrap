@@ -88,35 +88,6 @@
         <%--<jsp:include page="bootstrapNavigationRight.jsp"/>--%>
     </div>
 </div>
-<%--<script>--%>
-<%--TODO check this out--%>
-<%--$(document).ready(function () {--%>
-<%--var engine = new Bloodhound({--%>
-<%--local: [{value: 'java'}, {value: 'c#'}, {value: 'c++'}, {value: 'python'}, {value: 'ruby'}, {value: 'html'}, {value: 'css'}, {value: 'javascript'}],--%>
-<%--datumTokenizer: function (d) {--%>
-<%--return Bloodhound.tokenizers.whitespace(d.value);--%>
-<%--},--%>
-<%--queryTokenizer: Bloodhound.tokenizers.whitespace--%>
-<%--});--%>
-
-<%--engine.initialize();--%>
-
-<%--$('#tokenfield-typeahead').tokenfield({--%>
-<%--typeahead: [null, {source: engine.ttAdapter()}],--%>
-<%--createTokensOnBlur: true,--%>
-<%--delimiter: [',', ' ']--%>
-<%--});--%>
-<%--});--%>
-
-<%--$('#tokenfield-typeahead').on('tokenfield:createtoken', function (event) {--%>
-<%--var existingTokens = $(this).tokenfield('getTokens');--%>
-<%--$.each(existingTokens, function (index, token) {--%>
-<%--if (token.value === event.attrs.value)--%>
-<%--event.preventDefault();--%>
-<%--});--%>
-<%--});--%>
-
-<%--</script>--%>
 <jsp:include page="bootstrapNavigationBottom.jsp"/>
 </body>
 </html>

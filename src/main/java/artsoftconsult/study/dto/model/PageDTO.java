@@ -6,6 +6,7 @@ public class PageDTO {
     private Long pageId;
     private String title;
     private String content;
+    private String rawContent;
     private Date created;
     private Date lastActive;
     private String visibility;
@@ -13,7 +14,15 @@ public class PageDTO {
     private Long views;
     private Boolean active;
     private LectureDTO chapter;
+    private Boolean deleted;
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
     public Long getPageId() {
         return pageId;
     }
@@ -36,6 +45,14 @@ public class PageDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getRawContent() {
+        return rawContent;
+    }
+
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 
     public Date getCreated() {

@@ -76,7 +76,7 @@
 //        return -1;
 //    }
 //
-//    public boolean saveAssociation(Integer postID, Integer categoryID) {
+//    public boolean saveAssociationForQuestion(Integer postID, Integer categoryID) {
 //        Connection con = db.getConnection();
 //        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO question_categories(postId, categoryId) VALUES (?,?)")) {
 //            preStmt.setInt(1, postID);

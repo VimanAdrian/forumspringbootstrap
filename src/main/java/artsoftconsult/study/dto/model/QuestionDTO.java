@@ -19,7 +19,15 @@ public class QuestionDTO {
     private Collection<ReplyDTO> replies;
     private Collection<QuestionCommentDTO> questionComments;
     private Integer voteType;
+    private Boolean deleted;
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
     public Long getQuestionId() {
         return questionId;
     }

@@ -1,6 +1,9 @@
 package artsoftconsult.study.repository;
 
+import artsoftconsult.study.model.Category;
 import artsoftconsult.study.model.VirtualClass;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -8,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface VirtualClassRepository extends PagingAndSortingRepository<VirtualClass, Long> {
 
-    VirtualClass findByVirtualClassId(Long id);
+    VirtualClass findByVirtualClassIdAndDeletedFalse(Long id);
 
     @Modifying
     @Query(value = "UPDATE virtual_classes SET views = views + 1 WHERE virtual_class_id = :classId", nativeQuery = true)
@@ -16,4 +19,8 @@ public interface VirtualClassRepository extends PagingAndSortingRepository<Virtu
 
     @Query(value = "SELECT vote_type FROM votes_users_virtual_classes WHERE virtual_class_id =:classId AND user_id = :userId", nativeQuery = true)
     Integer findVoteType(@Param("classId") Long classId, @Param("userId") Long userId);
+
+    Page<VirtualClass> findByVirtualClassCategoriesAndDeletedFalse(Pageable pageable, Category category);
+
+    Page<VirtualClass> findByTitleContainingOrDescriptionContainingAndDeletedFalse(Pageable pageable, String title, String description);
 }

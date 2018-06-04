@@ -17,6 +17,17 @@ public class Page {
     private Long views;
     private Boolean active;
     private Lecture lecture;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

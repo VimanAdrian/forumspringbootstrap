@@ -23,6 +23,17 @@ public class Question {
     private Collection<Reply> replies;
     private Collection<QuestionComment> questionComments;
     private Integer voteType;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Question(){
 

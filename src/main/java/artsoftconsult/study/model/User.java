@@ -19,6 +19,17 @@ public class User {
     private String profileImage;
     private Boolean accountNonLocked;
     private String type;
+    private Boolean deleted;
+
+    @Basic
+    @Column(name = "deleted")
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

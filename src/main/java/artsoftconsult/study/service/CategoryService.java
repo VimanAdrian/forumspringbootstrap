@@ -33,10 +33,10 @@ public class CategoryService {
                     }
                     Long categoryGeneratedId = categoryRepository.save(cat).getCategoryId();
                     if (categoryGeneratedId != -1) {
-                        categoryRepository.saveAssociation(postGeneratedId, categoryGeneratedId);
+                        categoryRepository.saveAssociationForQuestion(postGeneratedId, categoryGeneratedId);
                     }
                 } else {
-                    categoryRepository.saveAssociation(postGeneratedId, categoryFromDb.getCategoryId());
+                    categoryRepository.saveAssociationForQuestion(postGeneratedId, categoryFromDb.getCategoryId());
                 }
             }
         }

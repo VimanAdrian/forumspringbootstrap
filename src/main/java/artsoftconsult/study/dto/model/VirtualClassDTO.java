@@ -18,7 +18,15 @@ public class VirtualClassDTO {
     private Collection<LectureDTO> lectures;
     private Collection<CategoryDTO> virtualClassCategories;
     private Integer voteType;
+    private Boolean deleted;
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
     public Long getVirtualClassId() {
         return virtualClassId;
     }
