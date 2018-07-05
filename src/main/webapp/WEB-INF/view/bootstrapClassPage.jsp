@@ -203,6 +203,9 @@
             word-wrap: break-word;
         }
 
+        #mainContent {
+            min-height: 600px;
+        }
     </style>
     <title>MemoryLeak</title>
 </head>

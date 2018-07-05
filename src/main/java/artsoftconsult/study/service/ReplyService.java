@@ -36,8 +36,8 @@ public class ReplyService {
         reply.setQuestion(question);
         Reply saved = replyRepository.save(prepareForSave(reply));
         if (saved != null) {
-            replyRepository.markNotNew(question.getQuestionId(), reply.getUser().getUserId());
-            replyRepository.saveNewReplies(reply.getUser().getUserId(), question.getQuestionId());
+            //replyRepository.markNotNew(question.getQuestionId(), reply.getUser().getUserId());
+            replyRepository.saveNewReplies(question.getUser().getUserId(), question.getQuestionId());
             email.sendNewReplyEmain(reply.getQuestion().getUser().getEmail(), reply.getQuestion().getUser().getUsername(), "http://localhost:8080/question?questionId=" + reply.getQuestion().getQuestionId(), "");
             return true;
         }

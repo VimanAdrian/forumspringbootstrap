@@ -521,7 +521,7 @@
                             <input id="update_user_profileImage" class="form-control" type="text" name="profileImage"
                                    placeholder="Profile image link" pattern="(https?:\/\/.*\.(?:png|jpg|jpeg|gif))"
                                    title="Your profile image should be a .png, .jpg, .jpeg of .gif"
-                                   value="<c:out value='${user.profileImage}'/>">
+                                   value="<c:out value='${pageContext.request.contextPath}${user.profileImage}'/>">
                         </div>
                         <div class="modal-footer">
                             <div>
