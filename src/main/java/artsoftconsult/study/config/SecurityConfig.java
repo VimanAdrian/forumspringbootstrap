@@ -67,11 +67,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.portMapper().http(8080).mapsTo(8443);
+//
+//        http.requiresChannel()
+//                .anyRequest()
+//                .requiresSecure()
+//                .and();
+
         http.authorizeRequests()
-                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .regexMatchers("/question?.*[?&]disabled=on[?&]*.*").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/newPost").authenticated()
-                .antMatchers("/update").authenticated()
+                //.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
+                //.regexMatchers("/question?.*[?&]disabled=on[?&]*.*").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/").permitAll()
+                .antMatchers("/login").anonymous()
+                .antMatchers("/newQuestion").authenticated()
+                .antMatchers("/newClass").authenticated()
+                .antMatchers("/question").permitAll()
+                .antMatchers("/class").permitAll()
+                .antMatchers("/lecture").permitAll()
+                .antMatchers("/activate").anonymous()
+                .antMatchers("/reset").anonymous()
+                .antMatchers("/tag").permitAll()
+                .antMatchers("/search").permitAll()
+                .antMatchers("/account").permitAll()
+                .antMatchers("/browse").permitAll()
+                .antMatchers("403").permitAll()
                 .antMatchers("/profileImage/*").permitAll()
                 .and()
                 .formLogin()
@@ -88,8 +107,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.ACCEPTED))
                 .and()
-                .csrf()
-                .and()
+//                .csrf()
+//                .and()
                 .rememberMe().tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(1209600);
     }
@@ -117,7 +136,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getLocalizedMessage());
                 else if (exception instanceof LockedException)
                     response.sendError(HttpServletResponse.SC_EXPECTATION_FAILED, exception.getLocalizedMessage());
-                else{
+                else {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception.getLocalizedMessage());
                 }
             }

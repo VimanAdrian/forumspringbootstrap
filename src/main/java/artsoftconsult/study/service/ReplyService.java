@@ -4,6 +4,7 @@ import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.Reply;
 import artsoftconsult.study.repository.QuestionRepository;
 import artsoftconsult.study.repository.ReplyRepository;
+import artsoftconsult.study.utils.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class ReplyService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private Email email;
+
     public Integer findCount(Long questionId, boolean role_admin) {
         if (role_admin)
             return replyRepository.findCount(questionId);
@@ -26,11 +30,18 @@ public class ReplyService {
             return replyRepository.findCountWithoutDisabled(questionId);
     }
 
+    @Transactional
     public Boolean save(Reply reply, Long questionId) {
         Question question = questionRepository.findByQuestionId(questionId);
         reply.setQuestion(question);
         Reply saved = replyRepository.save(prepareForSave(reply));
-        return (saved != null);
+        if (saved != null) {
+            replyRepository.markNotNew(question.getQuestionId(), reply.getUser().getUserId());
+            replyRepository.saveNewReplies(reply.getUser().getUserId(), question.getQuestionId());
+            email.sendNewReplyEmain(reply.getQuestion().getUser().getEmail(), reply.getQuestion().getUser().getUsername(), "http://localhost:8080/question?questionId=" + reply.getQuestion().getQuestionId(), "");
+            return true;
+        }
+        return false;
     }
 
     private Reply prepareForSave(Reply reply) {
@@ -39,7 +50,6 @@ public class ReplyService {
         reply.setCreationDate(new Date(System.currentTimeMillis()));
         reply.setEnabled(true);
         reply.setScore((long) 0);
-        reply.setReplyComment(null);
         reply.setDeleted(false);
         return reply;
     }
@@ -91,7 +101,7 @@ public class ReplyService {
     public void delete(Long replyId, Long userId) {
         Reply reply = replyRepository.findByReplyId(replyId);
         if (reply.getUser().getUserId().equals(userId)) {
-            replyRepository.delete(replyId);
+            replyRepository.logicalDelete(replyId);
         }
     }
 }

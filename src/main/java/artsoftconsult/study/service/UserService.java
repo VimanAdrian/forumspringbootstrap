@@ -3,9 +3,11 @@ package artsoftconsult.study.service;
 import artsoftconsult.study.dto.model.UserDTO;
 import artsoftconsult.study.model.Question;
 import artsoftconsult.study.model.User;
+import artsoftconsult.study.model.VirtualClass;
 import artsoftconsult.study.repository.QuestionRepository;
 import artsoftconsult.study.repository.TokenRepositoryImpl;
 import artsoftconsult.study.repository.UserRepository;
+import artsoftconsult.study.repository.VirtualClassRepository;
 import artsoftconsult.study.utils.Email;
 import artsoftconsult.study.utils.RandomUtils;
 import artsoftconsult.study.validator.UserValidator;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -38,6 +41,8 @@ public class UserService implements Serializable {
     private PasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private TokenRepositoryImpl tokenRepositoryImpl;
+    @Autowired
+    private VirtualClassRepository virtualClassRepository;
 
     public UserService() {
     }
@@ -48,15 +53,14 @@ public class UserService implements Serializable {
         user.setRole("ROLE_USER");
         user.setCreationDate(new Date(System.currentTimeMillis()));
         user.setEnabled(false);
-        user.setProfileImage("/profileImage/generic.png");
+        if (user.getProfileImage() == null || user.getProfileImage().equals(""))
+            user.setProfileImage("/profileImage/generic.png");
         user.setAccountNonLocked(true);
-        user.setType("NORMAL");
         user.setDeleted(false);
         return user;
     }
 
     private User prepareForUpdate(User userFromDb, User userFromDto) {
-        userFromDto.setType(userFromDb.getType());
         userFromDto.setAccountNonLocked(userFromDb.getAccountNonLocked());
         userFromDto.setEnabled(userFromDb.getEnabled());
         userFromDto.setCreationDate(userFromDb.getCreationDate());
@@ -67,30 +71,42 @@ public class UserService implements Serializable {
         return userFromDto;
     }
 
-    public boolean save(UserDTO user) {
+    @Transactional
+    public Integer save(UserDTO user) {
         if (userValidator.validate(user)) {
-            User userFromDto = new User();
-            modelMapper.map(user, userFromDto);
-            userFromDto = prepareForSave(userFromDto);
-            if ((userRepository.findByEmail(userFromDto.getEmail()) == null) && (userRepository.findByUsername(userFromDto.getUsername()) == null)) {
-                User savedUser = userRepository.saveAndFlush(userFromDto);
-                if (savedUser != null)
-                    if (savedUser.getUserId() != null) {
-                        sendToken(savedUser);
-                        return true;
-                    }
+            if (userRepository.findByEmail(user.getEmail()) == null) {
+                if (userRepository.findByUsername(user.getUsername()) == null) {
+                    User userFromDto = new User();
+                    modelMapper.map(user, userFromDto);
+                    userFromDto = prepareForSave(userFromDto);
+                    User savedUser = userRepository.saveAndFlush(userFromDto);
+                    if (savedUser != null)
+                        if (savedUser.getUserId() != null) {
+                            sendToken(savedUser);
+                            return 1;//success
+                        } else {
+                            return -4;//something went wrong
+                        }
+                } else {
+                    return -3;//username exists
+                }
+            } else {
+                return -2; //email exists
             }
         }
-        return false;
+        return -1; //invalid validation
     }
 
-    public boolean updateUser(UserDTO user) {
-        User userFromDb = userRepository.findByUsername(user.getEmail());
-        User userFromDto = new User();
-        modelMapper.map(user, userFromDto);
-        userFromDto = prepareForUpdate(userFromDb, userFromDto);
-        userRepository.save(userFromDto);
-        return true;
+    @Transactional
+    public Integer updateUser(UserDTO user, String username) {
+        if (userValidator.validateUpdate(user)) {
+            User userFromDb = userRepository.findByUsername(username);
+            userFromDb.setFirstName(user.getFirstName());
+            userFromDb.setLastName(user.getLastName());
+            userFromDb.setProfileImage(user.getProfileImage());
+            return 1;
+        }
+        return -1;
     }
 
     public boolean sendToken(User user) {
@@ -119,7 +135,8 @@ public class UserService implements Serializable {
         return false;
     }
 
-    private boolean enableUser(Long userId) {
+    @Transactional
+    public boolean enableUser(Long userId) {
         User user = userRepository.findByUserId(userId);
         if (user != null) {
             user.setEnabled(true);
@@ -157,18 +174,19 @@ public class UserService implements Serializable {
         return false;
     }
 
+    @Transactional
     public boolean resetPassword(UserDTO user) {
-        User userFromDto = new User();
-        modelMapper.map(user, userFromDto);
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (userValidator.validateUserPassword(user)) {
-            userRepository.updatePasswordById(user.getPassword(), user.getUserId());
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            User userFromDb = userRepository.findByUserId(user.getUserId());
+            userFromDb.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.saveAndFlush(userFromDb);
             return true;
         }
         return false;
     }
 
+    @Transactional(readOnly = true)
     public User[] getAll() {
         return userRepository.findAll().toArray(new User[0]);
     }
@@ -178,10 +196,12 @@ public class UserService implements Serializable {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public User find(String username) {
         return userRepository.findByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     public User find(Long id) {
         return userRepository.findByUserId(id);
     }
@@ -198,14 +218,17 @@ public class UserService implements Serializable {
         userRepository.updateProfileImage("/profileImage/" + filename, username);
     }
 
+    @Transactional
     public List<Question> newAnswers(User user) {
         return questionRepository.newReplies(find(user.getUsername()).getUserId());
     }
 
+    @Transactional
     public List<Question> topQuestions(User user) {
         return questionRepository.topQuestion(user.getUserId());
     }
 
+    @Transactional
     public void block(String username) {
         User user = userRepository.findByUsername(username);
         if (user.getEmail() != null) {
@@ -214,4 +237,15 @@ public class UserService implements Serializable {
         userRepository.block(user.getUserId());
     }
 
+    public Boolean resendToken(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            return sendToken(user);
+        }
+        return false;
+    }
+
+    public List<VirtualClass> newClassActivity(User user) {
+        return virtualClassRepository.newActivity(user.getUserId());
+    }
 }

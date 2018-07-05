@@ -1,12 +1,11 @@
 package artsoftconsult.study.service;
 
-import artsoftconsult.study.model.Category;
-import artsoftconsult.study.model.Lecture;
-import artsoftconsult.study.model.Question;
-import artsoftconsult.study.model.VirtualClass;
+import artsoftconsult.study.model.*;
 import artsoftconsult.study.repository.*;
+import artsoftconsult.study.utils.MyAttributeProvider;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,53 +30,130 @@ public class SearchService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Transactional
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    protected Page<Question> initializeQuestion(Page<Question> questionPage) {
+        questionPage.getContent().forEach(question -> Hibernate.initialize(question.getQuestionCategories()));
+        questionPage.getContent().forEach(question -> question.getReplies().forEach(reply -> reply.setContent(MyAttributeProvider.commonMark(reply.getContent()))));
+        questionPage.getContent().forEach(question -> question.getQuestionComments().forEach(comment -> comment.setContent(MyAttributeProvider.commonMark(comment.getContent()))));
+        return questionPage;
+    }
+
+    @Transactional(readOnly = true)
+    protected Page<VirtualClass> initializeVirtualClass(Page<VirtualClass> virtualClassPage) {
+        virtualClassPage.getContent().forEach(virtualClass -> Hibernate.initialize(virtualClass.getVirtualClassCategories()));
+        virtualClassPage.getContent().forEach(virtualClass -> virtualClass.getLectures().forEach(lecture -> lecture.setDescription(MyAttributeProvider.commonMark(lecture.getDescription()))));
+        return virtualClassPage;
+    }
+
+    @Transactional(readOnly = true)
+    protected Page<Lecture> initializeLecture(Page<Lecture> lecturePage) {
+        Hibernate.initialize(lecturePage.getContent());
+        lecturePage.getContent().forEach(lecture -> lecture.setDescription(MyAttributeProvider.commonMark(lecture.getDescription())));
+        return lecturePage;
+    }
+
+    @Transactional(readOnly = true)
     public Page<Question> searchQuestionByTag(String tag, Integer page, Integer size) {
         Category searchedBy = categoryRepository.findByUrl(tag);
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         if (searchedBy != null) {
             Page<Question> questionPage = questionRepository.findByQuestionCategoriesAndDeletedFalse(pageable, searchedBy);
-            questionPage.getContent().forEach(question -> Hibernate.initialize(question.getQuestionCategories()));
-            return questionPage;
-        } else return new PageImpl<Question>(new ArrayList<>(), pageable, 0);
+            return initializeQuestion(questionPage);
+        }
+        return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<VirtualClass> searchVirtualClassByTag(String tag, Integer page, Integer size) {
         Category searchedBy = categoryRepository.findByUrl(tag);
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         if (searchedBy != null) {
             Page<VirtualClass> virtualClassPage = virtualClassRepository.findByVirtualClassCategoriesAndDeletedFalse(pageable, searchedBy);
-            virtualClassPage.getContent().forEach(virtualClass -> Hibernate.initialize(virtualClass.getVirtualClassCategories()));
-            return virtualClassPage;
-        } else return new PageImpl<VirtualClass>(new ArrayList<>(), pageable, 0);
+            return initializeVirtualClass(virtualClassPage);
+        }
+        return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 
     public Page<Lecture> searchLectureByTag(String tag, Integer page, Integer size) {
         return null;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Question> searchQuestionByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         Page<Question> questionPage = questionRepository.findByTitleContainingOrContentContainingAndDeletedFalse(pageable, search, search);
-        questionPage.getContent().forEach(question -> Hibernate.initialize(question.getQuestionCategories()));
-        return questionPage;
+        return initializeQuestion(questionPage);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<VirtualClass> searchVirtualClassByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         Page<VirtualClass> virtualClassPage = virtualClassRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
-        virtualClassPage.getContent().forEach(virtualClass -> Hibernate.initialize(virtualClass.getVirtualClassCategories()));
-        return virtualClassPage;
+        return initializeVirtualClass(virtualClassPage);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Lecture> searchLectureByFreeText(String search, Integer page, Integer size) {
         Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
         Page<Lecture> lecturePage = lectureRepository.findByTitleContainingOrDescriptionContainingAndDeletedFalse(pageable, search, search);
-        Hibernate.initialize(lecturePage.getContent());
-        return lecturePage;
+        return initializeLecture(lecturePage);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Question> searchQuestionByUser(String username, Integer page, Integer size) {
+        if (username != null) {
+            User searchedBy = userRepository.findByUsername(username);
+            Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
+            if (searchedBy != null) {
+                Page<Question> questionPage = questionRepository.findByUserAndDeletedFalse(pageable, searchedBy);
+                return initializeQuestion(questionPage);
+            } else return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
+        return searchQuestionByBrowse(page, size);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<VirtualClass> searchVirtualClassByUser(String username, Integer page, Integer size) {
+        if (username != null) {
+            User searchedBy = userRepository.findByUsername(username);
+            Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
+            if (searchedBy != null) {
+                Page<VirtualClass> virtualClassPage = virtualClassRepository.findByUserAndDeletedFalse(pageable, searchedBy);
+                return initializeVirtualClass(virtualClassPage);
+            } else return new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
+        return searchVirtualClassByBrowse(page, size);
+    }
+
+    public Page<Lecture> searchLectureByUser(String username, Integer page, Integer size) {
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Question> searchQuestionByBrowse(Integer page, Integer size) {
+        Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "created");
+        Page<Question> questionPage = questionRepository.findByDeletedFalse(pageable);
+        return initializeQuestion(questionPage);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<VirtualClass> searchVirtualClassByBrowse(Integer page, Integer size) {
+        Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "created");
+        Page<VirtualClass> virtualClassPage = virtualClassRepository.findByDeletedFalse(pageable);
+        return initializeVirtualClass(virtualClassPage);
+    }
+
+    @Transactional
+    public Page<Question> searchQuestionByLecture(Long lectureId, Integer page, Integer size) {
+        Lecture searchedBy = lectureRepository.findByLectureIdAndDeletedFalse(lectureId);
+        Pageable pageable = new PageRequest(page, size, Sort.Direction.DESC, "score");
+        if (searchedBy != null) {
+            Page<Question> questionPage = questionRepository.findByLectureAndDeletedFalse(pageable, searchedBy);
+            return initializeQuestion(questionPage);
+        }
+        return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 }

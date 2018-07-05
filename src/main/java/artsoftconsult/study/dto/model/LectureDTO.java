@@ -10,7 +10,6 @@ public class LectureDTO {
     private String rawDescription;
     private Date created;
     private Date lastActive;
-    private String visibility;
     private Long score;
     private Long views;
     private Boolean active;
@@ -74,14 +73,6 @@ public class LectureDTO {
 
     public void setLastActive(Date lastActive) {
         this.lastActive = lastActive;
-    }
-
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
     }
 
     public Long getScore() {

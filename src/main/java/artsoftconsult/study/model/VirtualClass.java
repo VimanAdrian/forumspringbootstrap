@@ -22,6 +22,17 @@ public class VirtualClass {
     private Collection<Category> virtualClassCategories;
     private Boolean deleted;
 
+    public VirtualClass() {
+
+    }
+
+    public VirtualClass(Long virtualClassId, String title, long views, long score) {
+        this.virtualClassId = virtualClassId;
+        this.title = title;
+        this.views = views;
+        this.score = score;
+    }
+
     @Basic
     @Column(name = "deleted")
     public Boolean getDeleted() {

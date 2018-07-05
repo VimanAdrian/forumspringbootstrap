@@ -1,11 +1,14 @@
 package artsoftconsult.study.service;
 
+import artsoftconsult.study.dto.model.LectureDTO;
 import artsoftconsult.study.dto.model.VirtualClassDTO;
-import artsoftconsult.study.model.*;
+import artsoftconsult.study.model.Category;
+import artsoftconsult.study.model.Lecture;
+import artsoftconsult.study.model.User;
+import artsoftconsult.study.model.VirtualClass;
 import artsoftconsult.study.repository.CategoryRepository;
 import artsoftconsult.study.repository.LectureRepository;
 import artsoftconsult.study.repository.VirtualClassRepository;
-import artsoftconsult.study.repository.VirtualClassRightsRepository;
 import artsoftconsult.study.utils.MyAttributeProvider;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
@@ -33,9 +36,6 @@ public class VirtualClassService {
     private LectureRepository lectureRepository;
 
     @Autowired
-    private VirtualClassRightsRepository virtualClassRightsRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     private VirtualClass prepareForSave(VirtualClass virtualClass) {
@@ -55,7 +55,6 @@ public class VirtualClassService {
         lecture.setLastActive(new Date(System.currentTimeMillis()));
         lecture.setScore(0l);
         lecture.setViews(0l);
-        lecture.setVisibility("public");
         lecture.setDeleted(false);
         if (lecture.getDescription() == null) {
             lecture.setDescription("");
@@ -164,18 +163,14 @@ public class VirtualClassService {
             classFromDB.getVirtualClassCategories().clear();
             classFromDB.getVirtualClassCategories().addAll(categories);
             virtualClassRepository.save(prepareForUpdate(classFromDB, virtualClass));
-        } else {
-            VirtualClassRights classRights = virtualClassRightsRepository.findByUserIdAndClassId(virtualClass.getVirtualClassId(), virtualClass.getUser().getUserId());
-            if (classRights != null) {
-                if (classRights.getCanEdit()) {
-                    virtualClassRepository.save(prepareForUpdate(classFromDB, virtualClass));
-                }
-            }
         }
     }
 
     @Transactional
     public VirtualClassDTO find(Long classId, User user) {
+        if (user != null) { //not authenticated
+            virtualClassRepository.markNotNew(classId, user.getUserId());
+        }
         virtualClassRepository.incrementView(classId);
         VirtualClass virtualClass = virtualClassRepository.findByVirtualClassIdAndDeletedFalse(classId);
         Hibernate.initialize(virtualClass.getLectures());
@@ -186,6 +181,10 @@ public class VirtualClassService {
         modelMapper.map(virtualClass, virtualClassDTO);
         virtualClassDTO.setRawDescription(virtualClassDTO.getDescription());
         virtualClassDTO.setDescription(MyAttributeProvider.commonMark(virtualClassDTO.getDescription()));
+        for (LectureDTO lecture : virtualClassDTO.getLectures()) {
+            lecture.setRawDescription(lecture.getDescription());
+            lecture.setDescription(MyAttributeProvider.commonMark(lecture.getDescription()));
+        }
         if (user != null) { //authenticated
             Integer voteType = virtualClassRepository.findVoteType(classId, user.getUserId());
             if (voteType == null)
@@ -200,4 +199,30 @@ public class VirtualClassService {
     }
 
 
+    @Transactional
+    public boolean delete(Long classId, Long userId) {
+        VirtualClass virtualClass = virtualClassRepository.findByVirtualClassIdAndDeletedFalse(classId);
+        if (virtualClass.getUser().getUserId().equals(userId)) {
+            virtualClassRepository.logicalDelete(classId);
+        }
+        return true;
+    }
+
+    @Transactional
+    public boolean followClass(Long classId, Long userId) {
+        virtualClassRepository.followClass(classId, userId);
+        return true;
+    }
+
+    @Transactional
+    public Boolean followsClass(Long classId, Long userId) {
+        Long id = virtualClassRepository.followsClass(classId, userId);
+        return id != null;
+    }
+
+    @Transactional
+    public boolean unfollowClass(Long classId, Long userId) {
+        virtualClassRepository.unfollowClass(classId, userId);
+        return true;
+    }
 }

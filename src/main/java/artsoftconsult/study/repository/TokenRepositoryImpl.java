@@ -1,7 +1,6 @@
 package artsoftconsult.study.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 
@@ -23,9 +22,10 @@ public class TokenRepositoryImpl implements TokenRepositoryCustom{
         } catch (SQLException e) {
             return false;
         }
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO activation_tokens(user_id, token) VALUES (?,?)")) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO activation_tokens(user_id, token, creationdate) VALUES (?,?,?)")) {
             preStmt.setLong(1, userId);
             preStmt.setString(2, token);
+            preStmt.setLong(3, System.currentTimeMillis());
             preStmt.executeUpdate();
         } catch (SQLException e) {
             return false;
@@ -92,9 +92,10 @@ public class TokenRepositoryImpl implements TokenRepositoryCustom{
         } catch (SQLException e) {
             return false;
         }
-        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO password_tokens(user_id, token) VALUES (?,?)")) {
+        try (PreparedStatement preStmt = con.prepareStatement("INSERT INTO password_tokens(user_id, token, creation_date) VALUES (?,?,?)")) {
             preStmt.setLong(1, userId);
             preStmt.setString(2, token);
+            preStmt.setLong(3, System.currentTimeMillis());
             preStmt.executeUpdate();
         } catch (SQLException e) {
             return false;
@@ -102,12 +103,12 @@ public class TokenRepositoryImpl implements TokenRepositoryCustom{
         return true;
     }
 
-    public long findPasswordResetToken(String token, Long userId) {
+    public Long findPasswordResetToken(String token, Long userId) {
         Connection con = null;
         try {
             con = driverManagerDataSource.getConnection();
         } catch (SQLException e) {
-            return 0;
+            return null;
         }
         try (PreparedStatement preStmt = con.prepareStatement("SELECT creation_date FROM password_tokens WHERE user_id=? AND token=?")) {
             preStmt.setLong(1, userId);
@@ -116,9 +117,9 @@ public class TokenRepositoryImpl implements TokenRepositoryCustom{
             if (resultSet.next()) {
                 return resultSet.getLong(1);
             } else
-                return 0;
+                return null;
         } catch (SQLException e) {
-            return 0;
+            return null;
         }
     }
 

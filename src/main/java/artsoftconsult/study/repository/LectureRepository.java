@@ -42,4 +42,5 @@ public interface LectureRepository extends PagingAndSortingRepository<Lecture, L
     Lecture findByLectureId(Long lectureId);
 
     Page<Lecture> findByTitleContainingOrDescriptionContainingAndDeletedFalse(Pageable pageable, String title, String description);
+
 }

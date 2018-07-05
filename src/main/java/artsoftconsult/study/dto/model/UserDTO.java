@@ -15,7 +15,6 @@ public class UserDTO {
     private Boolean enabled;
     private String profileImage;
     private Boolean accountNonLocked;
-    private String type;
     private Boolean deleted;
 
     public Boolean getDeleted() {
@@ -121,11 +120,4 @@ public class UserDTO {
         this.accountNonLocked = accountNonLocked;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

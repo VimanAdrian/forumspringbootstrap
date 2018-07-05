@@ -1,7 +1,9 @@
 package artsoftconsult.study.repository;
 
 import artsoftconsult.study.model.Category;
+import artsoftconsult.study.model.Lecture;
 import artsoftconsult.study.model.Question;
+import artsoftconsult.study.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -51,4 +53,10 @@ public interface QuestionRepository extends PagingAndSortingRepository<Question,
     Page<Question> findByQuestionCategoriesAndDeletedFalse(Pageable pageable, Category category);
 
     Page<Question> findByTitleContainingOrContentContainingAndDeletedFalse(Pageable pageable, String title, String content);
+
+    Page<Question> findByUserAndDeletedFalse(Pageable pageable, User searchedBy);
+
+    Page<Question> findByDeletedFalse(Pageable pageable);
+
+    Page<Question> findByLectureAndDeletedFalse(Pageable pageable, Lecture searchedBy);
 }

@@ -2,22 +2,20 @@ package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
 @Table(name="pages")
 public class Page {
     private Long pageId;
-    private String title;
     private String content;
     private Date created;
     private Date lastActive;
-    private String visibility;
-    private Long score;
-    private Long views;
     private Boolean active;
     private Lecture lecture;
     private Boolean deleted;
+    private Collection<PageComment> pageComment;
 
     @Basic
     @Column(name = "deleted")
@@ -38,16 +36,6 @@ public class Page {
 
     public void setPageId(Long pageId) {
         this.pageId = pageId;
-    }
-
-    @Basic
-    @Column(name = "title")
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Basic
@@ -81,36 +69,6 @@ public class Page {
     }
 
     @Basic
-    @Column(name = "visibility")
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
-    @Basic
-    @Column(name = "score")
-    public Long getScore() {
-        return score;
-    }
-
-    public void setScore(Long score) {
-        this.score = score;
-    }
-
-    @Basic
-    @Column(name = "views")
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
-    }
-
-    @Basic
     @Column(name = "active")
     public Boolean getActive() {
         return active;
@@ -120,26 +78,28 @@ public class Page {
         this.active = active;
     }
 
+    @OneToMany(mappedBy = "page")
+    public Collection<PageComment> getPageComment() {
+        return pageComment;
+    }
+
+    public void setPageComment(Collection<PageComment> pageComment) {
+        this.pageComment = pageComment;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Page page = (Page) o;
         return Objects.equals(pageId, page.pageId) &&
-                Objects.equals(title, page.title) &&
                 Objects.equals(content, page.content) &&
                 Objects.equals(created, page.created) &&
                 Objects.equals(lastActive, page.lastActive) &&
-                Objects.equals(visibility, page.visibility) &&
-                Objects.equals(score, page.score) &&
-                Objects.equals(views, page.views) &&
                 Objects.equals(active, page.active);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(pageId, title, content, created, lastActive, visibility, score, views, active);
-    }
 
     @ManyToOne
     @JoinColumn(name = "lecture_id", referencedColumnName = "lecture_id", nullable = false)

@@ -13,7 +13,6 @@ public class Lecture {
     private String description;
     private Date created;
     private Date lastActive;
-    private String visibility;
     private Long score;
     private Long views;
     private Boolean active;
@@ -84,16 +83,6 @@ public class Lecture {
     }
 
     @Basic
-    @Column(name = "visibility")
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
-    @Basic
     @Column(name = "score")
     public Long getScore() {
         return score;
@@ -133,7 +122,6 @@ public class Lecture {
                 Objects.equals(description, lecture.description) &&
                 Objects.equals(created, lecture.created) &&
                 Objects.equals(lastActive, lecture.lastActive) &&
-                Objects.equals(visibility, lecture.visibility) &&
                 Objects.equals(score, lecture.score) &&
                 Objects.equals(views, lecture.views) &&
                 Objects.equals(active, lecture.active);
@@ -141,7 +129,7 @@ public class Lecture {
 
     @Override
     public int hashCode() {
-        return Objects.hash(lectureId, title, description, created, lastActive, visibility, score, views, active);
+        return Objects.hash(lectureId, title, description, created, lastActive, score, views, active);
     }
 
     @OneToMany(mappedBy = "lecture")

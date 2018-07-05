@@ -1,7 +1,5 @@
 package artsoftconsult.study.repository;
 
-import org.springframework.stereotype.Repository;
-
 public interface TokenRepositoryCustom {
 
     boolean saveToken(Long userId, String token);
@@ -14,6 +12,6 @@ public interface TokenRepositoryCustom {
 
     boolean savePasswordReset(Long userId, String token);
 
-    long findPasswordResetToken(String token, Long userId);
+    Long findPasswordResetToken(String token, Long userId);
 
 }

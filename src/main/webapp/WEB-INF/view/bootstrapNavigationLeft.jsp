@@ -2,29 +2,44 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <style>
+    .wordBreak {
+        word-wrap: break-word;
+    }
 </style>
-<%--TODO SANITISE ALL USER INPUT EVERYWHERE ALL OF IT--%>
 <div class="col-md-3 well">
     <sec:authorize access="isAuthenticated()">
-        <div class="well well-top">
-            <p><a href="${pageContext.request.contextPath}/account?username=${user.username}">${user.username}</a></p>
+        <div class="well well-top wordBreak">
+            <p><a href="${pageContext.request.contextPath}/account?username=<c:out value='${user.username}'/>"><c:out
+                    value="${user.username}"/></a></p>
             <img src="${user.profileImage}" class="img-circle" height="65"
                  width="65" alt="Avatar">
         </div>
         <c:if test="${newAnswers==true}">
-            <div class="alert alert-dismissible alert-info">
+            <div class="alert alert-dismissible alert-info wordBreak">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                 <p><strong>You have new answers!</strong></p>
                 <c:forEach var="post" items="${answerList}" varStatus="loop">
-                    <p><a href="/question?questionId=${post.questionId}&page=0" class="alert-link">${post.title}</a></p>
+                    <p><a href="/question?questionId=${post.questionId}" class="alert-link"><c:out
+                            value="${post.title}"/></a></p>
                 </c:forEach>
             </div>
         </c:if>
-        <div class="well well-top">
+        <c:if test="${newClassActivity==true}">
+            <div class="alert alert-dismissible alert-info wordBreak">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <p><strong>There is new activity in some of the classes you subscribed to!</strong></p>
+                <c:forEach var="newActivityClass" items="${classList}" varStatus="loop">
+                    <p><a href="/class?classId=${newActivityClass.virtualClassId}" class="alert-link">
+                        <c:out value="${newActivityClass.title}"/>
+                    </a></p>
+                </c:forEach>
+            </div>
+        </c:if>
+        <div class="well well-top wordBreak">
             <c:if test="${topQuestions==true}">
                 <p>Your top question.</p>
                 <c:forEach var="post" items="${questionList}" varStatus="loop">
-                    <p><a href="/question?questionId=${post.questionId}&page=0">${post.title}
+                    <p><a href="/question?questionId=${post.questionId}"><c:out value="${post.title}"/>
                         <span class="badge">${post.score}</span></a></p>
                 </c:forEach>
             </c:if>

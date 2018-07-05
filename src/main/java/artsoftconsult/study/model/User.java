@@ -18,7 +18,6 @@ public class User {
     private Boolean enabled;
     private String profileImage;
     private Boolean accountNonLocked;
-    private String type;
     private Boolean deleted;
 
     @Basic
@@ -142,15 +141,6 @@ public class User {
         this.accountNonLocked = accountNonLocked;
     }
 
-    @Basic
-    @Column(name = "type")
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -167,13 +157,12 @@ public class User {
                 Objects.equals(creationDate, user.creationDate) &&
                 Objects.equals(enabled, user.enabled) &&
                 Objects.equals(profileImage, user.profileImage) &&
-                Objects.equals(accountNonLocked, user.accountNonLocked) &&
-                Objects.equals(type, user.type);
+                Objects.equals(accountNonLocked, user.accountNonLocked);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, firstName, lastName, email, role, creationDate, enabled, profileImage, accountNonLocked, type);
+        return Objects.hash(userId, username, password, firstName, lastName, email, role, creationDate, enabled, profileImage, accountNonLocked);
     }
 
 }

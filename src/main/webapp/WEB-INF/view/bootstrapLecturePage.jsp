@@ -13,15 +13,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%--default--%>
+    <link rel="apple-touch-icon" sizes="57x57"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="${pageContext.request.contextPath}/resources/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-16x16.png">
+    <link rel="manifest" href="${pageContext.request.contextPath}/resources/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <%--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>--%>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>--%>
-    <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
-    <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
-    <%--extra--%>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
@@ -189,6 +216,10 @@
             width: 320px;
         }
 
+        .wordBreak {
+            word-wrap: break-word;
+        }
+
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -202,8 +233,8 @@
 
             <div class="row">
                 <div class="col-md-11">
-                    <div class="question-title">
-                        ${lecture.title}
+                    <div class="question-title wordBreak">
+                        <c:out value="${lecture.title}"/>
                     </div>
                 </div>
             </div>
@@ -213,7 +244,7 @@
                     <div class="well pading-top-5px pading-bottom-5px">
                         <div class="row">
                             <div class="text-left col-md-12">
-                                <div id="lectureDescription" class="collapse">
+                                <div id="lectureDescription" class="collapse wordBreak">
                                     <c:if test="${lecture.description.length() == 0}">
                                         This lecture has no description.
                                     </c:if>
@@ -233,20 +264,24 @@
                                         data-target="#lectureDescription">
                                     <i class="fas fa-chevron-circle-down fa-inverse active-icon"></i>
                                 </button>
-                                <c:if test="${lecture.virtualClass.user.username!=pageContext.request.userPrincipal.name}">
-                                    <a type="button" class="btn btn-info"
-                                       href="${pageContext.request.contextPath}/newQuestion?lectureId=${lecture.lectureId}">Ask
-                                        a question</a>
-                                </c:if>
-                                <a type="button" class="btn btn-info" href="#">See questions</a>
+                                <sec:authorize access="isAuthenticated()">
+                                    <c:if test="${lecture.virtualClass.user.username!=pageContext.request.userPrincipal.name}">
+                                        <a type="button" class="btn btn-info"
+                                           href="${pageContext.request.contextPath}/newQuestion?lectureId=${lecture.lectureId}">Ask
+                                            a question</a>
+                                    </c:if>
+                                </sec:authorize>
+                                <a type="button" class="btn btn-info"
+                                   href="${pageContext.request.contextPath}/questions?lectureId=${lecture.lectureId}">See
+                                    questions</a>
                             </div>
                             <div class="col-md-6 text-right-responsive">
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
                                     created ${lecture.created.toLocaleString()} by <a
-                                        href="${pageContext.request.contextPath}/account?username=${lecture.virtualClass.user.username}"><img
+                                        href="${pageContext.request.contextPath}/account?username=<c:out value='${lecture.virtualClass.user.username}'/>"><img
                                         src="${lecture.virtualClass.user.profileImage}" class="img-circle" height="35"
                                         width="35"
-                                        alt="Avatar"> ${lecture.virtualClass.user.username}
+                                        alt="Avatar"> <c:out value="${lecture.virtualClass.user.username}"/>
                                 </a>
                                 </p>
                                 <p class="text-right-responsive margin-bottom-0px gi-08x">
@@ -261,7 +296,7 @@
                     <div class="well pading-top-5px pading-bottom-5px">
                         <div class="row">
                             <div class="text-left col-md-12" id="myDiv">
-                                <div id="pageContent">
+                                <div id="pageContent" class="wordBreak">
                                     <c:if test="${lecture.pages.size() == 0}">
                                         <p>This lecture does not yet have any pages.</p>
                                         <p>You should check again soon.</p>
@@ -278,6 +313,43 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row comment-row">
+                            <c:set var="showAllComments" value="${false}"/>
+                            <c:forEach var="comment" items="${lecture.pages.toArray()[page].pageComment}"
+                                       varStatus="index">
+                                <c:if test="${index.index <3}">
+                                    <hr class="hr-5px "/>
+                                    <p class="text-left margin-bottom-0px padding-left-15px gi-08x wordBreak">
+                                        <c:out value="${comment.content}"/> &nbsp&nbsp by
+                                        <a href="${pageContext.request.contextPath}/account?username=<c:out value='${comment.user.username}'/>"><c:out
+                                                value="${comment.user.username}"/></a>
+                                        at ${comment.creationDate.toLocaleString()}
+                                    </p>
+                                </c:if>
+                                <c:if test="${index.index >=3}">
+                                    <c:set var="showAllComments" value="${true}"/>
+                                    <hr class="hr-5px page-comment-toggle" style="display: none;"/>
+                                    <p class="text-left margin-bottom-0px padding-left-15px gi-08x wordBreak page-comment-toggle"
+                                       style="display: none;">
+                                        <c:out value="${comment.content}"/> &nbsp&nbsp by
+                                        <a href="${pageContext.request.contextPath}/account?username=<c:out value='${comment.user.username}'/>"><c:out
+                                                value="${comment.user.username}"/></a>
+                                        at ${comment.creationDate.toLocaleString()}
+                                    </p>
+                                </c:if>
+                            </c:forEach>
+                            <c:if test="${showAllComments}">
+                                <p><a role="button" id="showAllComments">Show all comments</a></p>
+                            </c:if>
+                            <sec:authorize access="isAuthenticated()">
+                                <hr class="hr-5px "/>
+                                <input type="text" placeholder="Post a comment."
+                                       class="comment-input question-comment-input" maxlength="400">
+                            </sec:authorize>
+                        </div>
+
+
                         <hr class="hr-5px"/>
                     </div>
                 </div>
@@ -320,21 +392,7 @@
                                     </button>
                                 </p>
                             </c:if>
-                            <jsp:include page="shareThisMenu.jsp"/>
-                            <c:if test="${lecture.virtualClass.user.username!=pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px buttons-p">
-                                    <button id="bookmarkButton" class="btn btn-info interaction-button">
-                                        <i class="fas fa-bookmark fa-inverse"></i>
-                                    </button>
-                                </p>
-                            </c:if>
-                            <c:if test="${lecture.virtualClass.user.username!=pageContext.request.userPrincipal.name}">
-                                <p class="margin-bottom-0px buttons-p">
-                                    <button id="reportButton" class="btn btn-info interaction-button">
-                                        <i class="fas fa-exclamation-circle fa-inverse"></i>
-                                    </button>
-                                </p>
-                            </c:if>
+                            <jsp:include page="bootstrapShareThisMenu.jsp"/>
                             <c:if test="${lecture.virtualClass.user.username==pageContext.request.userPrincipal.name}">
                                 <p class="margin-bottom-0px buttons-p">
                                     <button id="editButton" class="btn btn-info interaction-button">
@@ -342,6 +400,21 @@
                                     </button>
                                 </p>
                             </c:if>
+                            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button type="button" id="adminDeleteButton-lecture-${lecture.lectureId}"
+                                            class="btn btn-danger admin-button interaction-button"
+                                            title="Delete lecture">
+                                        <i class="fas fa-trash-alt fa-inverse"></i>
+                                    </button>
+                                </p>
+                                <p class="margin-bottom-0px buttons-p">
+                                    <button type="button" id="adminDeleteButton-delete-${lecture.pages[page].pageId}"
+                                            class="btn btn-danger admin-button interaction-button" title="Delete page">
+                                        <i class="fas fa-trash-alt fa-inverse"></i>
+                                    </button>
+                                </p>
+                            </sec:authorize>
                         </sec:authorize>
                     </div>
                 </div>
@@ -372,7 +445,7 @@
                                     <label class="control-label col-sm-1" for="post_title">Title:</label>
                                     <div class="col-sm-11">
                                         <input id="post_title" class="form-control " type="text"
-                                               name="title" value="${lecture.title}" required>
+                                               name="title" value="<c:out value='${lecture.title}'/>" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -387,7 +460,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <input type="submit" class="btn btn-primary align-left"
-                                               value="Update lecture"/>
+                                               value="Update your lecture"/>
                                         <p class="margin-bottom-0px buttons-p align-right">
                                             <button type="button" id="deleteLectureButton"
                                                     class="btn btn-danger interaction-button">
@@ -423,7 +496,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <input type="submit" class="btn btn-primary align-left"
-                                               value="Update page"/>
+                                               value="Update your page"/>
                                         <p class="margin-bottom-0px buttons-p align-right">
                                             <button type="button" id="deletePageButton"
                                                     class="btn btn-danger interaction-button">
@@ -460,7 +533,7 @@
                                 <div class="form-group">
                                     <div class="col-md-1">
                                         <input type="submit" class="btn btn-primary"
-                                               value="Create page"/>
+                                               value="Create a page"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -729,7 +802,77 @@
                 }
             });
         });
-        a
+
+    </script>
+    <script>
+        $('.comment-input').on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                $theInput = $(this);
+                postComment('${pageContext.request.contextPath}/makePageComment', $theInput.val(), '${lecture.pages[page].pageId}');
+            }
+        });
+
+        function postComment(url, content, parentId) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    parentId: parentId,
+                    content: content,
+                    "${_csrf.parameterName}": "${_csrf.token}"
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    window.location = window.location;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                beforeSend: function (jqXHR, settings) {
+                },
+                complete: function (jqXHR, textStatus) {
+                }
+            });
+        }
+
+        $("#showAllComments").click(function () {
+            $(".page-comment-toggle").fadeIn();
+            $("#showAllComments").fadeOut();
+        });
     </script>
 </sec:authorize>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('${pageContext.request.contextPath}/service-worker.js', {scope: '/lecture'})
+            .then(function (registration) {
+                console.log("Service Worker Registered");
+            })
+            .catch(function (err) {
+                console.log("Service Worker Failed to Register", err);
+            })
+    }
+    if ('serviceWorker' in navigator) {
+        var lastStatus = true;
+        onlineCheck();
+
+        function onlineCheck() {
+            if ((navigator.onLine === true) && (lastStatus === false)) {
+                $(".navbar-default").removeClass("navbar-offline");
+                $(".hide-offline").show();
+                $(".show-offline").hide();
+                $(".interaction-button").prop("disabled", false);
+            } else if ((navigator.onLine === false) && (lastStatus === true)) {
+                $(".navbar-default").addClass("navbar-offline");
+                $(".hide-offline").hide();
+                $(".show-offline").show();
+                $(".interaction-button").prop("disabled", true);
+                lastStatus = false;
+            }
+            setTimeout(function () {
+                onlineCheck()
+            }, 5000);
+        }
+    }
+</script>
 </html>

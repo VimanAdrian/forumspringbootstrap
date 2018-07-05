@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.Serializable;
 
 @Controller
@@ -23,20 +22,19 @@ public class UserController implements Serializable {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean register(@ModelAttribute("UserDTO") UserDTO user) {
+    Integer register(@ModelAttribute("UserDTO") UserDTO user) {
         return userService.save(user);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean update(@ModelAttribute("UserDTO") UserDTO user) {
+    Integer update(@ModelAttribute("UserDTO") UserDTO user) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
             UserDetails userDetail = (UserDetails) auth.getPrincipal();
-            user.setUsername(userDetail.getUsername());
-            return userService.updateUser(user);
+            return userService.updateUser(user, userDetail.getUsername());
         }
-        return false;
+        return -3;
     }
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
@@ -49,6 +47,12 @@ public class UserController implements Serializable {
     public @ResponseBody
     Boolean resetPassword(@ModelAttribute("User") UserDTO user, HttpServletResponse response) {
         return userService.resetPassword(user);
+    }
+
+    @RequestMapping(value = "/resendToken", method = RequestMethod.POST)
+    public @ResponseBody
+    Boolean resendToken(@RequestParam("userId") Long userId) {
+        return userService.resendToken(userId);
     }
 
     private User getCurrentUser() {

@@ -25,7 +25,9 @@
     #div-login-msg,
     #div-lost-msg,
     #div-register-msg,
-    #div-reset-msg {
+    #div-reset-msg,
+    #div-resend-msg,
+    #div-update-user-msg {
         border: 1px solid #dadfe1;
         height: 30px;
         line-height: 28px;
@@ -35,7 +37,9 @@
     #div-login-msg.success,
     #div-lost-msg.success,
     #div-register-msg.success,
-    #div-reset-msg.success {
+    #div-reset-msg.success,
+    #div-resend-msg.success,
+    #div-update-user-msg.success {
         border: 1px solid #68c3a3;
         background-color: #c8f7c5;
     }
@@ -43,15 +47,24 @@
     #div-login-msg.error,
     #div-lost-msg.error,
     #div-register-msg.error,
-    #div-reset-msg.error {
-        border: 1px solid #eb575b;
-        background-color: #ffcad1;
+    #div-reset-msg.error,
+    #div-resend-msg.error,
+    #div-update-user-msg.er
+
+    ]
+    {
+        border: 1px solid #eb575b
+    ;
+        background-color: #ffcad1
+    ;
     }
 
     #div-login-msg.info,
     #div-lost-msg.info,
     #div-register-msg.info,
-    #div-reset-msg.info {
+    #div-reset-msg.info,
+    #div-resend-msg.info,
+    #div-update-user-msg.info {
         border: 1px solid #31708f;
         background-color: #bce8f1;
     }
@@ -59,7 +72,9 @@
     #icon-login-msg,
     #icon-lost-msg,
     #icon-register-msg,
-    #icon-reset-msg {
+    #icon-reset-msg,
+    #icon-resend-msg,
+    #icon-update-user-msg {
         width: 30px;
         float: left;
         line-height: 28px;
@@ -72,21 +87,27 @@
     #icon-login-msg.success,
     #icon-lost-msg.success,
     #icon-register-msg.success,
-    #icon-reset-msg.success {
+    #icon-reset-msg.success,
+    #icon-resend-msg.success,
+    #icon-update-user-msg.success {
         background-color: #68c3a3 !important;
     }
 
     #icon-login-msg.error,
     #icon-lost-msg.error,
     #icon-register-msg.error,
-    #icon-reset-msg.error {
+    #icon-reset-msg.error,
+    #icon-resend-msg.error,
+    #icon-update-user-msg.error {
         background-color: #eb575b !important;
     }
 
     #icon-login-msg.info,
     #icon-lost-msg.info,
     #icon-register-msg.info,
-    #icon-reset-msg.info {
+    #icon-reset-msg.info,
+    #icon-resend-msg.info,
+    #icon-update-user-msg.info {
         background-color: #337ab7 !important;
     }
 
@@ -164,10 +185,6 @@
         border-radius: 0px;
     }
 
-    #register_gender {
-        margin-top: 10px;
-    }
-
     .register_option {
         max-width: 318px;
         overflow: hidden;
@@ -200,6 +217,35 @@
         border-radius: 0px;
     }
 
+    #register_email:invalid,
+    #register_firstName:invalid,
+    #register_lastName:invalid,
+    #register_username:invalid,
+    #register_password:invalid,
+    #register_password2:invalid,
+    #register_profileImage:invalid,
+    #update_user_firstName:invalid,
+    #update_user_lastName:invalid,
+    #update_user_profileImage:invalid {
+        border-color: red;
+    }
+
+    #register_email:valid,
+    #register_firstName:valid,
+    #register_lastName:valid,
+    #register_username:valid,
+    #register_password:valid,
+    #register_password2:valid,
+    #register_profileImage:valid,
+    #update_user_firstName:valid,
+    #update_user_lastName:valid,
+    #update_user_profileImage:valid {
+        border-color: #ccc;
+    }
+
+    .navbar-offline {
+        background-color: #f39c12 !important;
+    }
 </style>
 <nav class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
@@ -213,22 +259,21 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="${pageContext.request.contextPath}/post?search&browse&page=0">Browse</a></li>
+                <li><a role="button" class="btn-warning show-offline" id="offlineHelpButton" style="display: none;">Help?</a>
+                </li>
+                <li><a class="hide-offline"
+                       href="${pageContext.request.contextPath}/browse?page=0&size=20&searchingFor=question">Browse</a>
+                </li>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="${pageContext.request.contextPath}/newQuestion">Ask a question</a></li>
+                    <li><a class="hide-offline" href="${pageContext.request.contextPath}/newQuestion">Ask a question</a>
+                    </li>
                 </sec:authorize>
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="${pageContext.request.contextPath}/post?disabled=on&search&browse&page=0">Disabled
-                            question</a>
-                        </li>
-                        <li><a href="${pageContext.request.contextPath}/admin/user?page=0">Users</a></li>
-                    </ul>
-                    </sec:authorize>
+                <sec:authorize access="isAuthenticated()">
+                    <li><a class="hide-offline" href="${pageContext.request.contextPath}/newClass">Start a new class</a>
+                    </li>
+                </sec:authorize>
             </ul>
-            <form class="navbar-form navbar-right" id="searchForm" role="search"
+            <form class="navbar-form navbar-right hide-offline" id="searchForm" role="search"
                   action="${pageContext.request.contextPath}/search" method="GET">
                 <div class="form-group input-group">
                     <input type="text" class="form-control" name="search" placeholder="Search..">
@@ -247,13 +292,15 @@
                     $("#searchForm").submit();
                 });
             </script>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right hide-offline">
                 <sec:authorize access="isAnonymous()">
                     <li><a href="#${pageContext.request.contextPath}/" class="" role="button" data-toggle="modal"
                            data-target="#login-modal"><span
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
+                    <li><a role="button" data-toggle="modal" data-target="#login-modal" id="updateButton"><span
+                            class="glyphicon glyphicon-user"></span> Update account</a></li>
                     <li><a role="button" id="logoutButton"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                     </li>
                     <form action="${pageContext.request.contextPath}/logout" method="post" id="logoutForm"
@@ -266,7 +313,25 @@
     </div>
 </nav>
 <!-- END TopNavigation -->
+
 <!-- Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="offline-info-label" aria-hidden="true"
+     id="offline-info">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content offline-info-confirmation-modal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="offline-info-label">Your browser appears to be offline.</h4>
+            </div>
+            <div class="modal-body">
+                While you are offline you can still visit some pages, namely question, class and lecture pages,
+                and they will appear like they did the last time you were online. While you can still visit
+                those pages, and read the content's, you cannot interact with the content (eg: upvote, downvote, edit).
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      style="display: none;">
     <div class="modal-dialog">
@@ -280,120 +345,198 @@
 
             <!-- Begin # DIV Form -->
             <div id="div-forms">
-                <!-- Begin # Login Form -->
-                <form id="login-form" action="${pageContext.request.contextPath}/login_check" method="POST">
-                    <div class="modal-body">
-                        <div id="div-login-msg">
-                            <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-login-msg">Type your username and password.</span>
+                <sec:authorize access="isAnonymous()">
+                    <!-- Begin # Login Form -->
+                    <form id="login-form" action="${pageContext.request.contextPath}/login_check" method="POST">
+                        <div class="modal-body">
+                            <div id="div-login-msg">
+                                <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-login-msg">Type your username and password.</span>
+                            </div>
+                            <input id="login_username" class="form-control" type="text"
+                                   name="username" placeholder="Username" required autofocus>
+                            <input id="login_password" class="form-control" type="password" name="password"
+                                   placeholder="Password" required>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="remember-me"> Remember me
+                                </label>
+                            </div>
                         </div>
-                        <input id="login_username" class="form-control" type="text"
-                               name="username" placeholder="Username" required autofocus>
-                        <input id="login_password" class="form-control" type="password" name="password"
-                               placeholder="Password" required>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="remember-me"> Remember me
-                            </label>
+                        <div class="modal-footer">
+                            <div>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login"/>
+                            </div>
+                            <div>
+                                <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
+                                <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login"/>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                    <!-- End # Login Form -->
+                </sec:authorize>
+                <sec:authorize access="isAnonymous()">
+                    <!-- Begin | Lost Password Form -->
+                    <form id="lost-form" style="display:none;"
+                          action="${pageContext.request.contextPath}/forgotPassword"
+                          method="POST">
+                        <div class="modal-body">
+                            <div id="div-lost-msg">
+                                <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-lost-msg">Type your username.</span>
+                            </div>
+                            <input id="lost_username" class="form-control" type="text" name="username"
+                                   placeholder="Username" required>
                         </div>
-                        <div>
-                            <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
-                            <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                        <div class="modal-footer">
+                            <div>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Send">
+                            </div>
+                            <div>
+                                <button id="lost_login_btn" type="button" class="btn btn-link">Log In</button>
+                                <button id="lost_register_btn" type="button" class="btn btn-link">Register</button>
+                            </div>
                         </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!-- End # Login Form -->
-                <!-- Begin | Lost Password Form -->
-                <form id="lost-form" style="display:none;" action="${pageContext.request.contextPath}/forgotPassword"
-                      method="POST">
-                    <div class="modal-body">
-                        <div id="div-lost-msg">
-                            <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-lost-msg">Type your username.</span>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                    <!-- End | Lost Password Form -->
+                </sec:authorize>
+                <sec:authorize access="isAnonymous()">
+                    <!-- Begin | Register Form -->
+                    <form id="register-form" style="display:none;" action="${pageContext.request.contextPath}/register"
+                          method="POST" class="form-horizontal">
+                        <div class="modal-body">
+                            <div id="div-register-msg">
+                                <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-register-msg">Register an account.</span>
+                            </div>
+                            <input id="register_username" class="form-control" type="text" name="username"
+                                   placeholder="Username" required pattern="[A-Za-z0-9_]{4,32}"
+                                   title="Your username must be 4-32 characters long and only contain alphanumeric characters.">
+                            <input id="register_email" class="form-control" type="text" name="email"
+                                   placeholder="E-Mail" required
+                                   pattern='[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*'
+                                   title="You should insert a valid email address.">
+                            <input id="register_password" class="form-control" type="password" name="password"
+                                   placeholder="Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,32}"
+                                   title="Your password must be 4-32 characters long, and must include one upper case letter, one lower case letter, and one numeric digit.">
+                            <input id="register_password2" class="form-control" type="password"
+                                   name="confirmationPassword"
+                                   placeholder="Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,32}"
+                                   title="Your password must be between 4 and 32 characters long, and must include at least one upper case letter, one lower case letter, and one numeric digit.">
+                            <input id="register_firstName" class="form-control" type="text" name="firstName"
+                                   placeholder="First name" required pattern="[a-zA-Z ,.'-]+">
+                            <input id="register_lastName" class="form-control" type="text" name="lastName"
+                                   placeholder="Last name" required pattern="[a-zA-Z ,.'-]+">
+                            <input id="register_profileImage" class="form-control" type="text" name="profileImage"
+                                   placeholder="Profile image link" pattern="(https?:\/\/.*\.(?:png|jpg|jpeg|gif))"
+                                   title="Your profile image should be a .png, .jpg, .jpeg of .gif">
                         </div>
-                        <input id="lost_username" class="form-control" type="text" name="username"
-                               placeholder="Username" required>
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Send">
+                        <div class="modal-footer">
+                            <div>
+                                <input id="register-submit" type="submit" class="btn btn-primary btn-lg btn-block"
+                                       value="Register">
+                            </div>
+                            <div>
+                                <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
+                                <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button id="lost_login_btn" type="button" class="btn btn-link">Log In</button>
-                            <button id="lost_register_btn" type="button" class="btn btn-link">Register</button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!-- End | Lost Password Form -->
-                <!-- Begin | Register Form -->
-                <form id="register-form" style="display:none;" action="${pageContext.request.contextPath}/register"
-                      method="POST">
-                    <div class="modal-body">
-                        <div id="div-register-msg">
-                            <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-register-msg">Register an account.</span>
-                        </div>
-                        <input id="register_username" class="form-control" type="text" name="username"
-                               placeholder="Username" required>
-                        <input id="register_email" class="form-control" type="text" name="email"
-                               placeholder="E-Mail" required>
-                        <input id="register_password" class="form-control" type="password" name="password"
-                               placeholder="Password" required>
-                        <input id="register_password2" class="form-control" type="password" name="confirmationPassword"
-                               placeholder="Password" required>
-                        <input id="register_firstName" class="form-control" type="text" name="firstName"
-                               placeholder="First name">
-                        <input id="register_lastName" class="form-control" type="text" name="lastName"
-                               placeholder="Last name">
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Register">
-                        </div>
-                        <div>
-                            <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
-                            <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?
-                            </button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-                <!-- End | Register Form -->
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                    <!-- End | Register Form -->
+                </sec:authorize>
                 <!-- Begin | Reset Form -->
-                <form id="reset-form" style="display:none;" action="${pageContext.request.contextPath}/resetPassword"
-                      method="POST">
-                    <div class="modal-body">
-                        <div id="div-reset-msg">
-                            <div id="icon-reset-msg" class="glyphicon glyphicon-chevron-right"></div>
-                            <span id="text-reset-msg">Reset your password.</span>
+                <sec:authorize access="isAnonymous()">
+                    <form id="reset-form" style="display:none;"
+                          action="${pageContext.request.contextPath}/resetPassword"
+                          method="POST">
+                        <div class="modal-body">
+                            <div id="div-reset-msg">
+                                <div id="icon-reset-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-reset-msg">Reset your password.</span>
+                            </div>
+                            <input id="reset_password" class="form-control" type="password" name="password"
+                                   placeholder="Password" required>
+                            <input id="reset_password2" class="form-control" type="password" name="confirmationPassword"
+                                   placeholder="Password" required>
                         </div>
-                        <input id="reset_password" class="form-control" type="password" name="password"
-                               placeholder="Password" required>
-                        <input id="reset_password2" class="form-control" type="password" name="password2"
-                               placeholder="Password" required>
-                    </div>
-                    <div class="modal-footer">
-                        <div>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Reset">
+                        <div class="modal-footer">
+                            <div>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Reset">
+                            </div>
+                            <div>
+                                <button id="reset_login_btn" type="button" class="btn btn-link">Log In</button>
+                                <button id="reset_register_btn" type="button" class="btn btn-link">Register</button>
+                                <button id="reset_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                            </div>
                         </div>
-                        <div>
-                            <button id="reset_login_btn" type="button" class="btn btn-link">Log In</button>
-                            <button id="reset_register_btn" type="button" class="btn btn-link">Register</button>
-                            <button id="reset_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <input type="hidden" name="userId" value="${userID}"/>
+                    </form>
+                    <!-- End | Reset Form -->
+                </sec:authorize>
+                <sec:authorize access="isAnonymous()">
+                    <!-- Begin | Resend Form -->
+                    <form id="resend-form" style="display:none;" action="${pageContext.request.contextPath}/resendToken"
+                          method="POST">
+                        <div class="modal-body">
+                            <div id="div-resend-msg">
+                                <div id="icon-resend-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-resend-msg">Send a new token</span>
+                            </div>
                         </div>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <input type="hidden" name="userId" value="${userID}"/>
-                </form>
-                <!-- End | Reset Form -->
+                        <div class="modal-footer">
+                            <div>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Send">
+                            </div>
+                            <div>
+                                <button id="resend_login_btn" type="button" class="btn btn-link">Log In</button>
+                                <button id="resend_register_btn" type="button" class="btn btn-link">Register</button>
+                                <button id="resend_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <input type="hidden" name="userId" value="${userID}"/>
+                    </form>
+                </sec:authorize>
+                <!-- End | Resend Form -->
+                <!-- Begin | Update User Form -->
+                <sec:authorize access="isAuthenticated()">
+                    <form id="update-user-form" action="${pageContext.request.contextPath}/updateUser"
+                          method="POST" class="form-horizontal">
+                        <div class="modal-body">
+                            <div id="div-update-user-msg">
+                                <div id="icon-update-user-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-update-user-msg">Update your account.</span>
+                            </div>
+                            <input id="update_user_firstName" class="form-control" type="text" name="firstName"
+                                   placeholder="First name" required pattern="[a-zA-Z ,.'-]+"
+                                   value="<c:out value='${user.firstName}'/>">
+                            <input id="update_user_lastName" class="form-control" type="text" name="lastName"
+                                   placeholder="Last name" required pattern="[a-zA-Z ,.'-]+"
+                                   value="<c:out value='${user.lastName}'/>">
+                            <input id="update_user_profileImage" class="form-control" type="text" name="profileImage"
+                                   placeholder="Profile image link" pattern="(https?:\/\/.*\.(?:png|jpg|jpeg|gif))"
+                                   title="Your profile image should be a .png, .jpg, .jpeg of .gif"
+                                   value="<c:out value='${user.profileImage}'/>">
+                        </div>
+                        <div class="modal-footer">
+                            <div>
+                                <input id="update-user-submit" type="submit" class="btn btn-primary btn-lg btn-block"
+                                       value="Update">
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </sec:authorize>
+
             </div>
+
             <!-- End # DIV Form -->
         </div>
     </div>
@@ -405,6 +548,8 @@
     var $formLost = $('#lost-form');
     var $formRegister = $('#register-form');
     var $formReset = $('#reset-form');
+    var $formResend = $('#resend-form');
+    var $formUpdate = $("#update-user-form");
     var $divForms = $('#div-forms');
     var $modalAnimateTime = 300;
     var $msgAnimateTime = 150;
@@ -417,7 +562,11 @@
             url: $theForm.attr('action'),
             data: $theForm.serialize(),
             success: function (data) {
-                location.reload(true);
+                var url = window.location.href;
+                if (url.match("${pageContext.request.contextPath}/activate?"))
+                    window.location.replace("${pageContext.request.contextPath}/");
+                else
+                    location.reload(true);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status === 401)
@@ -441,9 +590,15 @@
             url: $theForm.attr('action'),
             data: $theForm.serialize(),
             success: function (data) {
-                if (data) {
+                if (data == 1) {
                     modalAnimate($formRegister, $formLogin);
                     msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "You've been registered successfully!");
+                } else if (data == -1) {
+                    msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Invalid field!");
+                } else if (data == -2) {
+                    msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Email address already registered!");
+                } else if (data == -3) {
+                    msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Username already registered!");
                 } else {
                     msgChange($('#div-register-msg'), $('#icon-register-msg'), $('#text-register-msg'), "error", "glyphicon-remove", "Register failed!");
                 }
@@ -511,9 +666,68 @@
         });
         return false;
     });
+
+    $('#resend-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                if (data) {
+                    modalAnimate($formResend, $formLogin);
+                    msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "Token sent successfully!");
+                    setTimeout(function () {
+                        window.location.replace("${pageContext.request.contextPath}/login");
+                    }, 1000);
+                } else {
+                    msgChange($('#div-resend-msg'), $('#icon-resend-msg'), $('#text-resend-msg'), "error", "glyphicon-remove", "Token failed to send!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                msgChange($('#div-resend-msg'), $('#icon-resend-msg'), $('#text-resend-msg'), "error", "glyphicon-remove", "Something went wrong!");
+                console.log(errorThrown);
+            },
+            beforeSend: function () {
+                msgChange($('#div-resend-msg'), $('#icon-resend-msg'), $('#text-resend-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
+    });
     </sec:authorize>
 
     <sec:authorize access="isAuthenticated()">
+
+    $('#update-user-form').submit(function () {
+        $theForm = $(this);
+        $.ajax({
+            type: $theForm.attr('method'),
+            url: $theForm.attr('action'),
+            data: $theForm.serialize(),
+            success: function (data) {
+                if (data == 1) {
+                    msgChange($('#div-update-user-msg'), $('#icon-update-user-msg'), $('#text-update-user-msg'), "success", "glyphicon-ok", "Account updated successfully!");
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 1000);
+                } else if (data == -1) {
+                    msgChange($('#div-update-user-msg'), $('#icon-update-user-msg'), $('#text-update-user-msg'), "error", "glyphicon-remove", "Invalid field!");
+                } else {
+                    msgChange($('#div-update-user-msg'), $('#icon-update-user-msg'), $('#text-update-user-msg'), "error", "glyphicon-remove", "Update failed!");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                msgChange($('#div-update-user-msg'), $('#icon-update-user-msg'), $('#text-update-user-msg'), "error", "glyphicon-remove", "Something went wrong!");
+                console.log(errorThrown);
+            },
+            beforeSend: function () {
+                msgChange($('#div-update-user-msg'), $('#icon-update-user-msg'), $('#text-update-user-msg'), "info", "glyphicon-refresh", "Please wait!");
+            }
+        });
+        return false;
+    });
+
+
     $("#logoutButton").click(function () {
         $theForm = $("#logoutForm");
         $.ajax({
@@ -531,6 +745,7 @@
     </sec:authorize>
 
     checkModal();
+
     function checkModal() {
         <c:if test="${modal==true}">
         $("#login-modal").modal('show');
@@ -541,6 +756,13 @@
         <c:if test="${validToken==0}">
         modalAnimate($formLogin, $formReset);
         msgChange($('#div-reset-msg'), $('#icon-reset-msg'), $('#text-reset-msg'), "error", "glyphicon-remove", "Invalid token!");
+        </c:if>
+        <c:if test="${activationSuccess!=null && activationSuccess==true}">
+        msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "glyphicon-ok", "Account activated successfully!");
+        </c:if>
+        <c:if test="${activationSuccess!=null && activationSuccess==false}">
+        modalAnimate($formLogin, $formResend);
+        msgChange($('#div-resend-msg'), $('#icon-resend-msg'), $('#text-resend-msg'), "error", "glyphicon-remove", "Account activation failed!");
         </c:if>
         </c:if>
     }
@@ -571,6 +793,15 @@
     });
     $('#reset_register_btn').click(function () {
         modalAnimate($formReset, $formRegister);
+    });
+    $('#resend_login_btn').click(function () {
+        modalAnimate($formResend, $formLogin);
+    });
+    $('#resend_lost_btn').click(function () {
+        modalAnimate($formResend, $formLost);
+    });
+    $('#resend_register_btn').click(function () {
+        modalAnimate($formResend, $formRegister);
     });
 
     function modalAnimate($oldForm, $newForm) {
@@ -603,6 +834,10 @@
             $iconTag.removeClass($iconClass + " " + $divClass);
         }, $msgShowTime);
     }
+
+    $("#offlineHelpButton").click(function () {
+        $("#offline-info").modal("show");
+    })
 </script>
 <script>
     $(document).ready(function () {
@@ -630,6 +865,7 @@
 
         checkWidth();
         $(window).resize(checkWidth);
+
     });
 </script>
 

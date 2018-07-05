@@ -11,15 +11,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%--default--%>
+    <link rel="apple-touch-icon" sizes="57x57"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="${pageContext.request.contextPath}/resources/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-16x16.png">
+    <link rel="manifest" href="${pageContext.request.contextPath}/resources/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <%--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>--%>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>--%>
-    <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
-    <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
-    <%--extra--%>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
@@ -71,7 +98,8 @@
                     <div class="alert alert-warning fade in">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
                         <%--TODO change this --%>
-                        Please read the rules before posting. bla bla
+                        Please read <a href="${pageContext.request.contextPath}/class?classId=0">the rules</a> before
+                        posting.
                     </div>
                 </div>
                 <div class="col-sm-1"></div>
@@ -94,11 +122,6 @@
                                 <textarea id="wmd-input" class="wmd-input form-control vresize"
                                           name="content" required></textarea>
                             </div>
-                            <%--<div class="col-sm-offset-2 col-sm-10">--%>
-                            <%--<textarea id="post_content"--%>
-                            <%--class="form-control vresize"--%>
-                            <%--name="content" required></textarea>--%>
-                            <%--</div>--%>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-1"
@@ -108,13 +131,13 @@
                                        name="tags" multiple='multiple' list="taglist"/>
                                 <%--TODO change this--%>
                                 <datalist id="taglist">
-                                    <jsp:include page="tagList.jsp"/>
+                                    <jsp:include page="bootstrapTagList.jsp"/>
                                 </datalist>
                             </div>
                         </div>
                         <div class="form-group align-right">
                             <div class="col-sm-offset-1 col-sm-1">
-                                <input type="submit" class="btn btn-primary" value="Create question"/>
+                                <input type="submit" class="btn btn-primary" value="Ask your question"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -132,7 +155,6 @@
             </div>
             <div class="col-sm-1"></div>
         </div>
-        <%--<jsp:include page="bootstrapNavigationRight.jsp"/>--%>
     </div>
 </div>
 <script>

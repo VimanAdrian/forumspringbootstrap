@@ -1,20 +1,20 @@
 package artsoftconsult.study.dto.model;
 
+import artsoftconsult.study.model.PageComment;
+
 import java.sql.Date;
+import java.util.Collection;
 
 public class PageDTO {
     private Long pageId;
-    private String title;
     private String content;
     private String rawContent;
     private Date created;
     private Date lastActive;
-    private String visibility;
-    private Long score;
-    private Long views;
     private Boolean active;
     private LectureDTO chapter;
     private Boolean deleted;
+    private Collection<PageComment> pageComment;
 
     public Boolean getDeleted() {
         return deleted;
@@ -29,14 +29,6 @@ public class PageDTO {
 
     public void setPageId(Long pageId) {
         this.pageId = pageId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
@@ -71,30 +63,6 @@ public class PageDTO {
         this.lastActive = lastActive;
     }
 
-    public String getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
-
-    public Long getScore() {
-        return score;
-    }
-
-    public void setScore(Long score) {
-        this.score = score;
-    }
-
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
-    }
-
     public Boolean getActive() {
         return active;
     }
@@ -109,5 +77,13 @@ public class PageDTO {
 
     public void setChapter(LectureDTO chapter) {
         this.chapter = chapter;
+    }
+
+    public Collection<PageComment> getPageComment() {
+        return pageComment;
+    }
+
+    public void setPageComment(Collection<PageComment> pageComment) {
+        this.pageComment = pageComment;
     }
 }

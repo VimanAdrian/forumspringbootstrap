@@ -12,14 +12,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="apple-touch-icon" sizes="57x57"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="${pageContext.request.contextPath}/resources/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="${pageContext.request.contextPath}/resources/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="${pageContext.request.contextPath}/resources/favicon/favicon-16x16.png">
+    <link rel="manifest" href="${pageContext.request.contextPath}/resources/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <%--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>--%>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>--%>
-    <link rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css">
-    <%--<link rel="stylesheet" href="https://bootswatch.com/3/simplex/bootstrap.css">--%>
-    <%--extra--%>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
@@ -168,6 +196,10 @@
         .li-padding-bottom {
             padding-bottom: 7px;
         }
+
+        .wordBreak {
+            word-wrap: break-word;
+        }
     </style>
     <title>MemoryLeak</title>
 </head>
@@ -178,11 +210,43 @@
         <jsp:include page="bootstrapNavigationLeft.jsp"/>
         <div class="col-md-9">
 
-            <div class="row">
-                <div class="col-md-12">
-                    <p class="align-left">Search results for '<b>${tag}${search}</b>':</p>
+            <c:if test="${showUser}">
+                <c:if test="${searchedUser != null}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <a href="${pageContext.request.contextPath}/account?username=<c:out value='${searchedUser.username}'/>"><c:out
+                                        value="${searchedUser.username}"/></a></p>
+                            <img src="${searchedUser.profileImage}" class="img-circle" height="100"
+                                 width="100" alt="Avatar">
+                        </div>
+                        <div class="col-md-6">
+                            <p>First name: <c:out value="${searchedUser.firstName}"/></p>
+                            <p>Last name: <c:out value="${searchedUser.lastName}"/></p>
+                            <p>Email: <c:out value="${searchedUser.email}"/></p>
+                            <p>Member since: ${searchedUser.creationDate.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="${searchedUser == null}">
+                    <div class="row">
+                        <hr class="hr-5px"/>
+                        <div class="col-md-12 align-left">
+                            <p>There is nothing here...</p>
+                        </div>
+                    </div>
+                </c:if>
+                <br/>
+                <br/>
+            </c:if>
+
+            <c:if test="${showSearchResults}">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="align-left">Search results for '<b>${tag}${search}${lecture}</b>':</p>
+                    </div>
                 </div>
-            </div>
+            </c:if>
             <div class="row">
                 <div class="col-md-12">
                     <ul class="nav nav-tabs">
@@ -223,13 +287,13 @@
                                     <div class="col-md-12">
                                         <div class="well pading-top-5px pading-bottom-5px">
                                             <div class="row">
-                                                <div class="text-left col-md-12 question-title">
+                                                <div class="text-left col-md-12 question-title wordBreak">
                                                     <a href="${pageContext.request.contextPath}/question?questionId=${question.questionId}"><c:out
                                                             value="${question.title}"/></a>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="text-left col-md-12">
+                                                <div class="text-left col-md-12 wordBreak">
                                                     <c:if test="${question.content.length() == 0}">
                                                         This question has no content.
                                                     </c:if>
@@ -286,13 +350,13 @@
                                     <div class="col-md-12">
                                         <div class="well pading-top-5px pading-bottom-5px">
                                             <div class="row">
-                                                <div class="text-left col-md-12 question-title">
+                                                <div class="text-left col-md-12 question-title wordBreak">
                                                     <a href="${pageContext.request.contextPath}/class?classId=${virtualClass.virtualClassId}"><c:out
                                                             value="${virtualClass.title}"/></a>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="text-left col-md-12">
+                                                <div class="text-left col-md-12 wordBreak">
                                                     <c:if test="${virtualClass.description.length() == 0}">
                                                         This class has no description.
                                                     </c:if>
@@ -337,8 +401,8 @@
                         <c:if test="${lecturePage.content.size() == 0}">
                             <div class="row">
                                 <hr class="hr-5px"/>
-                                <div class="col-md-12">
-                                    <p class="align-left">There is nothing here...</p>
+                                <div class="col-md-12 align-left">
+                                    <p>There is nothing here...</p>
                                 </div>
                             </div>
                         </c:if>
@@ -349,13 +413,13 @@
                                     <div class="col-md-12">
                                         <div class="well pading-top-5px pading-bottom-5px">
                                             <div class="row">
-                                                <div class="text-left col-md-12 question-title">
+                                                <div class="text-left col-md-12 question-title wordBreak">
                                                     <a href="${pageContext.request.contextPath}/lecture?lectureId=${lecture.lectureId}&page=0"><c:out
                                                             value="${lecture.title}"/></a>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="text-left col-md-12">
+                                                <div class="text-left col-md-12 wordBreak">
                                                     <c:if test="${lecture.description.length() == 0}">
                                                         This lecture has no description.
                                                     </c:if>

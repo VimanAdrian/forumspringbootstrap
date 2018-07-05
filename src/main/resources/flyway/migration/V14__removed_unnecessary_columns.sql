@@ -1,0 +1,14 @@
+ALTER TABLE pages
+  DROP COLUMN title;
+ALTER TABLE lectures
+  DROP COLUMN visibility;
+ALTER TABLE pages
+  DROP COLUMN visibility;
+ALTER TABLE pages
+  DROP COLUMN score;
+ALTER TABLE pages
+  DROP COLUMN views;
+DROP TABLE user_notifications;
+ALTER TABLE users
+  DROP COLUMN type;
+DROP TABLE virtual_class_rights;

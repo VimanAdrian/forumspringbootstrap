@@ -2,7 +2,6 @@ package artsoftconsult.study.model;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +16,6 @@ public class Reply {
     private Boolean enabled;
     private User user;
     private Question question;
-    private Collection<ReplyComment> replyComment;
     private Integer voteType;
     private Boolean deleted;
 
@@ -137,15 +135,6 @@ public class Reply {
 
     public void setQuestion(Question question) {
         this.question = question;
-    }
-
-    @OneToMany(mappedBy = "reply")
-    public Collection<ReplyComment> getReplyComment() {
-        return replyComment;
-    }
-
-    public void setReplyComment(Collection<ReplyComment> replyComment) {
-        this.replyComment = replyComment;
     }
 
     @Transient

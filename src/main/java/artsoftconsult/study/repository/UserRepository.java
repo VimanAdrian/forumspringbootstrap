@@ -24,7 +24,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     @Modifying
     @Query(value = "UPDATE users SET password=:password WHERE user_id=:userId", nativeQuery = true)
-    User updatePasswordById(@Param("password") String password, @Param("userId") Long userId);
+    void updatePasswordById(@Param("password") String password, @Param("userId") Long userId);
 
     @Modifying
     @Query(value = "UPDATE users SET role=:role WHERE user_id=:userId", nativeQuery = true)

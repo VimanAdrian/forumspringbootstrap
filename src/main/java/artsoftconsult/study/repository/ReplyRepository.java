@@ -52,4 +52,12 @@ public interface ReplyRepository extends PagingAndSortingRepository<Reply, Long>
     void makeFavorite(@Param("replyId")Long replyId);
 
     Reply findByReplyId(Long replyId);
+
+    @Modifying
+    @Query(value = "UPDATE replies SET deleted=TRUE where reply_id=:replyId", nativeQuery = true)
+    void logicalDelete(@Param("replyId") Long replyId);
+
+    @Modifying
+    @Query(value = "INSERT INTO user_new_replies(user_id, question_id) VALUES(:user_id, :question_id)", nativeQuery = true)
+    void saveNewReplies(@Param("user_id") Long userId, @Param("question_id") Long questionId);
 }

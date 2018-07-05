@@ -22,13 +22,14 @@ public class QuestionRepositoryImpl implements QuestionRepositoryCustom {
 
     @Override
     public List<Question> newReplies(Long userId) {
-        List<Long> questionIds = new ArrayList<>(jdbcTemplate.query("SELECT question_id FROM user_new_replies WHERE user_id = ?", new Object[]{userId},
+        List<Long> questionIds = new ArrayList<>(jdbcTemplate.query("SELECT question_id FROM user_new_replies WHERE user_id = ? ORDER BY user_new_reply_id DESC LIMIT 5", new Object[]{userId},
                 (rs, rowNum) -> (rs.getLong("question_id"))));
-        if (questionIds.size() > 1)
-            return new ArrayList<>(jdbcTemplate.query("SELECT question_id, title, views, score FROM questions WHERE question_id = ?", questionIds.toArray(new Object[0]),
-                    (rs, rowNum) -> new Question(rs.getLong("question_id"), rs.getString("title"), rs.getLong("views"), rs.getLong("score"))));
-        else
-            return new ArrayList<Question>();
+        List<Question> results = new ArrayList<>();
+        questionIds.forEach(questionId ->
+                results.addAll((jdbcTemplate.query("SELECT question_id, title, views, score FROM questions WHERE question_id = ?", new Object[]{questionId},
+                        (rs, rowNum) -> new Question(rs.getLong("question_id"), rs.getString("title"), rs.getLong("views"), rs.getLong("score")))))
+        );
+        return results;
     }
 
     @Override

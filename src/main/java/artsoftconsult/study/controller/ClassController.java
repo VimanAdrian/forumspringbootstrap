@@ -76,4 +76,23 @@ public class ClassController {
         return false;
     }
 
+    @RequestMapping(value = "/deleteClass", method = RequestMethod.POST)
+    public @ResponseBody
+    boolean makeDelete(HttpServletRequest request, HttpServletResponse response, @RequestParam("classId") Long classId) {
+        return virtualClassService.delete(classId, getCurrentUser().getUserId());
+    }
+
+    @RequestMapping(value = "/followClass", method = RequestMethod.POST)
+    public @ResponseBody
+    boolean followClass(@RequestParam("classId") Long classId) {
+        return virtualClassService.followClass(classId, getCurrentUser().getUserId());
+    }
+
+    @RequestMapping(value = "/unfollowClass", method = RequestMethod.POST)
+    public @ResponseBody
+    boolean unfollowClass(@RequestParam("classId") Long classId) {
+        return virtualClassService.unfollowClass(classId, getCurrentUser().getUserId());
+    }
+
+
 }

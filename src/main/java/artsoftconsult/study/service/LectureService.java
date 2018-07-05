@@ -36,6 +36,18 @@ public class LectureService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private VirtualClassRepository virtualClassRepository;
+
+    @Transactional
+    public void newClassActivity(Long classId) {
+        List<Long> userIds = virtualClassRepository.findClassFollowers(classId);
+        userIds.forEach(userId -> {
+            virtualClassRepository.markNotNew(classId, userId);
+            virtualClassRepository.saveNewActivity(classId, userId, "new");
+        });
+    }
+
     private Lecture prepareForSave(Lecture lecture) {
         lecture.setViews(0l);
         lecture.setScore(0l);
@@ -51,11 +63,8 @@ public class LectureService {
         page.setActive(true);
         page.setCreated(new Date(System.currentTimeMillis()));
         page.setLastActive(new Date(System.currentTimeMillis()));
-        page.setScore(0L);
-        page.setViews(0L);
-        page.setVisibility("PUBLIC");
-        page.setTitle("");
         page.setDeleted(false);
+        page.setPageComment(null);
         return page;
     }
 
@@ -67,7 +76,6 @@ public class LectureService {
             lecture.setVirtualClass(virtualClass);
             lecture.setTitle(title);
             lecture.setDescription(description);
-            lecture.setVisibility(visibility);
             lecture.setActive(active);
 
             List<Page> pages = new ArrayList<>();
@@ -79,6 +87,7 @@ public class LectureService {
             lecture.setPages(pages);
             Lecture saved = lectureRepository.save(prepareForSave(lecture));
             if (saved != null) {
+                newClassActivity(classId);
                 return saved.getLectureId();
             }
         }
@@ -94,11 +103,20 @@ public class LectureService {
             page.setContent(content);
             page = pageRepository.save(prepareForSave(page));
             if (page != null) {
+                newClassActivity(lecture.getVirtualClass().getVirtualClassId());
                 lecture = lectureRepository.findByLectureIdAndDeletedFalse(lectureId);
                 return (long) lecture.getPages().size();
             }
         }
         return 0L;
+    }
+
+    @Transactional(readOnly = true)
+    public String find(Long lectureId) {
+        Lecture lecture = lectureRepository.findByLectureId(lectureId);
+        if (lecture != null)
+            return lecture.getTitle();
+        return "";
     }
 
     @Transactional
